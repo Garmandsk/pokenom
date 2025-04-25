@@ -2,6 +2,8 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.UtilityTool;
+import tile.Tile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,21 +11,23 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class Player extends Entity {
-    private int hasKey = 0;
-
     public final int screenX, screenY;
+    int standCounter;
+    //    int doorOpened = 0;
+    //    private int hasKey = 0;
 
-    GamePanel gameP;
     KeyHandler keyH;
 
-    int doorOpened = 0;
-
     public Player(GamePanel gameP, KeyHandler keyH){
+        super(gameP);
 
         this.screenX = gameP.screenWidth/2 - (gameP.tileSize/2);
         this.screenY = gameP.screenHeight/2 - (gameP.tileSize/2);
 
-        solidArea = new Rectangle(8, 16, gameP.tileSize - 16, gameP.tileSize - 20);
+        solidArea.x = 6;
+        solidArea.y = 16;
+        solidArea.width = gameP.tileSize - 12;
+        solidArea.height = gameP.tileSize - 16;
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
 
@@ -35,75 +39,42 @@ public class Player extends Entity {
     }
 
     public void setDefaultValue(){
-        this.worldX = gameP.tileSize * 25;
-        this.worldY = gameP.tileSize * 25;
-        this.speed = 5;
+
+        // Posisi Awal Player
+        this.worldX = gameP.tileSize * 23;
+        this.worldY = gameP.tileSize * 21;
+        this.speed = 4;
         this.direction = "down";
     }
 
     public void getPlayerImage(){
-        try {
-            up1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_up_2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_down_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/player/boy_right_2.png"));
-        }catch (IOException e){
-            e.printStackTrace();
+        UtilityTool uTool = new UtilityTool(gameP);
+
+        up1 = uTool.setUp("/player/boy_up_1");
+        up2 = uTool.setUp("/player/boy_up_2");
+        down1 = uTool.setUp("/player/boy_down_1");
+        down2 = uTool.setUp("/player/boy_down_2");
+        left1 = uTool.setUp("/player/boy_left_1");
+        left2 = uTool.setUp("/player/boy_left_2");
+        right1 = uTool.setUp("/player/boy_right_1");
+        right2 = uTool.setUp("/player/boy_right_2");
+    }
+
+    void pickUpObject(int i) {
+        if (i != 999) {
+
         }
     }
 
-    void pickUpObject(int indexObject){
-        if (indexObject != 999){
-            String nameObject = gameP.obj[indexObject].nameObject;
-
-            switch (nameObject){
-                case "Key":
-//                    System.out.printf("Key: %d\n", hasKey);
-                    hasKey++;
-                    gameP.obj[indexObject] = null;
-                    gameP.ui.showMessage("You Got A Key!");
-                    break;
-                case "Door":
-                    if (hasKey > 0){
-//                        System.out.printf("Key: %d\n", hasKey);
-                        gameP.obj[indexObject] = null;
-                        hasKey--;
-                        doorOpened++;
-//                        System.out.printf("Door Opened: %d\n", this.doorOpened);
-                        if (doorOpened == 4){
-                            gameP.ui.gameFinished = true;
-                        }else{
-                            gameP.ui.showMessage("You Opened The Door!");
-                        }
-                    }else {
-                        gameP.ui.showMessage("Key Needed!");
-                    }
-                    break;
-                case "Boots":
-//                    System.out.println("Speed Up!");
-                    this.speed += 2;
-                    gameP.obj[indexObject] = null;
-                    gameP.ui.showMessage("You Got Sepatu Superrr!");
-                    break;
-                case "Chest":
-                    gameP.ui.showMessage("You Found Mysterious Chest!");
-//                    gameP.ui.gameFinished = true;
-                    break;
-            }
+    void interactNPC(int i) {
+        if (i != 999) {
+            System.out.println("You Hitted Someone");
         }
-    }
-
-    public int getHasKey(){
-        return this.hasKey;
     }
 
     public void update(){
-
         int moveX = 0, moveY = 0;
+
         if(keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed){
 
             if (keyH.upPressed == true){
@@ -135,8 +106,12 @@ public class Player extends Entity {
             gameP.cChecker.checkTile(this);
 
             /* Check Object Collision */
-            int indexObject = gameP.cChecker.checkObject(this, true);
-            pickUpObject(indexObject);
+            int objectIndex = gameP.cChecker.checkObject(this, true);
+            pickUpObject(objectIndex);
+
+            /* Check Entity Collision */
+            int entityIndex = gameP.cChecker.checkEntity(this, gameP.npc);
+            interactNPC(entityIndex);
 
             if(collisionOn == false){
 //                if (direction == "up") this.worldY -= this.speed;
@@ -156,6 +131,12 @@ public class Player extends Entity {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
+            }
+        }else {
+            standCounter++;
+            if (standCounter > 20){
+                spriteNum = 1;
+                standCounter = 0;
             }
         }
     }
@@ -186,8 +167,12 @@ public class Player extends Entity {
         }
 
         if (image != null){
-            g2d.drawImage(image, this.screenX, this.screenY, gameP.tileSize, gameP.tileSize, null);
+//            System.out.println("ScreenX: " + this.screenX);
+//            System.out.println("ScreenY: " + this.screenY);
 
+            g2d.drawImage(image, this.screenX, this.screenY, null);
+//            g2d.setColor(Color.red);
+//            g2d.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
         }
     }
 

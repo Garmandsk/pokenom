@@ -4,7 +4,12 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
-    public boolean upPressed, downPressed, leftPressed, rightPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, chechDrawTime;
+    GamePanel gameP;
+
+    public KeyHandler(GamePanel gameP){
+        this.gameP = gameP;
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -32,6 +37,18 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
 //            System.out.println("kanan");
             rightPressed = true;
+        }
+
+        if (code == KeyEvent.VK_T) {
+            chechDrawTime = true;
+        }
+
+        if (code == KeyEvent.VK_P){
+            if (gameP.gameState == gameP.playState){
+                gameP.gameState = gameP.pauseState;
+            } else if (gameP.gameState == gameP.pauseState) {
+                gameP.gameState = gameP.playState;
+            }
         }
     }
 

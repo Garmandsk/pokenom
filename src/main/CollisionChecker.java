@@ -136,4 +136,101 @@ public class CollisionChecker {
         return index;
     }
 
+    public int checkEntity(Entity entity, Entity[] target){
+        int index = 999;
+
+        for(int i = 0; i < target.length; i++){
+            if(target[i] != null){
+
+                /* Yang Nabrak */
+                entity.solidArea.x += entity.worldX;
+                entity.solidArea.y += entity.worldY;
+
+                /* Yang Ditabrak */
+                target[i].solidArea.x += target[i].worldX;
+                target[i].solidArea.y += target[i].worldY;
+
+                switch (entity.direction){
+                    case "up":
+                        entity.solidArea.y -= entity.speed;
+                        if (entity.solidArea.intersects(target[i].solidArea)){
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    case "down":
+                        entity.solidArea.y += entity.speed;
+                        if (entity.solidArea.intersects(target[i].solidArea)){
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    case "left":
+                        entity.solidArea.x -= entity.speed;
+                        if (entity.solidArea.intersects(target[i].solidArea)){
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                    case "right":
+                        entity.solidArea.y += entity.speed;
+                        if (entity.solidArea.intersects(target[i].solidArea)){
+                            entity.collisionOn = true;
+                            index = i;
+                        }
+                        break;
+                }
+                entity.solidArea.x = entity.defaultSolidAreaX;
+                entity.solidArea.y = entity.defaultSolidAreaY;
+                target[i].solidArea.x = target[i].defaultSolidAreaX;
+                target[i].solidArea.y = target[i].defaultSolidAreaY;
+            }
+        }
+        return index;
+    }
+
+    public void checkPlayer(Entity entity){
+
+        /* Yang Nabrak */
+        entity.solidArea.x += entity.worldX;
+        entity.solidArea.y += entity.worldY;
+
+        /* Yang Ditabrak */
+        gameP.player.solidArea.x += gameP.player.worldX;
+        gameP.player.solidArea.y += gameP.player.worldY;
+
+        switch (entity.direction){
+            case "up":
+                entity.solidArea.y -= entity.speed;
+                if (entity.solidArea.intersects(gameP.player.solidArea)){
+                    entity.collisionOn = true;
+                }
+                break;
+            case "down":
+                entity.solidArea.y += entity.speed;
+                if (entity.solidArea.intersects(gameP.player.solidArea)){
+                    entity.collisionOn = true;
+                }
+                break;
+            case "left":
+                entity.solidArea.x -= entity.speed;
+                if (entity.solidArea.intersects(gameP.player.solidArea)){
+                    entity.collisionOn = true;
+                }
+                break;
+            case "right":
+                entity.solidArea.y += entity.speed;
+                if (entity.solidArea.intersects(gameP.player.solidArea)){
+                    entity.collisionOn = true;
+                }
+                break;
+        }
+        entity.solidArea.x = entity.defaultSolidAreaX;
+        entity.solidArea.y = entity.defaultSolidAreaY;
+        gameP.player.solidArea.x = gameP.player.defaultSolidAreaX;
+        gameP.player.solidArea.y = gameP.player.defaultSolidAreaY;
+
+
+    }
+
 }
