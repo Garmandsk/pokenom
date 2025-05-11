@@ -12,9 +12,16 @@ public class NPC_OldMan extends Entity {
         direction = "down";
         speed = 1;
         getOldManImage();
+        setDialogue();
     }
 
     public void getOldManImage(){
+//        System.out.println("=====OldMan=====");
+//        System.out.println("Solid Area X: " + this.solidArea.x);
+//        System.out.println("Solid Area Y: " + this.solidArea.y);
+//        System.out.println("Solid Area Width: " + this.solidArea.width);
+//        System.out.println("Solid Area Height: " + this.solidArea.height);
+
         UtilityTool uTool = new UtilityTool(gameP);
 
         up1 = uTool.setUp("/npc/oldman_up_1");
@@ -30,6 +37,7 @@ public class NPC_OldMan extends Entity {
     public void setAction(){
         actionLockCounter++;
 
+        /*
         if (actionLockCounter >= 120){
             Random random = new Random();
             int i = random.nextInt(4)+1;
@@ -46,5 +54,29 @@ public class NPC_OldMan extends Entity {
 
             actionLockCounter = 0;
         }
+         */
+
+        Random RAND = new Random();
+        if (actionLockCounter >= 120) {
+            int i = RAND.nextInt(4) + 1;
+            direction = switch (i) {
+                case 1 -> "up";
+                case 2 -> "down";
+                case 3 -> "left";
+                case 4 -> "right";
+                default -> throw new IllegalStateException("Unexpected value: " + i);
+            };
+            actionLockCounter = 0;
+        }
+    }
+
+    public void setDialogue(){
+        dialogue[0] = "Halo Anak Muda..";
+        dialogue[1] = "Hari Yang Indah \nUntuk Berpetualang";
+        dialogue[2] = "Semoga Beruntung!";
+    }
+
+    public void speak(){
+        super.speak();
     }
 }

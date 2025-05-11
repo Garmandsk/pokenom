@@ -8,6 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 public class UtilityTool {
     GamePanel gameP;
@@ -54,6 +55,19 @@ public class UtilityTool {
         return scaledImage;
     }
 
+    public BufferedImage setUp(String imagePath, int width, int height){
+        BufferedImage scaledImage = null;
+
+        try {
+            scaledImage = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+            scaledImage = scaleImage(scaledImage, width, height);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return scaledImage;
+    }
+
     public void setUp(Fonts[] fonts, int index, String fontPath){
 
         try {
@@ -64,6 +78,14 @@ public class UtilityTool {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void setUp(URL[] url, int index, String soundPath){
+        url[index] = getClass().getResource("/sounds/" + soundPath + ".wav");
+    }
+
+    public void changeAlpha(Graphics2D g2d, float value){
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, value));
     }
 
 }

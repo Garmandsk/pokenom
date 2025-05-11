@@ -1,39 +1,156 @@
 package entity;
 
 import main.GamePanel;
+import main.UtilityTool;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
     GamePanel gameP;
+    public UtilityTool uTool;
 
-    public int worldX, worldY, speed;
+    public int worldX, worldY;
 
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-    public String direction;
+    public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
+    public String direction = "down";
 
     public int spriteCounter = 0, spriteNum = 1;
 
-    public Rectangle solidArea;
+    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int defaultSolidAreaX, defaultSolidAreaY;
     public boolean collisionOn;
 
+    public boolean collision = false;
+    public String name;
+    public BufferedImage image, image2, image3;
+
     public int actionLockCounter;
 
-    public Entity(GamePanel gameP){
+    String[] dialogue = new String[20];
+    public int dialogueIndex = 0;
+
+    public boolean hpBarOn;
+    public int hpBarCounter = 0;
+
+    /* Character Status */
+    public boolean invicible;
+    public int invicibleCounter = 0;
+    public boolean alive = true, dying;
+    int dyingCounter = 0;
+    public boolean attacking;
+    public int shotAvailableCounter = 0;
+
+    public int maxLife, life;
+    public int maxMana, mana;
+    public int ammo;
+    public int speed, level, exp, nextLevelExp, coin;
+    public int strength, dexterity, attackPower, defensePower;
+    public Entity currentWeapon, currentShield;
+    public Projectile projectile;
+
+    /* Item Status */
+    public int value;
+    public int attackValue, defenseValue, healingValue;
+    public int useCost;
+    public String itemDescription = "";
+
+    /* Type */
+    public int type;
+    public final int playerType = 0;
+    public final int npcType = 1;
+    public final int monsterType = 2;
+    public final int swordType = 3;
+    public final int shieldType = 4;
+    public final int axeType = 5;
+    public final int consumType = 6;
+    public final int pickupOnlyType = 7;
+
+    public Entity(GamePanel gameP) {
         this.gameP = gameP;
+        uTool = new UtilityTool(this.gameP);
         solidArea = new Rectangle(0, 0, gameP.tileSize, gameP.tileSize);
     }
 
     public void setAction(){}
+    public void damageReaction(){}
+    public void use(Entity entity) {}
+    public void checkDrop(){}
+
+    public void dropItem(Entity droppedItem){
+        for (int i = 0; i < gameP.obj.length; i++){
+            if (gameP.obj[i] == null){
+                gameP.obj[i] = droppedItem;
+                gameP.obj[i].worldX = this.worldX;
+                gameP.obj[i].worldY = this.worldY;
+                break;
+            }
+        }
+    }
+
+    public void speak(){
+        if (dialogue[dialogueIndex] == null) dialogueIndex = 0;
+        gameP.ui.currentDialogue = dialogue[dialogueIndex];
+        this.dialogueIndex++;
+
+        switch (gameP.player.direction){
+            case "up":
+                this.direction = "down";
+                break;
+            case "down":
+                this.direction = "up";
+                break;
+            case "left":
+                this.direction = "right";
+                break;
+            case "right":
+                this.direction = "left";
+                break;
+        }
+    }
+
+    public void damagePlayer(int attackPower){
+        if (gameP.player.invicible == false){
+            int damage = attackPower - gameP.player.defensePower;
+            if (damage < 0) damage = 0;
+
+            gameP.player.life -= damage;
+            gameP.player.invicible = true;
+        }
+    }
+
+    public void dyingAnimation(Graphics2D g2d){
+        dyingCounter++;
+
+        int i = 5;
+
+        if (dyingCounter <= i) uTool.changeAlpha(g2d, 0f);
+        if (dyingCounter > i && dyingCounter <= i*2) uTool.changeAlpha(g2d, 1f);
+        if (dyingCounter > i*2 && dyingCounter <= i*3) uTool.changeAlpha(g2d, 0f);
+        if (dyingCounter > i*3 && dyingCounter <= i*4) uTool.changeAlpha(g2d, 1f);
+        if (dyingCounter > i*4 && dyingCounter <= i*5) uTool.changeAlpha(g2d, 0f);
+        if (dyingCounter > i*5 && dyingCounter <= i*6) uTool.changeAlpha(g2d, 1f);
+        if (dyingCounter > i*6 && dyingCounter <= i*7) uTool.changeAlpha(g2d, 0f);
+        if (dyingCounter > i*7 && dyingCounter <= i*8) uTool.changeAlpha(g2d, 1f);
+        if (dyingCounter > i*8){
+            alive = false;
+        }
+    }
 
     public void update(){
         setAction();
         collisionOn = false;
         gameP.cChecker.checkTile(this);
         gameP.cChecker.checkObject(this, false);
-        gameP.cChecker.checkPlayer(this);
+        gameP.cChecker.checkEntity(this, gameP.npc);
+        gameP.cChecker.checkEntity(this, gameP.monster);
+
+        boolean contactPlayer =  gameP.cChecker.checkPlayer(this);
+        if (this.type == monsterType && contactPlayer == true){
+            damagePlayer(this.attackPower);
+        }
 
         if(collisionOn == false){
             switch (direction){
@@ -61,6 +178,17 @@ public class Entity {
             }
             spriteCounter = 0;
         }
+
+        if (this.invicible == true){
+            this.invicibleCounter++;
+
+            if (invicibleCounter >= 40){
+                this.invicible = false;
+                invicibleCounter = 0;
+            }
+        }
+
+        if (shotAvailableCounter < 30) shotAvailableCounter++;
     }
 
     public void draw(Graphics2D g2d){
@@ -95,7 +223,42 @@ public class Entity {
                     if (spriteNum == 2) image = right2;
                     break;
             }
+
+            /* Monster Hp Bar */
+            if (type == monsterType && hpBarOn){
+                double oneScale = (double)gameP .tileSize/maxLife;
+                double hpBarValue = oneScale * life;
+
+                g2d.setColor(new Color(35, 35, 35));
+                g2d.fillRect(screenX-1, screenY-16, gameP.tileSize+2, 12);
+
+                g2d.setColor(new Color(255, 0, 30));
+                g2d.fillRect(screenX, screenY-15, (int)hpBarValue, 10);
+
+                hpBarCounter++;
+
+                if (hpBarCounter >= gameP.FPS*10){
+                    hpBarOn = false;
+                    hpBarCounter = 0;
+                }
+            }
+
+            if (this.invicible == true){
+                hpBarOn = true;
+                hpBarCounter = 0;
+                uTool.changeAlpha(g2d, 0.4f);
+            }
+
+            if (dying){
+                dyingAnimation(g2d);
+            }
+
             g2d.drawImage(image, screenX , screenY,null);
+            g2d.setColor(Color.red);
+            g2d.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+//            g2d.drawRect(screenX + interactionArea.x, screenY + interactionArea.y, interactionArea.width, interactionArea.height);
+
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
 
     }

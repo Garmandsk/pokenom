@@ -1,22 +1,14 @@
 package object;
 
+import entity.Entity;
 import main.GamePanel;
 
-import javax.imageio.ImageIO;
-import java.io.IOException;
-
-public class BootsObject extends SuperObject {
-    GamePanel gameP;
+public class BootsObject extends Entity {
 
     public BootsObject(GamePanel gameP){
-        this.gameP = gameP;
-        nameObject = "Boots";
+        super(gameP);
 
-        try {
-            image = ImageIO.read(getClass().getResourceAsStream("/objects/boots.png"));
-            uTool.scaleImage(image, gameP.tileSize, gameP.tileSize);
-        } catch (IOException e){
-            e.printStackTrace();
-        }
+        name = "Boots";
+        down1 = uTool.setUp("/objects/boots");
     }
 }

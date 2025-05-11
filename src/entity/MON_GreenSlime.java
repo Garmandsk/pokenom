@@ -1,0 +1,110 @@
+package entity;
+
+import main.GamePanel;
+import object.CoinBronzeObject;
+import object.HeartObject;
+import object.ManaCrystalObject;
+import object.RockObject;
+
+import java.util.Random;
+
+public class MON_GreenSlime extends Entity {
+
+    public MON_GreenSlime(GamePanel gameP){
+        super(gameP);
+
+        type = monsterType;
+        name = "Green Slime";
+        speed = 1;
+        maxLife = 4;
+        life = maxLife;
+        attackPower = 5;
+        defensePower = 0;
+        exp = 3;
+        projectile = new RockObject(gameP);
+
+        this.solidArea.x = 3;
+        this.solidArea.y = 18;
+//        this.solidArea.width = 48;
+//        this.solidArea.height = 30;
+        this.solidArea.width = 58;
+        this.solidArea.height = 46;
+        this.defaultSolidAreaX = solidArea.x;
+        this.defaultSolidAreaY = solidArea.y;
+
+        getImage();
+    }
+
+    public void getImage(){
+//        System.out.println("=====Slime=====");
+//        System.out.println("Solid Area X: " + this.solidArea.x);
+//        System.out.println("Solid Area Y: " + this.solidArea.y);
+//        System.out.println("Solid Area Width: " + this.solidArea.width);
+//        System.out.println("Solid Area Height: " + this.solidArea.height);
+
+        up1 = uTool.setUp("/monster/greenslime_down_1");
+        up2 = uTool.setUp("/monster/greenslime_down_2");
+        down1 = uTool.setUp("/monster/greenslime_down_1");
+        down2 = uTool.setUp("/monster/greenslime_down_2");
+        left1 = uTool.setUp("/monster/greenslime_down_1");
+        left2 = uTool.setUp("/monster/greenslime_down_2");
+        right1 = uTool.setUp("/monster/greenslime_down_1");
+        right2 = uTool.setUp("/monster/greenslime_down_2");
+    }
+
+    public void setAction(){
+        actionLockCounter++;
+
+        /*
+        if (actionLockCounter >= 120){
+            Random random = new Random();
+            int i = random.nextInt(4)+1;
+
+            if (i == 1){
+                direction = "up";
+            } else if (i == 2) {
+                direction = "down";
+            } else if (i == 3) {
+                direction = "left";
+            } else if (i == 4) {
+                direction = "right";
+            }
+
+            actionLockCounter = 0;
+        }
+         */
+
+        Random RAND = new Random();
+        if (actionLockCounter >= 120) {
+            int i = RAND.nextInt(4) + 1;
+            direction = switch (i) {
+                case 1 -> "up";
+                case 2 -> "down";
+                case 3 -> "left";
+                case 4 -> "right";
+                default -> throw new IllegalStateException("Unexpected value: " + i);
+            };
+            actionLockCounter = 0;
+
+        }
+        int i = new Random().nextInt(100)+1;
+        if (i > 99 && projectile.alive == false && shotAvailableCounter == 30){
+            projectile.set(worldX, worldY, direction, true, this);
+            gameP.projectileList.add(projectile);
+            shotAvailableCounter = 0;
+        }
+    }
+
+    public void damageReaction(){
+        actionLockCounter = 0;
+        direction = gameP.player.direction;
+    }
+
+    public void checkDrop(){
+        int i = new Random().nextInt(100)+1;
+
+        if (i < 50) dropItem(new CoinBronzeObject(gameP));
+        if (i >= 50 && i < 75) dropItem(new HeartObject(gameP));
+        if (i >= 75 && i < 100) dropItem(new ManaCrystalObject(gameP));
+    }
+}

@@ -76,57 +76,27 @@ public class CollisionChecker {
                 switch (entity.direction){
                     case "up":
                         entity.solidArea.y -= entity.speed;
-                        if (entity.solidArea.intersects(gameP.obj[i].solidArea)){
-                            if (gameP.obj[i].collision == true){
-                                entity.collisionOn = true;
-                                //System.out.println("Nabrak Objek Collision Atas");
-                            }
-                            if (player == true){
-                                index = i;
-                            }
-                           // System.out.println("Nabrak Objek Atas");
-                        }
                         break;
                     case "down":
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(gameP.obj[i].solidArea)){
-                            if (gameP.obj[i].collision == true){
-                                entity.collisionOn = true;
-                                //.out.println("Nabrak Objek Collision bawah");
-                            }
-                            if (player == true){
-                                index = i;
-                            }
-                            //System.out.println("Nabrak Objek Bawahh");
-                        }
                         break;
                     case "left":
                         entity.solidArea.x -= entity.speed;
-                        if (entity.solidArea.intersects(gameP.obj[i].solidArea)){
-                            if (gameP.obj[i].collision == true){
-                                entity.collisionOn = true;
-                                //System.out.println("Nabrak Objek Collision Kiri");
-                            }
-                            if (player == true){
-                                index = i;
-                            }
-                            //System.out.println("Nabrak Objek Kiri");
-                        }
                         break;
                     case "right":
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(gameP.obj[i].solidArea)){
-                            if (gameP.obj[i].collision == true){
-                                entity.collisionOn = true;
-                                //System.out.println("Nabrak Objek Collision Kanan");
-                            }
-                            if (player == true){
-                                index = i;
-                            }
-                            //System.out.println("Nabrak Objek Kanan");
-                        }
                         break;
                 }
+
+                if (entity.solidArea.intersects(gameP.obj[i].solidArea)){
+                    if (gameP.obj[i].collision == true){
+                        entity.collisionOn = true;
+                    }
+                    if (player == true){
+                        index = i;
+                    }
+                }
+
                 entity.solidArea.x = entity.defaultSolidAreaX;
                 entity.solidArea.y = entity.defaultSolidAreaY;
                 gameP.obj[i].solidArea.x = gameP.obj[i].defaultSolidAreaX;
@@ -141,7 +111,6 @@ public class CollisionChecker {
 
         for(int i = 0; i < target.length; i++){
             if(target[i] != null){
-
                 /* Yang Nabrak */
                 entity.solidArea.x += entity.worldX;
                 entity.solidArea.y += entity.worldY;
@@ -153,43 +122,38 @@ public class CollisionChecker {
                 switch (entity.direction){
                     case "up":
                         entity.solidArea.y -= entity.speed;
-                        if (entity.solidArea.intersects(target[i].solidArea)){
-                            entity.collisionOn = true;
-                            index = i;
-                        }
                         break;
                     case "down":
                         entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(target[i].solidArea)){
-                            entity.collisionOn = true;
-                            index = i;
-                        }
                         break;
                     case "left":
                         entity.solidArea.x -= entity.speed;
-                        if (entity.solidArea.intersects(target[i].solidArea)){
-                            entity.collisionOn = true;
-                            index = i;
-                        }
                         break;
                     case "right":
-                        entity.solidArea.y += entity.speed;
-                        if (entity.solidArea.intersects(target[i].solidArea)){
-                            entity.collisionOn = true;
-                            index = i;
-                        }
+                        entity.solidArea.x += entity.speed;
                         break;
                 }
+
+                if (entity.solidArea.intersects(target[i].solidArea)){
+                    if (target[i] != entity){
+                        entity.collisionOn = true;
+                        index = i;
+                    }
+                }
+
                 entity.solidArea.x = entity.defaultSolidAreaX;
                 entity.solidArea.y = entity.defaultSolidAreaY;
                 target[i].solidArea.x = target[i].defaultSolidAreaX;
                 target[i].solidArea.y = target[i].defaultSolidAreaY;
+
             }
         }
         return index;
     }
 
-    public void checkPlayer(Entity entity){
+    public boolean checkPlayer(Entity entity){
+
+        boolean contactPlayer = false;
 
         /* Yang Nabrak */
         entity.solidArea.x += entity.worldX;
@@ -202,35 +166,29 @@ public class CollisionChecker {
         switch (entity.direction){
             case "up":
                 entity.solidArea.y -= entity.speed;
-                if (entity.solidArea.intersects(gameP.player.solidArea)){
-                    entity.collisionOn = true;
-                }
                 break;
             case "down":
                 entity.solidArea.y += entity.speed;
-                if (entity.solidArea.intersects(gameP.player.solidArea)){
-                    entity.collisionOn = true;
-                }
                 break;
             case "left":
                 entity.solidArea.x -= entity.speed;
-                if (entity.solidArea.intersects(gameP.player.solidArea)){
-                    entity.collisionOn = true;
-                }
                 break;
             case "right":
                 entity.solidArea.y += entity.speed;
-                if (entity.solidArea.intersects(gameP.player.solidArea)){
-                    entity.collisionOn = true;
-                }
                 break;
         }
+
+        if (entity.solidArea.intersects(gameP.player.solidArea)){
+            entity.collisionOn = true;
+            contactPlayer = true;
+        }
+
         entity.solidArea.x = entity.defaultSolidAreaX;
         entity.solidArea.y = entity.defaultSolidAreaY;
         gameP.player.solidArea.x = gameP.player.defaultSolidAreaX;
         gameP.player.solidArea.y = gameP.player.defaultSolidAreaY;
 
-
+        return contactPlayer;
     }
 
 }
