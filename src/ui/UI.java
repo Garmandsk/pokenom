@@ -9,6 +9,7 @@ import object.ManaCrystalObject;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class UI {
@@ -37,6 +38,7 @@ public class UI {
 
     /* Menu */
     public int titleScreenState = 0;
+    public int optionScreenState = 0;
     public int commandNum;
 
     /* Player Stats */
@@ -84,6 +86,13 @@ public class UI {
     public int getXForAlignToRightText(String text, int tailX){
         int length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
         return tailX - length;
+    }
+
+    public int getItemIndexOnSlot(){
+//        System.out.println("Slot COl: " + slotCol);
+//        System.out.println("Slot Row: " + slotRow);
+
+        return slotCol + (slotRow * inventoryMaxCol);
     }
 
     public void drawSubWindow(int x, int y, int width, int height){
@@ -149,9 +158,9 @@ public class UI {
     }
 
     public void drawMessage(){
-        int messageX = gameP.tileSize;
+        int messageX = gameP.tileSize/2;
         int messageY = gameP.tileSize * 4;
-        g2d.setFont(Oswald.deriveFont(Font.BOLD, 32f));
+        g2d.setFont(Oswald.deriveFont(Font.BOLD, 28f));
 
         for (int i = 0; i < message.size(); i++){
 
@@ -186,17 +195,17 @@ public class UI {
     public void drawDialogueScreen(){
         g2d.setFont(Open_Sans);
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN,32f));
-        int x = gameP.tileSize*2;
+        int x = gameP.tileSize*5;
         int y = gameP.tileSize/2;
-        int width = gameP.tileSize*12;
+        int width = gameP.tileSize*10;
         int height = gameP.tileSize * 4;
         drawSubWindow(x, y, width, height);
 
-        x += gameP.tileSize;
+        x += gameP.tileSize/2;
         y += gameP.tileSize;
         for (String line : currentDialogue.split("\n")){
             g2d.drawString(line, x, y);
-            y += gameP.tileSize/2;
+            y += gameP.tileSize;
         }
     }
 
@@ -270,7 +279,7 @@ public class UI {
             g2d.drawString(text, x, y);
             if (commandNum == 1) g2d.drawString(">", x - gameP.tileSize, y);
 
-            g2d.setColor(new Color(3, 195, 12));
+            g2d.setColor(new Color(65, 50, 30));
             text = "Earth";
             x = getXForCenteredText(text);
             y += gameP.tileSize*1;
@@ -296,18 +305,18 @@ public class UI {
     }
 
     public void drawCharacterScreen(){
-        final int panelX = gameP.tileSize*2;
-        final int panelY = gameP.tileSize*1;
-        final int panelWidth = gameP.tileSize*5;
-        final int panelHeight = gameP.tileSize*10 + 16;
-        drawSubWindow(panelX, panelY, panelWidth, panelHeight);
+        final int windowX = gameP.tileSize*2;
+        final int windowY = gameP.tileSize*1;
+        final int windowWidth = gameP.tileSize*5;
+        final int windowHeight = gameP.tileSize*10 + 36;
+        drawSubWindow(windowX, windowY, windowWidth, windowHeight);
 
         /* Text */
         g2d.setColor(Color.white);
         g2d.setFont(Oswald.deriveFont(32f));
 
-        int textX = panelX + gameP.tileSize/2;
-        int textY = panelY + gameP.tileSize*1;
+        int textX = windowX + gameP.tileSize/2;
+        int textY = windowY + gameP.tileSize*1;
         final int lineHeight = gameP.tileSize/2 + 15;
 
         // Names
@@ -348,11 +357,11 @@ public class UI {
 
         // Values
         String value;
-        int tailX = (panelX + panelWidth) - 30;
+        int tailX = (windowX + windowWidth) - 20;
 
         value = String.valueOf(gameP.player.level);
         textX = getXForAlignToRightText(value, tailX);
-        textY = panelY + gameP.tileSize*1;
+        textY = windowY + gameP.tileSize*1;
         g2d.drawString(value, textX, textY);
 
         value = String.valueOf(gameP.player.life) + "/" + gameP.player.maxLife;
@@ -400,24 +409,24 @@ public class UI {
         textY += lineHeight;
         g2d.drawString(value, textX, textY);
 
+        textY += gameP.tileSize*1 + 8;
+        g2d.drawImage(gameP.player.currentWeapon.down1, tailX - gameP.tileSize + 10, textY-44, null);
         textY += gameP.tileSize*1;
-        g2d.drawImage(gameP.player.currentWeapon.down1, tailX - gameP.tileSize, textY-44, null);
-        textY += gameP.tileSize*1;
-        g2d.drawImage(gameP.player.currentShield.down1, tailX - gameP.tileSize, textY-44, null);
+        g2d.drawImage(gameP.player.currentShield.down1, tailX - gameP.tileSize + 10, textY-44, null);
     }
 
     public void drawInventory(){
 
-        /* Item Panel */
-        final int panelX = gameP.tileSize*9;
-        final int panelY = gameP.tileSize*1;
-        final int panelWidth = gameP.tileSize * (inventoryMaxCol + 1);
-        final int panelHeight = gameP.tileSize * (inventoryMaxRow + 1);
-        drawSubWindow(panelX, panelY, panelWidth, panelHeight);
+        /* Item window */
+        final int windowX = gameP.tileSize * (gameP.maxScreenCol*3/5);
+        final int windowY = gameP.tileSize*1;
+        final int windowWidth = gameP.tileSize * (inventoryMaxCol + 1) + (gameP.tileSize/4);
+        final int windowHeight = gameP.tileSize * (inventoryMaxRow + 1);
+        drawSubWindow(windowX, windowY, windowWidth, windowHeight);
 
         // Slot
-        final int slotXStart = panelX + gameP.tileSize/2;
-        final int slotYStart = panelY + gameP.tileSize/2;
+        final int slotXStart = windowX + gameP.tileSize/2;
+        final int slotYStart = windowY + gameP.tileSize/2;
         int slotX = slotXStart;
         int slotY = slotYStart;
         int slotSize = gameP.tileSize+4;
@@ -450,21 +459,21 @@ public class UI {
 
         /* ===== */
 
-        /* Description Panel */
-        int dPanelX = panelX;
-        int dPanelY = panelY + panelHeight;
-        int dPanelWidth = panelWidth;
-        int dPanelHeight = gameP.tileSize*3;
+        /* Description window */
+        int dWindowX = windowX;
+        int dWindowY = windowY + windowHeight;
+        int dWindowWidth = windowWidth;
+        int dWindowHeight = gameP.tileSize*3;
 
         // Text
-        int textX = dPanelX + gameP.tileSize/2;
-        int textY = dPanelY + gameP.tileSize/2 + 16;
+        int textX = dWindowX + gameP.tileSize/2;
+        int textY = dWindowY + gameP.tileSize/2 + 16;
         g2d.setFont(Oswald.deriveFont(28f));
 
         int itemIndex = getItemIndexOnSlot();
 
         if (itemIndex < gameP.player.inventory.size()){
-            drawSubWindow(dPanelX, dPanelY, dPanelWidth, dPanelHeight);
+            drawSubWindow(dWindowX, dWindowY, dWindowWidth, dWindowHeight);
             for (String line : gameP.player.inventory.get(itemIndex).itemDescription.split("\n")){
                 g2d.drawString(line, textX, textY);
                 textY += gameP.tileSize/2+16;
@@ -473,11 +482,195 @@ public class UI {
         /* ===== */
     }
 
-    public int getItemIndexOnSlot(){
-//        System.out.println("Slot COl: " + slotCol);
-//        System.out.println("Slot Row: " + slotRow);
+    public void drawOptionScreen(){
+        g2d.setColor(Color.white);
+        g2d.setFont(Cinzel.deriveFont(21f));
 
-        return slotCol + (slotRow * inventoryMaxCol);
+        int windowX = gameP.tileSize * 6;
+        int windowY = gameP.tileSize;
+        int windowWidth = gameP.tileSize * 8;
+        int windowHeight = gameP.tileSize * 10;
+        drawSubWindow(windowX, windowY, windowWidth, windowHeight);
+
+        switch (optionScreenState){
+            case 0:
+                options_top(windowX, windowY);
+                break;
+            case 1:
+                options_fullScreenNotification(windowX, windowY);
+                break;
+            case 2:
+                options_control(windowX, windowY);
+                break;
+            case 3:
+                options_endGameConfirmation(windowX, windowY);
+                break;
+        }
+
+        gameP.keyH.enterPressed = false;
+    }
+
+    public void options_top(int windowX, int windowY) {
+        int textX, textY;
+
+        // Title
+        String text = "Options";
+        textX = getXForCenteredText(text);
+        textY = windowY + gameP.tileSize;
+        g2d.drawString(text, textX, textY);
+
+        /* Text */
+        // Full Screen Setting
+        textX = windowX + gameP.tileSize;
+        textY += gameP.tileSize * 1;
+        g2d.drawString("Full Screen", textX, textY);
+        if (commandNum == 0) {
+            g2d.drawString(">", textX-25, textY);
+        }
+
+        // Music Setting
+        textY += gameP.tileSize;
+        g2d.drawString("Music", textX, textY);
+        if (commandNum == 1) g2d.drawString(">", textX-25, textY);
+
+        // Sound Effect Setting
+        textY += gameP.tileSize;
+        g2d.drawString("Sound Effect", textX, textY);
+        if (commandNum == 2) g2d.drawString(">", textX-25, textY);
+
+        // Control Setting
+        textY += gameP.tileSize;
+        g2d.drawString("Control", textX, textY);
+        if (commandNum == 3) g2d.drawString(">", textX-25, textY);
+
+        // End Game Setting
+        textY += gameP.tileSize;
+        g2d.drawString("End Game", textX, textY);
+        if (commandNum == 4) g2d.drawString(">", textX-25, textY);
+
+        // Back Setting
+        textY = windowY + gameP.tileSize * 9;
+        g2d.drawString("Back", textX, textY);
+        if (commandNum == 5) g2d.drawString(">", textX-25, textY);
+        /* ===== */
+
+        /* Value */
+        // Full Screen Checkbox
+        textX += (int) (gameP.tileSize * 4);
+        textY = windowY + (gameP.tileSize * 1) + (gameP.tileSize/2) + 4;
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawRect(textX, textY, gameP.tileSize/2, gameP.tileSize/2);
+        if (gameP.fullScreenOn) g2d.fillRect(textX, textY, gameP.tileSize/2, gameP.tileSize/2);
+
+        // Music
+        textY += gameP.tileSize;
+        g2d.drawRect(textX, textY, gameP.tileSize*2, gameP.tileSize/2);
+        int volumeWidth = ((gameP.tileSize*2)/5) * gameP.music.volumeScale;
+        g2d.fillRect(textX, textY, volumeWidth, gameP.tileSize/2);
+
+        // SE
+        textY += gameP.tileSize;
+        g2d.drawRect(textX, textY, gameP.tileSize*2, gameP.tileSize/2);
+        volumeWidth = ((gameP.tileSize*2)/5) * gameP.se.volumeScale;
+        g2d.fillRect(textX, textY, volumeWidth, gameP.tileSize/2);
+
+        /* ===== */
+
+        gameP.config.saveConfig();
+    }
+
+    public void options_fullScreenNotification(int windowX, int windowY){
+        // Title
+        String text = "Notification";
+        int textX = getXForCenteredText(text);
+        int textY = windowY + gameP.tileSize;
+        g2d.drawString(text, textX, textY);
+
+        textX = windowX + gameP.tileSize;
+        textY = windowY + gameP.tileSize * 2;
+
+        currentDialogue = "The change will take \n" +
+                "effect after restarting \n" +
+                "the game";
+
+        for (String line : currentDialogue.split("\n")){
+            g2d.drawString(line, textX, textY);
+            textY+= gameP.tileSize;
+        }
+
+        // Back
+        textY = windowY + gameP.tileSize * 9;
+        g2d.drawString("Back", textX, textY);
+        g2d.drawString(">", textX-25, textY);
+    }
+
+    public void options_control(int windowX, int windowY){
+        int textX;
+        int textY;
+
+        // Title
+        String text = "Control";
+        textX = getXForCenteredText(text);
+        textY = windowY + gameP.tileSize;
+        g2d.drawString(text, textX, textY);
+
+        textX = windowX + gameP.tileSize;
+        textY += gameP.tileSize * 1;
+        g2d.drawString("Move" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("Confirm/Attack" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("Shoot/Cast" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("Character Screen" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("Pause" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("Options" , textX, textY); textY+=gameP.tileSize;
+
+        textX += gameP.tileSize * 5;
+        textY = windowY + gameP.tileSize * 2;
+        g2d.drawString("WASD" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("Enter" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("F" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("C" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("P" , textX, textY); textY+=gameP.tileSize;
+        g2d.drawString("ESC" , textX, textY); textY+=gameP.tileSize;
+
+        // Back
+        textX = windowX + gameP.tileSize;
+        textY = windowY + gameP.tileSize * 9;
+        g2d.drawString("Back", textX, textY);
+        g2d.drawString(">", textX-25, textY);
+    }
+
+    public void options_endGameConfirmation(int windowX, int windowY){
+        // Title
+        String text = "Notification";
+        int textX = getXForCenteredText(text);
+        int textY = windowY + gameP.tileSize;
+        g2d.drawString(text, textX, textY);
+
+        textX = windowX + gameP.tileSize;
+        textY = windowY + gameP.tileSize * 2;
+
+        currentDialogue = "Quit the game and \n" +
+                "return to title screen";
+
+        for (String line : currentDialogue.split("\n")){
+            g2d.drawString(line, textX, textY);
+            textY+= gameP.tileSize;
+        }
+
+        // Yes
+        text = "Yes";
+        textX = getXForCenteredText(text);
+        textY += gameP.tileSize;
+        g2d.drawString(text, textX, textY);
+        if (commandNum == 0) g2d.drawString(">", textX-25, textY);
+
+        // No
+        text = "No";
+        textX = getXForCenteredText(text);
+        textY += gameP.tileSize;
+        g2d.drawString(text, textX, textY);
+        if (commandNum == 1) g2d.drawString(">", textX-25, textY);
+
     }
 
     public void draw(Graphics2D g2d){
@@ -508,6 +701,10 @@ public class UI {
         if (gameP.gameState ==  gameP.characterState){
             drawCharacterScreen();
             drawInventory();
+        }
+
+        if (gameP.gameState ==  gameP.optionState){
+            drawOptionScreen();
         }
     }
 }

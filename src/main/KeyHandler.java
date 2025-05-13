@@ -52,6 +52,7 @@ public class KeyHandler implements KeyListener {
                     gameP.ui.titleScreenState = 0;
                     gameP.ui.commandNum = 0;
                 }
+                gameP.stopMusic();
                 gameP.playMusic(0);
             }
         }
@@ -62,12 +63,13 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) downPressed = true;
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
+        if (code == KeyEvent.VK_ENTER) enterPressed = true;
         if (code == KeyEvent.VK_F) shotKeyPressed = true;
-        if (code == KeyEvent.VK_B) debug = !debug;
-        if (code == KeyEvent.VK_R) gameP.tileM.loadMap("/maps/worldV2.txt");
         if (code == KeyEvent.VK_P) gameP.gameState = gameP.pauseState;
         if (code == KeyEvent.VK_C) gameP.gameState = gameP.characterState;
-        if (code == KeyEvent.VK_ENTER) enterPressed = true;
+        if (code == KeyEvent.VK_ESCAPE) gameP.gameState = gameP.optionState;
+        if (code == KeyEvent.VK_B) debug = !debug;
+        if (code == KeyEvent.VK_R) gameP.tileM.loadMap("/maps/worldV2.txt");
     }
 
     public void pauseState(int code){
@@ -127,6 +129,98 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    public void optionState(int code){
+
+        if (code == KeyEvent.VK_ESCAPE) gameP.gameState = gameP.playState;
+        if (code == KeyEvent.VK_ENTER) enterPressed = true;
+
+        if (gameP.ui.optionScreenState == 0){
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+                if (gameP.ui.commandNum == 0) gameP.ui.commandNum = 5;
+                else gameP.ui.commandNum--;
+            }
+
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
+                if (gameP.ui.commandNum == 5) gameP.ui.commandNum = 0;
+                else gameP.ui.commandNum++;
+            }
+
+            if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) {
+                if (gameP.ui.commandNum == 1 && gameP.music.volumeScale > 0){
+                    gameP.music.volumeScale--;
+                    gameP.music.checkVolume();
+                }
+                if (gameP.ui.commandNum == 2 && gameP.se.volumeScale > 0){
+                    gameP.se.volumeScale--;
+                }
+            }
+
+            if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) {
+                if (gameP.ui.commandNum == 1 && gameP.music.volumeScale < 5){
+                    gameP.music.volumeScale++;
+                    gameP.music.checkVolume();
+                }
+                if (gameP.ui.commandNum == 2 && gameP.se.volumeScale < 5){
+                    gameP.se.volumeScale++;
+                }
+            }
+
+            if (code == KeyEvent.VK_ENTER){
+                if (gameP.ui.commandNum == 0){
+                    gameP.fullScreenOn = !gameP.fullScreenOn;
+                    gameP.ui.optionScreenState = 1;
+                }
+                else if (gameP.ui.commandNum == 3) gameP.ui.optionScreenState = 2;
+                else if (gameP.ui.commandNum == 4) {
+                    gameP.ui.commandNum = 0;
+                    gameP.ui.optionScreenState = 3;
+                }
+                else if (gameP.ui.commandNum == 5) gameP.gameState = gameP.playState;
+            }
+        }
+
+        else if (gameP.ui.optionScreenState == 1) {
+            if (gameP.keyH.enterPressed) {
+                gameP.ui.commandNum = 0;
+                gameP.ui.optionScreenState = 0;
+            }
+        }
+
+        else if (gameP.ui.optionScreenState == 2) {
+            if (gameP.keyH.enterPressed) {
+                gameP.ui.commandNum = 3;
+                gameP.ui.optionScreenState = 0;
+            }
+        }
+
+        else if (gameP.ui.optionScreenState == 3) {
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+                if (gameP.ui.commandNum == 0) gameP.ui.commandNum = 1;
+                else gameP.ui.commandNum--;
+            }
+
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
+                if (gameP.ui.commandNum == 1) gameP.ui.commandNum = 0;
+                else gameP.ui.commandNum++;
+            }
+
+            if (gameP.keyH.enterPressed) {
+                if (gameP.ui.commandNum == 0) {
+                    gameP.ui.optionScreenState = 0;
+                    gameP.gameState = gameP.titleState;
+                }
+
+                // No
+                if (gameP.ui.commandNum == 1) {
+                    gameP.ui.commandNum = 4;
+                    gameP.ui.optionScreenState = 0;
+                }
+            }
+        }
+
+        gameP.playSE(7);
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -140,6 +234,8 @@ public class KeyHandler implements KeyListener {
         else if (gameP.gameState == gameP.pauseState) pauseState(code);
         else if (gameP.gameState == gameP.dialogueState) dialogueState(code);
         else if (gameP.gameState == gameP.characterState) characterState(code);
+        else if (gameP.gameState == gameP.optionState) optionState(code);
+
     }
 
     @Override

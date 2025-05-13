@@ -4,6 +4,8 @@ import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
 import object.*;
+import object.projectile.FireballObject;
+import particle.EarthParticle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -62,7 +64,8 @@ public class Player extends Entity {
         coin = 0;
         strength = 1; // Menaikkan attackPower
         dexterity = 1; // Menaikkan defensePower
-        currentWeapon = new SwordNormalObject(gameP);
+//        currentWeapon = new SwordNormalObject(gameP);
+        currentWeapon = new AxeObject(gameP);
         currentShield = new ShieldWoodObject(gameP);
         projectile = new FireballObject(gameP);
 //        projectile = new RockObject(gameP);
@@ -240,6 +243,18 @@ public class Player extends Entity {
         }
     }
 
+    public void damageInreractiveTile(int i){
+        if (i != 999 && gameP.iTile[i].destructible == true && gameP.iTile[i].isCorrectItem(this) == true && gameP.iTile[i].invicible == false){
+            gameP.iTile[i].playSE();
+            gameP.iTile[i].life--;
+            gameP.iTile[i].invicible = true;
+
+            generateParticle(new EarthParticle(), gameP.iTile[i]);
+
+            if (gameP.iTile[i].life <= 0) gameP.iTile[i] = gameP.iTile[i].getDestroyedForm();
+        }
+    }
+
     public void attacking(){
         spriteCounter++;
 
@@ -273,6 +288,9 @@ public class Player extends Entity {
 
             int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
             damageMonster(monsterIndex, this.attackPower);
+
+            int iTileIndex = gameP.cChecker.checkEntity(this, gameP.iTile);
+            damageInreractiveTile(iTileIndex);
 
             worldX = currentWorldX;
             worldY = currentWorldY;
@@ -361,6 +379,9 @@ public class Player extends Entity {
 
             int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
             contactMonster(monsterIndex);
+
+            int iTileIndex = gameP.cChecker.checkEntity(this, gameP.iTile);
+
 
             /* Check Event */
             gameP.eventH.checkEvent();
@@ -477,13 +498,6 @@ public class Player extends Entity {
             }
 
             g2d.drawImage(image, tempScreenX, tempScreenY, null);
-            g2d.setColor(Color.red);
-            g2d.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
-//            g2d.drawRect(screenX + interactionArea.x, screenY + interactionArea.y, interactionArea.width, interactionArea.height);
-
-//            g2d.setFont(new Font("Arial", Font.PLAIN, 26));
-//            g2d.setColor(Color.white);
-//            g2d.drawString("Invicible: " + invicibleCounter, 10, 400);
 
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }

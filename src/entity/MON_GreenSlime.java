@@ -4,7 +4,7 @@ import main.GamePanel;
 import object.CoinBronzeObject;
 import object.HeartObject;
 import object.ManaCrystalObject;
-import object.RockObject;
+import object.projectile.RockObject;
 
 import java.util.Random;
 
@@ -25,10 +25,10 @@ public class MON_GreenSlime extends Entity {
 
         this.solidArea.x = 3;
         this.solidArea.y = 18;
-//        this.solidArea.width = 48;
-//        this.solidArea.height = 30;
-        this.solidArea.width = 58;
-        this.solidArea.height = 46;
+        this.solidArea.width = 42;
+        this.solidArea.height = 30;
+//        this.solidArea.width = 58;
+//        this.solidArea.height = 46;
         this.defaultSolidAreaX = solidArea.x;
         this.defaultSolidAreaY = solidArea.y;
 

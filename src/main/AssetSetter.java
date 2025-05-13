@@ -3,6 +3,7 @@ package main;
 import entity.MON_GreenSlime;
 import entity.NPC_OldMan;
 import object.*;
+import tile_interactive.IT_DryTree;
 
 public class AssetSetter {
     GamePanel gameP;
@@ -63,6 +64,10 @@ public class AssetSetter {
         gameP.npc[i].worldX = 10 * gameP.tileSize;
         gameP.npc[i].worldY = 12 * gameP.tileSize;
         i++;
+
+        gameP.npc[i] = new NPC_OldMan(gameP);
+        gameP.npc[i].worldX = 31 * gameP.tileSize;
+        gameP.npc[i].worldY = 20 * gameP.tileSize;
     }
 
     public void setMonster(){
@@ -77,5 +82,26 @@ public class AssetSetter {
         gameP.monster[i].worldX = 24 * gameP.tileSize;
         gameP.monster[i].worldY = 38 * gameP.tileSize;
         i++;
+    }
+
+    public void setInteractiveTile(){
+        int i = 0;
+
+        gameP.iTile[i] = new IT_DryTree(gameP, 16, 23); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 17, 23); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 18, 23); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 19, 23); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 20, 23); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 21, 23); i++;
+
+        gameP.iTile[i] = new IT_DryTree(gameP, 30, 20); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 30, 21); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 30, 22); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 20, 20); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 20, 21); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 20, 22); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 22, 24); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 23, 24); i++;
+        gameP.iTile[i] = new IT_DryTree(gameP, 24, 24); i++;
     }
 }

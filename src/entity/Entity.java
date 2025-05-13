@@ -2,12 +2,14 @@ package entity;
 
 import main.GamePanel;
 import main.UtilityTool;
+import particle.Generator;
+import particle.Particle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Entity {
-    GamePanel gameP;
+    public GamePanel gameP;
     public UtilityTool uTool;
 
     public int worldX, worldY;
@@ -79,6 +81,49 @@ public class Entity {
     public void use(Entity entity) {}
     public void checkDrop(){}
 
+    public void generateParticle(Generator generator, Entity target){
+        Color color = generator.getParticleColor();
+        int size = generator.getParticleSize();
+        int speed = generator.getParticleSpeed();
+        int maxLife = generator.getParticleMaxLife();
+
+        Particle p1 = new Particle(gameP, generator, color, size, speed, maxLife, target.worldX, target.worldY, -2, -1);
+        Particle p2 = new Particle(gameP, generator, color, size, speed, maxLife, target.worldX, target.worldY, 2, -1);
+        Particle p3 = new Particle(gameP, generator, color, size, speed, maxLife, target.worldX, target.worldY, -2, 1);
+        Particle p4 = new Particle(gameP, generator, color, size, speed, maxLife, target.worldX, target.worldY, 2, 1);
+        gameP.particleList.add(p1);
+        gameP.particleList.add(p2);
+        gameP.particleList.add(p3);
+        gameP.particleList.add(p4);
+
+//        System.out.println(color);
+//        System.out.println(size);
+//        System.out.println(speed);
+//        System.out.println(maxLife);
+//
+//        Particle p1 = new Particle(gameP, generator, color, size, speed, maxLife, -1, -1);
+//        Particle p2 = new Particle(gameP, generator, color, size, speed, maxLife, 1, -1);
+//        Particle p3 = new Particle(gameP, generator, color, size, speed, maxLife, -1, 1);
+//        Particle p4 = new Particle(gameP, generator, color, size, speed, maxLife, 1, 1);
+
+
+//        Particle p1 = new Particle(gameP, generator, -1, -1);
+//        Particle p2 = new Particle(gameP, generator, 1, -1);
+//        Particle p3 = new Particle(gameP, generator, -1, 1);
+//        Particle p4 = new Particle(gameP, generator, 1, 1);
+//        gameP.particleList.add(p1);
+//        gameP.particleList.add(p2);
+//        gameP.particleList.add(p3);
+//        gameP.particleList.add(p4);
+
+//        System.out.println("halo");
+//        gameP.particleList.add(new Particle2(gameP, generator, -1, -1));
+//        gameP.particleList.add(new Particle2(gameP, generator, 1, -1));
+//        gameP.particleList.add(new Particle2(gameP, generator, -1, 1));
+//        gameP.particleList.add(new Particle2(gameP, generator, 1, 1));
+
+    }
+
     public void dropItem(Entity droppedItem){
         for (int i = 0; i < gameP.obj.length; i++){
             if (gameP.obj[i] == null){
@@ -116,6 +161,7 @@ public class Entity {
             int damage = attackPower - gameP.player.defensePower;
             if (damage < 0) damage = 0;
 
+            gameP.playSE(5);
             gameP.player.life -= damage;
             gameP.player.invicible = true;
         }
@@ -146,6 +192,7 @@ public class Entity {
         gameP.cChecker.checkObject(this, false);
         gameP.cChecker.checkEntity(this, gameP.npc);
         gameP.cChecker.checkEntity(this, gameP.monster);
+        gameP.cChecker.checkEntity(this, gameP.iTile);
 
         boolean contactPlayer =  gameP.cChecker.checkPlayer(this);
         if (this.type == monsterType && contactPlayer == true){
@@ -254,8 +301,8 @@ public class Entity {
             }
 
             g2d.drawImage(image, screenX , screenY,null);
-            g2d.setColor(Color.red);
-            g2d.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
+//            g2d.setColor(Color.red);
+//            g2d.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
 //            g2d.drawRect(screenX + interactionArea.x, screenY + interactionArea.y, interactionArea.width, interactionArea.height);
 
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));

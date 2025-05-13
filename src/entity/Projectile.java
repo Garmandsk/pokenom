@@ -1,9 +1,18 @@
 package entity;
 
 import main.GamePanel;
+import particle.EarthParticle;
+import particle.FireParticle;
+import particle.ThunderParticle;
+import particle.WaterParticle;
 
 public class Projectile extends Entity {
     Entity user;
+    public int elementType;
+    public int waterElement = 1;
+    public int fireElement = 2;
+    public int earthElement = 3;
+    public int thunderElement = 4;
 
     public Projectile(GamePanel gameP) {
         super(gameP);
@@ -29,12 +38,22 @@ public class Projectile extends Entity {
             int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
             if (monsterIndex != 999){
                 gameP.player.damageMonster(monsterIndex, this.attackPower);
+                if (elementType == waterElement) generateParticle(new WaterParticle(), gameP.monster[monsterIndex]);
+                else if (elementType == fireElement) generateParticle(new FireParticle(), gameP.monster[monsterIndex]);
+                else if (elementType == earthElement) generateParticle(new EarthParticle(), gameP.monster[monsterIndex]);
+                else if (elementType == thunderElement) generateParticle(new ThunderParticle(), gameP.monster[monsterIndex]);
+
                 alive = false;
             }
         } else {
             boolean contactPlayer = gameP.cChecker.checkPlayer(this);
             if (gameP.player.invicible == false && contactPlayer == true){
                 damagePlayer(attackPower);
+                if (elementType == waterElement) generateParticle(new WaterParticle(), gameP.player);
+                else if (elementType == fireElement) generateParticle(new FireParticle(), gameP.player);
+                else if (elementType == earthElement) generateParticle(new EarthParticle(), gameP.player);
+                else if (elementType == thunderElement) generateParticle(new ThunderParticle(), gameP.player);
+
                 alive = false;
             }
 
