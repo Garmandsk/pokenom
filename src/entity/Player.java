@@ -17,8 +17,6 @@ public class Player extends Entity {
     //    int doorOpened = 0;
     //    private int hasKey = 0;
     public boolean attackCanceled;
-    public ArrayList<Entity> inventory = new ArrayList<>();
-    private int maxInventorySize = 0;
 
     public Player(GamePanel gameP, KeyHandler keyH){
         super(gameP);
@@ -28,7 +26,7 @@ public class Player extends Entity {
 
         solidArea.x = 6;
         solidArea.y = 16;
-        solidArea.width = gameP.tileSize - 12;
+        solidArea.width = gameP.tileSize - (solidArea.x * 2);
         solidArea.height = gameP.tileSize - 16;
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
@@ -49,6 +47,9 @@ public class Player extends Entity {
         // Posisi Awal Player
         this.worldX = gameP.tileSize * 23;
         this.worldY = gameP.tileSize * 21;
+
+//        this.worldX = gameP.tileSize * 12;
+//        this.worldY = gameP.tileSize * 13;
         this.speed = 4;
         this.direction = "down";
 
@@ -61,7 +62,7 @@ public class Player extends Entity {
         level = 1;
         exp = 0;
         nextLevelExp = 5;
-        coin = 0;
+        coin = 50;
         strength = 1; // Menaikkan attackPower
         dexterity = 1; // Menaikkan defensePower
 //        currentWeapon = new SwordNormalObject(gameP);
@@ -73,14 +74,23 @@ public class Player extends Entity {
         defensePower = getDefense(); // terakumulasi dari playerDexterity dan shiekdDefensePower
     }
 
-    public void setItems(){
-        maxInventorySize = gameP.ui.inventoryMaxCol * gameP.ui.inventoryMaxRow;
+    public void setDefaultPositions(){
+        this.worldX = gameP.tileSize * 23;
+        this.worldY = gameP.tileSize * 21;
+        this.direction = "down";
+    }
 
+    public void restoreLifeAndMana(){
+        life = maxLife;
+        mana = maxMana;
+        invicible = false;
+    }
+
+    public void setItems(){
+        inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new KeyObject(gameP));
-        inventory.add(new KeyObject(gameP));
-
     }
 
     public void getPlayerImage(){
@@ -129,41 +139,40 @@ public class Player extends Entity {
         return dexterity * currentShield.defenseValue;
     }
 
-    public int getMaxInventorySize(){
-        return maxInventorySize;
-    }
-
     void pickUpObject(int i) {
         if (i != 999) {
 
             /* Pickup Only Items */
-            if (gameP.obj[i].type == pickupOnlyType){
-                gameP.obj[i].use(this);
-                gameP.obj[i] = null;
+            if (gameP.obj[gameP.currentMap][i].type == pickupOnlyType){
+                gameP.obj[gameP.currentMap][i].use(this);
+                gameP.obj[gameP.currentMap][i] = null;
             }
 
             /* Inventory Items */
             else {
                 String text;
 
+//                System.out.println("Slot Inventory Terpakai: " + inventory.size());
+//                System.out.println("Max Inventory: " + maxInventorySize);
+
                 if (inventory.size() != maxInventorySize){
-                    inventory.add(gameP.obj[i]);
+                    inventory.add(gameP.obj[gameP.currentMap][i]);
                     System.out.println(i);
                     gameP.playSE(1);
 
-                    text = "Got A " + gameP.obj[i].name + "!";
+                    text = "Got A " + gameP.obj[gameP.currentMap][i].name + "!";
+                    gameP.obj[gameP.currentMap][i] = null;
                 } else {
                     text = "Your Inventory Is Full!";
                 }
 
                 gameP.ui.addMessage(text);
-                gameP.obj[i] = null;
             }
         }
     }
 
     public void selectItem(){
-        int itemIndex = gameP.ui.getItemIndexOnSlot();
+        int itemIndex = gameP.ui.getItemIndexOnSlot(gameP.ui.playerSlotCol, gameP.ui.playerSlotRow);
 
         if (itemIndex < inventory.size()){
             Entity selectedItem = inventory.get(itemIndex);
@@ -195,17 +204,17 @@ public class Player extends Entity {
             if (i != 999) {
                 attackCanceled = true;
                 gameP.gameState = gameP.dialogueState;
-                gameP.npc[i].speak();
+                gameP.npc[gameP.currentMap][i].speak();
             }
         }
     }
 
     void contactMonster(int i){
         if (i != 999){
-            if (this.invicible == false && gameP.monster[i].dying == false){
+            if (this.invicible == false && gameP.monster[gameP.currentMap][i].dying == false){
                 gameP.playSE(5);
 
-                int damage = gameP.monster[i].attackPower - this.defensePower;
+                int damage = gameP.monster[gameP.currentMap][i].attackPower - this.defensePower;
                 if (damage < 0) damage = 0;
 
                 this.life -= damage;
@@ -217,25 +226,25 @@ public class Player extends Entity {
 
     public void damageMonster(int i, int attackPower){
         if (i != 999){
-            if (gameP.monster[i].invicible == false){
+            if (gameP.monster[gameP.currentMap][i].invicible == false){
                 gameP.playSE(4);
 
-                int damage = attackPower - gameP.monster[i].defensePower;
+                int damage = attackPower - gameP.monster[gameP.currentMap][i].defensePower;
                 if (damage < 0) damage = 0;
 
-                gameP.monster[i].life -= damage;
+                gameP.monster[gameP.currentMap][i].life -= damage;
                 gameP.ui.addMessage(damage + " Damage!");
 
-                gameP.monster[i].invicible = true;
+                gameP.monster[gameP.currentMap][i].invicible = true;
 
-                gameP.monster[i].damageReaction();
+                gameP.monster[gameP.currentMap][i].damageReaction();
 
-                if (gameP.monster[i].life <= 0) {
-                    gameP.monster[i].dying = true;
-                    gameP.ui.addMessage("Killed The " + gameP.monster[i].name + "!");
+                if (gameP.monster[gameP.currentMap][i].life <= 0) {
+                    gameP.monster[gameP.currentMap][i].dying = true;
+                    gameP.ui.addMessage("Killed The " + gameP.monster[gameP.currentMap][i].name + "!");
 
-                    this.exp += gameP.monster[i].exp;
-                    gameP.ui.addMessage("Gained " + gameP.monster[i].exp + " Exp!");
+                    this.exp += gameP.monster[gameP.currentMap][i].exp;
+                    gameP.ui.addMessage("Gained " + gameP.monster[gameP.currentMap][i].exp + " Exp!");
 
                     checkLevelUp();
                 }
@@ -244,14 +253,14 @@ public class Player extends Entity {
     }
 
     public void damageInreractiveTile(int i){
-        if (i != 999 && gameP.iTile[i].destructible == true && gameP.iTile[i].isCorrectItem(this) == true && gameP.iTile[i].invicible == false){
-            gameP.iTile[i].playSE();
-            gameP.iTile[i].life--;
-            gameP.iTile[i].invicible = true;
+        if (i != 999 && gameP.iTile[gameP.currentMap][i].destructible == true && gameP.iTile[gameP.currentMap][i].isCorrectItem(this) == true && gameP.iTile[gameP.currentMap][i].invicible == false){
+            gameP.iTile[gameP.currentMap][i].playSE();
+            gameP.iTile[gameP.currentMap][i].life--;
+            gameP.iTile[gameP.currentMap][i].invicible = true;
 
-            generateParticle(new EarthParticle(), gameP.iTile[i]);
+            generateParticle(new EarthParticle(), gameP.iTile[gameP.currentMap][i]);
 
-            if (gameP.iTile[i].life <= 0) gameP.iTile[i] = gameP.iTile[i].getDestroyedForm();
+            if (gameP.iTile[gameP.currentMap][i].life <= 0) gameP.iTile[gameP.currentMap][i] = gameP.iTile[gameP.currentMap][i].getDestroyedForm();
         }
     }
 
@@ -434,6 +443,13 @@ public class Player extends Entity {
 
         if (this.life > this.maxLife) this.life = this.maxLife;
         if (this.mana > this.maxMana) this.mana = this.maxMana;
+
+        if(life <= 0) {
+            gameP.stopMusic();
+            gameP.playSE(10);
+            gameP.gameState = gameP.gameOverState;
+            gameP.ui.commandNum = -1;
+        }
     }
 
     public void draw(Graphics2D g2d){

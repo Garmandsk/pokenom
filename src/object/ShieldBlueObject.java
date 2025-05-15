@@ -12,6 +12,7 @@ public class ShieldBlueObject extends Entity {
         name = "Blue Shield";
         down1 = uTool.setUp("/objects/shield_blue");
         defenseValue = 2;
-        itemDescription = "[ " + name + " ]\nBlue as the glacier’s ancient heart";
+        itemDescription = "[ " + name + " ]\nBlue as the glacier’s \nancient heart";
+        price = 8;
     }
 }

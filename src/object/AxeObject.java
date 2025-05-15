@@ -15,5 +15,6 @@ public class AxeObject extends Entity {
         attackArea.width = gameP.tileSize/2 + 16;
         attackArea.height = gameP.tileSize/2 + 16;
         itemDescription = "[ " + name + " ]\nChopp Chopp!";
+        price = 10;
     }
 }

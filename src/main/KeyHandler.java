@@ -1,5 +1,7 @@
 package main;
 
+import entity.Entity;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -10,6 +12,98 @@ public class KeyHandler implements KeyListener {
 
     public KeyHandler(GamePanel gameP){
         this.gameP = gameP;
+    }
+
+    public void playerInventory(int code){
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+            if (gameP.ui.playerSlotRow != 0){
+                gameP.ui.playerSlotRow--;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.playerSlotCol == 0 && gameP.ui.playerSlotRow == 0)) {
+                gameP.ui.playerSlotRow = gameP.ui.inventoryMaxRow - 1;
+                gameP.ui.playerSlotCol--;
+                gameP.playSE(7);
+            }
+        }
+
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
+            if (gameP.ui.playerSlotRow != gameP.ui.inventoryMaxRow - 1){
+                gameP.ui.playerSlotRow++;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.playerSlotCol == gameP.ui.inventoryMaxCol - 1 && gameP.ui.playerSlotRow == gameP.ui.inventoryMaxRow - 1)) {
+                gameP.ui.playerSlotRow = 0;
+                gameP.ui.playerSlotCol++;
+                gameP.playSE(7);
+            }
+        }
+
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT){
+            if (gameP.ui.playerSlotCol != 0){
+                gameP.ui.playerSlotCol--;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.playerSlotCol == 0 && gameP.ui.playerSlotRow == 0)){
+                gameP.ui.playerSlotCol = gameP.ui.inventoryMaxCol - 1;
+                gameP.ui.playerSlotRow--;
+                gameP.playSE(7);
+            }
+        }
+
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT){
+            if (gameP.ui.playerSlotCol != gameP.ui.inventoryMaxCol - 1){
+                gameP.ui.playerSlotCol++;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.playerSlotCol == gameP.ui.inventoryMaxCol - 1 && gameP.ui.playerSlotRow == gameP.ui.inventoryMaxRow - 1)) {
+                gameP.ui.playerSlotCol = 0;
+                gameP.ui.playerSlotRow++;
+                gameP.playSE(7);
+            }
+        }
+    }
+
+    public void npcInventory(int code){
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+            if (gameP.ui.npcSlotRow != 0){
+                gameP.ui.npcSlotRow--;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.npcSlotCol == 0 && gameP.ui.npcSlotRow == 0)) {
+                gameP.ui.npcSlotRow = gameP.ui.inventoryMaxRow - 1;
+                gameP.ui.npcSlotCol--;
+                gameP.playSE(7);
+            }
+        }
+
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
+            if (gameP.ui.npcSlotRow != gameP.ui.inventoryMaxRow - 1){
+                gameP.ui.npcSlotRow++;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.npcSlotCol == gameP.ui.inventoryMaxCol - 1 && gameP.ui.npcSlotRow == gameP.ui.inventoryMaxRow - 1)) {
+                gameP.ui.npcSlotRow = 0;
+                gameP.ui.npcSlotCol++;
+                gameP.playSE(7);
+            }
+        }
+
+        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT){
+            if (gameP.ui.npcSlotCol != 0){
+                gameP.ui.npcSlotCol--;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.npcSlotCol == 0 && gameP.ui.npcSlotRow == 0)){
+                gameP.ui.npcSlotCol = gameP.ui.inventoryMaxCol - 1;
+                gameP.ui.npcSlotRow--;
+                gameP.playSE(7);
+            }
+        }
+
+        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT){
+            if (gameP.ui.npcSlotCol != gameP.ui.inventoryMaxCol - 1){
+                gameP.ui.npcSlotCol++;
+                gameP.playSE(7);
+            } else if (!(gameP.ui.npcSlotCol == gameP.ui.inventoryMaxCol - 1 && gameP.ui.npcSlotRow == gameP.ui.inventoryMaxRow - 1)) {
+                gameP.ui.npcSlotCol = 0;
+                gameP.ui.npcSlotRow++;
+                gameP.playSE(7);
+            }
+        }
     }
 
     public void titleState(int code){
@@ -69,7 +163,16 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_C) gameP.gameState = gameP.characterState;
         if (code == KeyEvent.VK_ESCAPE) gameP.gameState = gameP.optionState;
         if (code == KeyEvent.VK_B) debug = !debug;
-        if (code == KeyEvent.VK_R) gameP.tileM.loadMap("/maps/worldV2.txt");
+        if (code == KeyEvent.VK_R) {
+            switch (gameP.currentMap){
+                case 0:
+                    gameP.tileM.loadMap("/maps/worldV3.txt", 0);
+                    break;
+                case 1:
+                    gameP.tileM.loadMap("/maps/interior01.txt", 1);
+                    break;
+            }
+        }
     }
 
     public void pauseState(int code){
@@ -84,49 +187,7 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_C) gameP.gameState = gameP.playState;
         if (code == KeyEvent.VK_ENTER) gameP.player.selectItem();
 
-        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
-            if (gameP.ui.slotRow != 0){
-                gameP.ui.slotRow--;
-                gameP.playSE(7);
-            } else if (!(gameP.ui.slotCol == 0 && gameP.ui.slotRow == 0)) {
-                gameP.ui.slotRow = gameP.ui.inventoryMaxRow - 1;
-                gameP.ui.slotCol--;
-                gameP.playSE(7);
-            }
-        }
-
-        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
-            if (gameP.ui.slotRow != gameP.ui.inventoryMaxRow - 1){
-                gameP.ui.slotRow++;
-                gameP.playSE(7);
-            } else if (!(gameP.ui.slotCol == gameP.ui.inventoryMaxCol - 1 && gameP.ui.slotRow == gameP.ui.inventoryMaxRow - 1)) {
-                gameP.ui.slotRow = 0;
-                gameP.ui.slotCol++;
-                gameP.playSE(7);
-            }
-        }
-
-        if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT){
-            if (gameP.ui.slotCol != 0){
-                gameP.ui.slotCol--;
-                gameP.playSE(7);
-            } else if (!(gameP.ui.slotCol == 0 && gameP.ui.slotRow == 0)){
-                gameP.ui.slotCol = gameP.ui.inventoryMaxCol - 1;
-                gameP.ui.slotRow--;
-                gameP.playSE(7);
-            }
-        }
-
-        if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT){
-            if (gameP.ui.slotCol != gameP.ui.inventoryMaxCol - 1){
-                gameP.ui.slotCol++;
-                gameP.playSE(7);
-            } else if (!(gameP.ui.slotCol == gameP.ui.inventoryMaxCol - 1 && gameP.ui.slotRow == gameP.ui.inventoryMaxRow - 1)) {
-                gameP.ui.slotCol = 0;
-                gameP.ui.slotRow++;
-                gameP.playSE(7);
-            }
-        }
+        playerInventory(code);
     }
 
     public void optionState(int code){
@@ -221,6 +282,73 @@ public class KeyHandler implements KeyListener {
         gameP.playSE(7);
     }
 
+    public void gameOverState(int code){
+        if (code == KeyEvent.VK_ENTER) enterPressed = true;
+
+        if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+            if (gameP.ui.commandNum == 0) gameP.ui.commandNum = 1;
+            else gameP.ui.commandNum--;
+        }
+
+        if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
+            if (gameP.ui.commandNum == 1) gameP.ui.commandNum = 0;
+            else gameP.ui.commandNum++;
+        }
+
+        if (code == KeyEvent.VK_ENTER){
+            if (gameP.ui.commandNum == 0) {
+                gameP.gameState = gameP.playState;
+                gameP.retry();
+                gameP.playMusic(0);
+            }
+            else if (gameP.ui.commandNum == 1) {
+                gameP.gameState = gameP.titleState;
+                gameP.restart();
+            }
+        }
+
+        gameP.playSE(7);
+    }
+
+    public void tradeState(int code){
+
+        if (gameP.ui.tradeScreenState == 0){
+            if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
+                if (gameP.ui.commandNum == 0) gameP.ui.commandNum = 2;
+                else gameP.ui.commandNum--;
+            }
+
+            if (code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN){
+                if (gameP.ui.commandNum == 2) gameP.ui.commandNum = 0;
+                else gameP.ui.commandNum++;
+            }
+
+            if (code == KeyEvent.VK_ENTER){
+                if (gameP.ui.commandNum == 0) {
+                    gameP.ui.tradeScreenState = 1;
+                }
+                else if (gameP.ui.commandNum == 1) {
+                    gameP.ui.tradeScreenState = 2;
+                }
+                else if (gameP.ui.commandNum == 2) {
+                    gameP.ui.commandNum = 0;
+                    gameP.gameState = gameP.dialogueState;
+                    gameP.ui.currentDialogue = "Sampai Jumpa!";
+                }
+            }
+        } else if (gameP.ui.tradeScreenState == 1) {
+            npcInventory(code);
+            if (code == KeyEvent.VK_ESCAPE) gameP.ui.tradeScreenState = 0;
+            if (code == KeyEvent.VK_ENTER) enterPressed = true;
+        } else if (gameP.ui.tradeScreenState == 2) {
+            playerInventory(code);
+            if (code == KeyEvent.VK_ESCAPE) gameP.ui.tradeScreenState = 0;
+            if (code == KeyEvent.VK_ENTER) enterPressed = true;
+        }
+
+        gameP.playSE(7);
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -235,6 +363,8 @@ public class KeyHandler implements KeyListener {
         else if (gameP.gameState == gameP.dialogueState) dialogueState(code);
         else if (gameP.gameState == gameP.characterState) characterState(code);
         else if (gameP.gameState == gameP.optionState) optionState(code);
+        else if (gameP.gameState == gameP.gameOverState) gameOverState(code);
+        else if (gameP.gameState == gameP.tradeState) tradeState(code);
 
     }
 

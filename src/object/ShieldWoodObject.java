@@ -13,5 +13,6 @@ public class ShieldWoodObject extends Entity {
         down1 = uTool.setUp("/objects/shield_wood");
         defenseValue = 1;
         itemDescription = "[ " + name + " ]\nWoodie.";
+        price = 1;
     }
 }

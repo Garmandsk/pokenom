@@ -10,5 +10,6 @@ public class BootsObject extends Entity {
 
         name = "Boots";
         down1 = uTool.setUp("/objects/boots");
+        price = 2;
     }
 }

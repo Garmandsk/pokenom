@@ -13,14 +13,16 @@ import java.io.InputStreamReader;
 public class TileManager {
     GamePanel gameP;
     public Tile[] tile;
-    public int[][] mapTileNum;
+    public int[][][] mapTileNum;
 
     public TileManager(GamePanel gameP){
         this.gameP = gameP;
         tile = new Tile[50];
-        this.mapTileNum = new int[gameP.maxWorldCol][gameP.maxWorldRow];
+        this.mapTileNum = new int[gameP.maxMap][gameP.maxWorldCol][gameP.maxWorldRow];
         getTileImage();
-        loadMap("/maps/worldV2.txt");
+        loadMap("/maps/worldV3.txt", 0);
+        loadMap("/maps/interior01.txt", 1);
+
     }
 
     public void getTileImage(){
@@ -69,10 +71,13 @@ public class TileManager {
         uTool.setUp(tile, 39, "earth", false);
         uTool.setUp(tile, 40, "wall", true);
         uTool.setUp(tile, 41, "tree", true);
+        uTool.setUp(tile, 42, "hut", false);
+        uTool.setUp(tile, 43, "floor01", false);
+        uTool.setUp(tile, 44, "table01", true);
 
     }
 
-    public void loadMap(String filePath){
+    public void loadMap(String filePath, int map){
         try {
             InputStream inputS = getClass().getResourceAsStream(filePath);
             BufferedReader bufferedR = new BufferedReader(new InputStreamReader(inputS));
@@ -86,7 +91,7 @@ public class TileManager {
                     String numbers[] = line.split(" ");
                     int num = Integer.parseInt(numbers[col]);
 
-                    mapTileNum[col][row] = num;
+                    mapTileNum[map][col][row] = num;
                     col++;
                 }
 
@@ -105,7 +110,7 @@ public class TileManager {
         int worldCol = 0, worldRow = 0;
 
         while (worldCol < gameP.maxWorldCol && worldRow < gameP.maxWorldRow){
-            int tileNum = mapTileNum[worldCol][worldRow];
+            int tileNum = mapTileNum[gameP.currentMap][worldCol][worldRow];
             int worldX = worldCol * gameP.tileSize;
             int worldY = worldRow * gameP.tileSize;
             int screenX = worldX - gameP.player.worldX + gameP.player.screenX;

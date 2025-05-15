@@ -13,5 +13,6 @@ public class KeyObject extends Entity {
         name = "Key";
         down1 = uTool.setUp("/objects/key");
         itemDescription = "[ " + name + " ]\nOpen Something.";
+        price = 5;
     }
 }

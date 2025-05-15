@@ -15,5 +15,6 @@ public class SwordNormalObject extends Entity {
         attackArea.width = gameP.tileSize/2 + 16;
         attackArea.height = gameP.tileSize/2 + 16;
         itemDescription = "[ " + name + " ]\n an Ol'Sword.";
+        price = 1;
     }
 }

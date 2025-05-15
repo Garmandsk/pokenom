@@ -7,6 +7,7 @@ import particle.Particle;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 public class Entity {
     public GamePanel gameP;
@@ -54,9 +55,12 @@ public class Entity {
     public Projectile projectile;
 
     /* Item Status */
+    public ArrayList<Entity> inventory = new ArrayList<>();
+    public int maxInventorySize = 20;
     public int value;
     public int attackValue, defenseValue, healingValue;
     public int useCost;
+    public int price;
     public String itemDescription = "";
 
     /* Type */
@@ -125,11 +129,11 @@ public class Entity {
     }
 
     public void dropItem(Entity droppedItem){
-        for (int i = 0; i < gameP.obj.length; i++){
-            if (gameP.obj[i] == null){
-                gameP.obj[i] = droppedItem;
-                gameP.obj[i].worldX = this.worldX;
-                gameP.obj[i].worldY = this.worldY;
+        for (int i = 0; i < gameP.obj[1].length; i++){
+            if (gameP.obj[gameP.currentMap][i] == null){
+                gameP.obj[gameP.currentMap][i] = droppedItem;
+                gameP.obj[gameP.currentMap][i].worldX = this.worldX;
+                gameP.obj[gameP.currentMap][i].worldY = this.worldY;
                 break;
             }
         }
@@ -217,7 +221,7 @@ public class Entity {
         }
 
         spriteCounter++;
-        if (spriteCounter > 8){
+        if (spriteCounter > 24){
             if (spriteNum == 1){
                 spriteNum = 2;
             } else if (spriteNum == 2) {
