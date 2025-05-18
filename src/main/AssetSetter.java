@@ -54,8 +54,8 @@ public class AssetSetter {
         int i = 0;
 
         gameP.npc[mapNum][i] = new NPC_OldMan(gameP);
-        gameP.npc[mapNum][i].worldX = 10 * gameP.tileSize;
-        gameP.npc[mapNum][i].worldY = 12 * gameP.tileSize;
+        gameP.npc[mapNum][i].worldX = 41 * gameP.tileSize;
+        gameP.npc[mapNum][i].worldY = 7 * gameP.tileSize;
         i++;
 
         mapNum = 1;

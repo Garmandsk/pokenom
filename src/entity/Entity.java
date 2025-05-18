@@ -45,6 +45,7 @@ public class Entity {
     int dyingCounter = 0;
     public boolean attacking;
     public int shotAvailableCounter = 0;
+    public boolean onPath = false;
 
     public int maxLife, life;
     public int maxMana, mana;
@@ -84,6 +85,20 @@ public class Entity {
     public void damageReaction(){}
     public void use(Entity entity) {}
     public void checkDrop(){}
+
+    public void checkCollision(){
+        collisionOn = false;
+        gameP.cChecker.checkTile(this);
+        gameP.cChecker.checkObject(this, false);
+        gameP.cChecker.checkEntity(this, gameP.npc);
+        gameP.cChecker.checkEntity(this, gameP.monster);
+        gameP.cChecker.checkEntity(this, gameP.iTile);
+
+        boolean contactPlayer =  gameP.cChecker.checkPlayer(this);
+        if (this.type == monsterType && contactPlayer == true){
+            damagePlayer(this.attackPower);
+        }
+    }
 
     public void generateParticle(Generator generator, Entity target){
         Color color = generator.getParticleColor();
@@ -189,19 +204,101 @@ public class Entity {
         }
     }
 
+    /* Versi Lebih Berat */
+//    public void searchPath(int goalCol, int goalRow){
+//        int startCol = (worldX + solidArea.x)/gameP.tileSize;
+//        int startRow = (worldY + solidArea.y)/gameP.tileSize;
+//
+//        gameP.pathF.setNodes(startCol, startRow, goalCol, goalRow);
+//
+//        if (gameP.pathF.search() == true){
+//            int nextX = gameP.pathF.pathList.get(0).col * gameP.tileSize;
+//            int nextY = gameP.pathF.pathList.get(0).row * gameP.tileSize;
+//
+//            int enLeftX = worldX + solidArea.x;
+//            int enRightX = worldX + solidArea.x + solidArea.width;
+//            int enTopY = worldY + solidArea.y;
+//            int enBottomY = worldY + solidArea.y + solidArea.height;
+//
+//            if (enTopY > nextY && enLeftX >= nextX && enRightX < nextX + gameP.tileSize) direction = "up";
+//            else if (enTopY < nextY && enLeftX >= nextX && enRightX < nextX + gameP.tileSize) direction = "down";
+//            else if (enTopY >= nextY && enBottomY < nextY + gameP.tileSize){
+//                if (enLeftX > nextX) direction = "left";
+//                if (enLeftX < nextX) direction = "right";
+//            }
+//            else if (enTopY > nextY && enLeftX > nextX){
+//                direction = "up";
+//                checkCollision();
+//                if (collisionOn) direction = "left";
+//            }
+//            else if (enTopY > nextY && enLeftX < nextX){
+//                direction = "up";
+//                checkCollision();
+//                if (collisionOn) direction = "right";
+//            }
+//            else if (enTopY < nextY && enLeftX > nextX){
+//                direction = "down";
+//                checkCollision();
+//                if (collisionOn) direction = "left";
+//            }
+//            else if (enTopY < nextY && enLeftX < nextX){
+//                direction = "down";
+//                checkCollision();
+//                if (collisionOn) direction = "right";
+//            }
+//
+//            System.out.println("Direction: " + direction);
+//
+////            int nextCOl = gameP.pathF.pathList.get(0).col;
+////            int nextRow = gameP.pathF.pathList.get(0).row;
+////            if (nextCOl == goalCol && nextRow == goalRow) onPath = false;
+//        }
+//    }
+
+    /* Versi Lebih Ringan */
+    public void searchPath(int goalCol, int goalRow){
+        int startCol = (worldX + solidArea.x) / gameP.tileSize;
+        int startRow = (worldY + solidArea.y) / gameP.tileSize;
+
+        gameP.pathF.setNodes(startCol, startRow, goalCol, goalRow);
+
+        if (gameP.pathF.search()){
+            int nextCol = gameP.pathF.pathList.get(0).col;
+            int nextRow = gameP.pathF.pathList.get(0).row;
+            int nextX = nextCol * gameP.tileSize;
+            int nextY = nextRow * gameP.tileSize;
+
+            int enX = worldX + solidArea.x;
+            int enY = worldY + solidArea.y;
+
+            int dx = nextX - enX;
+            int dy = nextY - enY;
+
+            // Tentukan arah utama
+            if (Math.abs(dx) > Math.abs(dy)) {
+                direction = dx < 0 ? "left" : "right";
+            } else {
+                direction = dy < 0 ? "up" : "down";
+            }
+
+            // Cek tabrakan; jika ada, pakai arah lainnya
+            checkCollision();
+            if (collisionOn) {
+                if (direction.equals("left") || direction.equals("right")){
+                    direction = dy < 0 ? "up" : "down";
+                } else {
+                    direction = dx < 0 ? "left" : "right";
+                }
+            }
+
+            // Jika sudah mencapai goal, hentikan pathing
+//            if (nextCol == goalCol && nextRow == goalRow) onPath = false;
+        }
+    }
+
     public void update(){
         setAction();
-        collisionOn = false;
-        gameP.cChecker.checkTile(this);
-        gameP.cChecker.checkObject(this, false);
-        gameP.cChecker.checkEntity(this, gameP.npc);
-        gameP.cChecker.checkEntity(this, gameP.monster);
-        gameP.cChecker.checkEntity(this, gameP.iTile);
-
-        boolean contactPlayer =  gameP.cChecker.checkPlayer(this);
-        if (this.type == monsterType && contactPlayer == true){
-            damagePlayer(this.attackPower);
-        }
+        checkCollision();
 
         if(collisionOn == false){
             switch (direction){

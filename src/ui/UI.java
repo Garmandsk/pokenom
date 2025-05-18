@@ -234,6 +234,10 @@ public class UI {
     }
 
     public void drawTitleScreen(){
+        // Background
+        g2d.setColor(Color.GRAY);
+        g2d.fillRect(0, 0, gameP.screenWidth, gameP.screenHeight);
+
         switch (titleScreenState) {
             case 0:
                 title_mainMenu();
@@ -247,10 +251,6 @@ public class UI {
     }
 
     public void title_mainMenu(){
-        // Background
-        g2d.setColor(Color.GRAY);
-        g2d.fillRect(0, 0, gameP.screenWidth, gameP.screenHeight);
-
         // Text
         g2d.setFont(Cinzel);
         g2d.setFont(g2d.getFont().deriveFont(Font.PLAIN,90f));

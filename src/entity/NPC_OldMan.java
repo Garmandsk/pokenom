@@ -9,8 +9,15 @@ public class NPC_OldMan extends Entity {
     public NPC_OldMan(GamePanel gameP){
         super(gameP);
 
+        solidArea.x = 6;
+        solidArea.y = 16;
+        solidArea.width = gameP.tileSize - (solidArea.x * 2);
+        solidArea.height = gameP.tileSize - 16;
+        defaultSolidAreaX = solidArea.x;
+        defaultSolidAreaY = solidArea.y;
+
         direction = "down";
-        speed = 1;
+        speed = 3;
         getOldManImage();
         setDialogue();
     }
@@ -35,7 +42,6 @@ public class NPC_OldMan extends Entity {
     }
 
     public void setAction(){
-        actionLockCounter++;
 
         /*
         if (actionLockCounter >= 120){
@@ -56,17 +62,28 @@ public class NPC_OldMan extends Entity {
         }
          */
 
-        Random RAND = new Random();
-        if (actionLockCounter >= 120) {
-            int i = RAND.nextInt(4) + 1;
-            direction = switch (i) {
-                case 1 -> "up";
-                case 2 -> "down";
-                case 3 -> "left";
-                case 4 -> "right";
-                default -> throw new IllegalStateException("Unexpected value: " + i);
-            };
-            actionLockCounter = 0;
+        if (onPath){
+//            int goalCol = 12, goalRow = 9;
+            int goalCol = (gameP.player.worldX + gameP.player.solidArea.x)/gameP.tileSize;
+            int goalRow = (gameP.player.worldY + gameP.player.solidArea.y)/gameP.tileSize;
+
+            searchPath(goalCol, goalRow);
+
+        }else {
+            actionLockCounter++;
+
+            Random RAND = new Random();
+            if (actionLockCounter >= 120) {
+                int i = RAND.nextInt(4) + 1;
+                direction = switch (i) {
+                    case 1 -> "up";
+                    case 2 -> "down";
+                    case 3 -> "left";
+                    case 4 -> "right";
+                    default -> throw new IllegalStateException("Unexpected value: " + i);
+                };
+                actionLockCounter = 0;
+            }
         }
     }
 
@@ -78,5 +95,6 @@ public class NPC_OldMan extends Entity {
 
     public void speak(){
         super.speak();
+        onPath = true;
     }
 }

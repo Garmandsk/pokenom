@@ -1,5 +1,6 @@
 package main;
 
+import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
 import tile.TileManager;
@@ -35,6 +36,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     /* Config Setting */
     public Config config = new Config(this);
+    public PathFinder pathF = new PathFinder(this);
     /* ===== */
 
     public KeyHandler keyH = new KeyHandler(this);
@@ -61,7 +63,7 @@ public class GamePanel extends JPanel implements Runnable{
     /* ===== */
 
     /* Tile Settings */
-    TileManager tileM = new TileManager(this);
+    public TileManager tileM = new TileManager(this);
     public InteractiveTile[][] iTile = new InteractiveTile[maxMap][50];
     public CollisionChecker cChecker = new CollisionChecker(this);
     /* ===== */
