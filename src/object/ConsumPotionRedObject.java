@@ -17,12 +17,14 @@ public class ConsumPotionRedObject extends Entity {
         itemDescription = "[ " + name + " ]\nHeals +" + healingValue + "!";
     }
 
-    public void use(Entity entity){
+    public boolean use(Entity entity){
         gameP.playSE(2);
         entity.life += healingValue;
 
         String text = "Drinked The " + name + "!\nYour Life has been recovered \nby " + healingValue + ".";
         gameP.gameState = gameP.dialogueState;
         gameP.ui.currentDialogue = text;
+
+        return true;
     }
 }

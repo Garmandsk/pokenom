@@ -20,10 +20,12 @@ public class HeartObject extends Entity {
         image3 = uTool.setUp("/objects/heart_half");
     }
 
-    public void use(Entity entity){
+    public boolean use(Entity entity){
         gameP.playSE(2);
         entity.life += healingValue;
 
         gameP.ui.addMessage("Life + " + healingValue);
+
+        return true;
     }
 }

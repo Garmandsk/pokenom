@@ -7,10 +7,13 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 
 public class DoorObject extends Entity {
+    GamePanel gameP;
 
     public DoorObject(GamePanel gameP){
         super(gameP);
+        this.gameP = gameP;
 
+        type = obstacleType;
         name = "Door";
         down1 = uTool.setUp("/objects/door");
         collision = true;
@@ -22,4 +25,10 @@ public class DoorObject extends Entity {
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
     }
+
+    public void interact(){
+        gameP.gameState = gameP.dialogueState;
+        gameP.ui.currentDialogue = "You need a key to \nopen this";
+    }
+
 }

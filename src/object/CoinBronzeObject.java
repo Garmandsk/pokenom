@@ -16,10 +16,12 @@ public class CoinBronzeObject extends Entity {
         down1 = uTool.setUp("/objects/coin_bronze");
     }
 
-    public void use(Entity entity){
+    public boolean use(Entity entity){
         gameP.playSE(1);
 
        gameP.ui.addMessage("Coin + " + value);
        gameP.player.coin += value;
+
+       return true;
     }
 }

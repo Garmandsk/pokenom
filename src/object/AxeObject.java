@@ -12,6 +12,7 @@ public class AxeObject extends Entity {
         name = "Woodcutter's Axe";
         down1 = uTool.setUp("/objects/axe");
         attackValue = 2;
+        knockbackPower = 5;
         attackArea.width = gameP.tileSize/2 + 16;
         attackArea.height = gameP.tileSize/2 + 16;
         itemDescription = "[ " + name + " ]\nChopp Chopp!";

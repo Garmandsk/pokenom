@@ -812,7 +812,7 @@ public class UI {
         int width = gameP.tileSize * 6;
         int height = gameP.tileSize * 2;
         drawSubWindow(x, y, width, height);
-        g2d.drawString("[ESC] Back" + gameP.player.coin, x + gameP.tileSize/2, y + gameP.tileSize + (gameP.tileSize/4));
+        g2d.drawString("[ESC] Back", x + gameP.tileSize/2, y + gameP.tileSize + (gameP.tileSize/4));
 
         // Draw Coin Window
         x = gameP.tileSize * 12;
@@ -865,7 +865,7 @@ public class UI {
         int width = gameP.tileSize * 6;
         int height = gameP.tileSize * 2;
         drawSubWindow(x, y, width, height);
-        g2d.drawString("[ESC] Back" + gameP.player.coin, x + gameP.tileSize/2, y + gameP.tileSize + (gameP.tileSize/4));
+        g2d.drawString("[ESC] Back", x + gameP.tileSize/2, y + gameP.tileSize + (gameP.tileSize/4));
 
         // Draw Coin Window
         x = gameP.tileSize * 12;

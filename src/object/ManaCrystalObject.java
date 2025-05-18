@@ -19,10 +19,12 @@ public class ManaCrystalObject extends Entity {
         image2 = uTool.setUp("/objects/manacrystal_full");
     }
 
-    public void use(Entity entity){
+    public boolean use(Entity entity){
         gameP.playSE(2);
         entity.mana += healingValue;
 
         gameP.ui.addMessage("Mana + " + healingValue);
+
+        return true;
     }
 }

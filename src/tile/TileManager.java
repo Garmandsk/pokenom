@@ -140,16 +140,18 @@ public class TileManager {
             }
         }
 
-        if (drawPath){
-            g2d.setColor(new Color(255, 0, 0, 70));
+        if (gameP.keyH.debug){
+            if (drawPath){
+                g2d.setColor(new Color(255, 0, 0, 70));
 
-            for (int i = 0; i < gameP.pathF.pathList.size(); i++){
-                int worldX = gameP.pathF.pathList.get(i).col * gameP.tileSize;
-                int worldY = gameP.pathF.pathList.get(i).row * gameP.tileSize;
-                int screenX = worldX - gameP.player.worldX + gameP.player.screenX;
-                int screenY = worldY - gameP.player.worldY + gameP.player.screenY;
+                for (int i = 0; i < gameP.pathF.pathList.size(); i++){
+                    int worldX = gameP.pathF.pathList.get(i).col * gameP.tileSize;
+                    int worldY = gameP.pathF.pathList.get(i).row * gameP.tileSize;
+                    int screenX = worldX - gameP.player.worldX + gameP.player.screenX;
+                    int screenY = worldY - gameP.player.worldY + gameP.player.screenY;
 
-                g2d.fillRect(screenX, screenY, gameP.tileSize, gameP.tileSize);
+                    g2d.fillRect(screenX, screenY, gameP.tileSize, gameP.tileSize);
+                }
             }
         }
     }

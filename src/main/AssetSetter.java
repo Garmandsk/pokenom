@@ -47,6 +47,29 @@ public class AssetSetter {
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 24;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 27;
         i++;
+
+        gameP.obj[mapNum][i] = new DoorObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 14;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 28;
+        i++;
+
+        gameP.obj[mapNum][i] = new DoorObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 12;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 12;
+        i++;
+
+        mapNum = 1;
+        i = 0;
+
+        gameP.obj[mapNum][i] = new ChestObject(gameP, new KeyObject(gameP));
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 10;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
+        i++;
+
+        gameP.obj[mapNum][i] = new ChestObject(gameP, new AxeObject(gameP));
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 12;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
+        i++;
     }
 
     public void setNPC(){

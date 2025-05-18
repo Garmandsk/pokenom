@@ -45,12 +45,14 @@ public class Entity {
     int dyingCounter = 0;
     public boolean attacking;
     public int shotAvailableCounter = 0;
-    public boolean onPath = false;
+    public boolean onPath;
+    public boolean knockback;
+    public int knockbackCounter = 0;
 
     public int maxLife, life;
     public int maxMana, mana;
     public int ammo;
-    public int speed, level, exp, nextLevelExp, coin;
+    public int speed, defaultSpeed, level, exp, nextLevelExp, coin;
     public int strength, dexterity, attackPower, defensePower;
     public Entity currentWeapon, currentShield;
     public Projectile projectile;
@@ -60,6 +62,7 @@ public class Entity {
     public int maxInventorySize = 20;
     public int value;
     public int attackValue, defenseValue, healingValue;
+    public int knockbackPower;
     public int useCost;
     public int price;
     public String itemDescription = "";
@@ -74,6 +77,7 @@ public class Entity {
     public final int axeType = 5;
     public final int consumType = 6;
     public final int pickupOnlyType = 7;
+    public final int obstacleType = 8;
 
     public Entity(GamePanel gameP) {
         this.gameP = gameP;
@@ -83,8 +87,33 @@ public class Entity {
 
     public void setAction(){}
     public void damageReaction(){}
-    public void use(Entity entity) {}
+    public boolean use(Entity entity) { return false; }
     public void checkDrop(){}
+    public void interact(){}
+
+    public int getTopY(){
+        return worldY + solidArea.y;
+    }
+
+    public int getBottomY(){
+        return worldY + solidArea.y + solidArea.height;
+    }
+
+    public int getLeftX(){
+        return worldX + solidArea.x;
+    }
+
+    public int getRightX(){
+        return worldX + solidArea.x + solidArea.width;
+    }
+
+    public int getCOl(){
+        return (worldX + solidArea.x)/gameP.tileSize;
+    }
+
+    public int getRow(){
+        return (worldY + solidArea.y)/gameP.tileSize;
+    }
 
     public void checkCollision(){
         collisionOn = false;
@@ -152,6 +181,42 @@ public class Entity {
                 break;
             }
         }
+    }
+
+    public int getDetected(Entity user, Entity[][] target, String targetName){
+        int index = 999;
+
+        int nextWorldX = user.getLeftX();
+        int nextWorldY = user.getTopY();
+
+        switch (user.direction){
+            case "up":
+                nextWorldY = user.getTopY()-1;
+                break;
+            case "down":
+                nextWorldY = user.getBottomY()+1;
+                break;
+            case "left":
+                nextWorldX = user.getLeftX()-1;
+                break;
+            case "right":
+                nextWorldX = user.getRightX()+1;
+                break;
+        }
+
+        int col = nextWorldX/gameP.tileSize;
+        int row = nextWorldY/gameP.tileSize;
+
+        for (int i = 0; i < target[1].length; i++){
+            if (target[gameP.currentMap][i] != null){
+                if (target[gameP.currentMap][i].getCOl() == col && target[gameP.currentMap][i].getRow() == row && target[gameP.currentMap][i].name.equals(targetName)){
+                    index = i;
+                    break;
+                }
+            }
+        }
+
+        return index;
     }
 
     public void speak(){
@@ -297,23 +362,57 @@ public class Entity {
     }
 
     public void update(){
-        setAction();
-        checkCollision();
 
-        if(collisionOn == false){
-            switch (direction){
-                case "up":
-                    this.worldY -= this.speed;
-                    break;
-                case "down":
-                    this.worldY += this.speed;
-                    break;
-                case "left":
-                    this.worldX -= this.speed;
-                    break;
-                case "right":
-                    this.worldX += this.speed;
-                    break;
+        if (knockback){
+            checkCollision();
+
+            if (collisionOn){
+                knockbackCounter = 0;
+                knockback = false;
+                speed = defaultSpeed;
+            } else if (!collisionOn) {
+                switch (direction) {
+                    case "up":
+                        this.worldY -= this.speed;
+                        break;
+                    case "down":
+                        this.worldY += this.speed;
+                        break;
+                    case "left":
+                        this.worldX -= this.speed;
+                        break;
+                    case "right":
+                        this.worldX += this.speed;
+                        break;
+                }
+            }
+
+            knockbackCounter++;
+            if (knockbackCounter >= 10){
+                knockbackCounter = 0;
+                knockback = false;
+                speed = defaultSpeed;
+            }
+
+        }else {
+            setAction();
+            checkCollision();
+
+            if(collisionOn == false){
+                switch (direction){
+                    case "up":
+                        this.worldY -= this.speed;
+                        break;
+                    case "down":
+                        this.worldY += this.speed;
+                        break;
+                    case "left":
+                        this.worldX -= this.speed;
+                        break;
+                    case "right":
+                        this.worldX += this.speed;
+                        break;
+                }
             }
         }
 

@@ -50,7 +50,8 @@ public class Player extends Entity {
 
 //        this.worldX = gameP.tileSize * 12;
 //        this.worldY = gameP.tileSize * 13;
-        this.speed = 4;
+        defaultSpeed = 4;
+        this.speed = defaultSpeed;
         this.direction = "down";
 
         // Stats Player
@@ -65,8 +66,8 @@ public class Player extends Entity {
         coin = 50;
         strength = 1; // Menaikkan attackPower
         dexterity = 1; // Menaikkan defensePower
-//        currentWeapon = new SwordNormalObject(gameP);
-        currentWeapon = new AxeObject(gameP);
+        currentWeapon = new SwordNormalObject(gameP);
+//        currentWeapon = new AxeObject(gameP);
         currentShield = new ShieldWoodObject(gameP);
         projectile = new FireballObject(gameP);
 //        projectile = new RockObject(gameP);
@@ -91,6 +92,7 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new KeyObject(gameP));
+
     }
 
     public void getPlayerImage(){
@@ -148,6 +150,14 @@ public class Player extends Entity {
                 gameP.obj[gameP.currentMap][i] = null;
             }
 
+            /* Obstacle Items */
+            else if (gameP.obj[gameP.currentMap][i].type == obstacleType) {
+                if (gameP.keyH.enterPressed) {
+                    attackCanceled = true;
+                    gameP.obj[gameP.currentMap][i].interact();
+                }
+            }
+
             /* Inventory Items */
             else {
                 String text;
@@ -193,8 +203,7 @@ public class Player extends Entity {
 
             if (selectedItem.type == consumType){
 //                System.out.println("tes");
-                selectedItem.use(this);
-                inventory.remove(itemIndex);
+                if (selectedItem.use(this)) inventory.remove(itemIndex);
             }
         }
     }
@@ -224,10 +233,12 @@ public class Player extends Entity {
         }
     }
 
-    public void damageMonster(int i, int attackPower){
+    public void damageMonster(int i, int attackPower, int knockbackPower){
         if (i != 999){
             if (gameP.monster[gameP.currentMap][i].invicible == false){
                 gameP.playSE(4);
+
+                if (knockbackPower > 0) knockback(gameP.monster[gameP.currentMap][i], knockbackPower);
 
                 int damage = attackPower - gameP.monster[gameP.currentMap][i].defensePower;
                 if (damage < 0) damage = 0;
@@ -264,6 +275,14 @@ public class Player extends Entity {
         }
     }
 
+    public void damageProjectile(int i){
+        if (i != 999){
+            Entity projectile = gameP.projectile[gameP.currentMap][i];
+            projectile.alive = false;
+            generateParticle(new EarthParticle(), projectile);
+        }
+    }
+
     public void attacking(){
         spriteCounter++;
 
@@ -296,10 +315,13 @@ public class Player extends Entity {
             solidArea.height = attackArea.height;
 
             int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
-            damageMonster(monsterIndex, this.attackPower);
+            damageMonster(monsterIndex, this.attackPower, currentWeapon.knockbackPower);
 
             int iTileIndex = gameP.cChecker.checkEntity(this, gameP.iTile);
             damageInreractiveTile(iTileIndex);
+
+            int projectileIndex = gameP.cChecker.checkEntity(this, gameP.projectile);
+            damageProjectile(projectileIndex);
 
             worldX = currentWorldX;
             worldY = currentWorldY;
@@ -312,6 +334,12 @@ public class Player extends Entity {
             spriteCounter = 0;
             attacking = false;
         }
+    }
+
+    public void knockback(Entity entity, int knockbackPower){
+        entity.direction = this.direction;
+        entity.speed += knockbackPower;
+        entity.knockback = true;
     }
 
     void checkLevelUp(){
@@ -433,7 +461,10 @@ public class Player extends Entity {
         if (gameP.keyH.shotKeyPressed && projectile.alive == false && shotAvailableCounter == 30 && projectile.haveResources(this) == true){
             projectile.set(this .worldX, this.worldY, this.direction, true, this);
             projectile.substractResources(this);
-            gameP.projectileList.add(projectile);
+
+            for (int i = 0; i < gameP.projectile[1].length; i++){
+                if (gameP.projectile[gameP.currentMap][i] == null) gameP.projectile[gameP.currentMap][i] = projectile; break;
+            }
             gameP.playSE(8);
 
             shotAvailableCounter = 0;

@@ -37,7 +37,7 @@ public class Projectile extends Entity {
         if (user.type == playerType){
             int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
             if (monsterIndex != 999){
-                gameP.player.damageMonster(monsterIndex, this.attackPower);
+                gameP.player.damageMonster(monsterIndex, this.attackPower, this.knockbackPower);
                 if (elementType == waterElement) generateParticle(new WaterParticle(), gameP.monster[gameP.currentMap][monsterIndex]);
                 else if (elementType == fireElement) generateParticle(new FireParticle(), gameP.monster[gameP.currentMap][monsterIndex]);
                 else if (elementType == earthElement) generateParticle(new EarthParticle(), gameP.monster[gameP.currentMap][monsterIndex]);
