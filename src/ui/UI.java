@@ -483,14 +483,35 @@ public class UI {
         int slotY = slotYStart;
         int slotSize = gameP.tileSize+4;
 
+        // Draw Items
         for (int i = 0; i < entity.inventory.size(); i++){
 
-            if (entity.inventory.get(i) == entity.currentWeapon || entity.inventory.get(i) == entity.currentShield){
+            if (entity.inventory.get(i) == entity.currentWeapon || entity.inventory.get(i) == entity.currentShield || entity.inventory.get(i) == entity.currentLight){
                 g2d.setColor(new Color(240, 190, 90));
                 g2d.fillRoundRect(slotX, slotY, gameP.tileSize, gameP.tileSize, 10, 10);
             }
 
             g2d.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
+
+            // Display Amount
+            if (entity == gameP.player && entity.inventory.get(i).amount > 1){
+                g2d.setFont(Oswald.deriveFont(28f));
+                int amountX, amountY;
+
+                String qty = "" + entity.inventory.get(i).amount;
+                amountX = getXForAlignToRightText(qty, slotX+44);
+                amountY = slotY + gameP.tileSize;
+
+                // Shadow
+                g2d.setColor(new Color(60, 60, 60));
+                g2d.drawString(qty, amountX, amountY);
+
+                // Quantity
+                g2d.setColor(Color.white);
+                g2d.drawString(qty, amountX-3, amountY-3);
+
+            }
+
             slotX += slotSize;
 
             if (i == 4 || i == 9 || i == 14){
@@ -844,13 +865,14 @@ public class UI {
                     gameP.gameState = gameP.dialogueState;
                     currentDialogue = "Coin tidak cukup";
                     drawDialogueScreen();
-                } else if (gameP.player.inventory.size() == gameP.player.maxInventorySize) {
-                    tradeScreenState = 0;
-                    gameP.gameState = gameP.dialogueState;
-                    currentDialogue = "Inventory Penuh";
                 } else {
-                    gameP.player.coin -= npc.inventory.get(itemIndex).price;
-                    gameP.player.inventory.add(npc.inventory.get(itemIndex));
+                    if (gameP.player.canObtainItem(npc.inventory.get(itemIndex))) {
+                        gameP.player.coin -= npc.inventory.get(itemIndex).price;
+                    } else {
+                        tradeScreenState = 0;
+                        gameP.gameState = gameP.dialogueState;
+                        currentDialogue = "Inventory Penuh";
+                    }
                 }
             }
         }
@@ -897,9 +919,35 @@ public class UI {
                     gameP.gameState = gameP.dialogueState;
                     currentDialogue = "You can't sell an \nequipped item!";
                 }else {
-                    gameP.player.inventory.remove(itemIndex);
+                    if (gameP.player.inventory.get(itemIndex).amount > 1) gameP.player.inventory.get(itemIndex).amount--;
+                    else gameP.player.inventory.remove(itemIndex);
                     gameP.player.coin += price;
                 }
+            }
+        }
+    }
+
+    public void drawSleepScreen(){
+        counter++;
+
+        if (counter < 120){
+            gameP.envM.lighting.filterAlpha += 0.01f;
+
+            if (gameP.envM.lighting.filterAlpha > 1f){
+                gameP.envM.lighting.filterAlpha = 1f;
+            }
+        }
+
+        if (counter >= 120){
+            gameP.envM.lighting.filterAlpha -= 0.01f;
+
+            if (gameP.envM.lighting.filterAlpha <= 0f){
+                gameP.envM.lighting.filterAlpha = 0f;
+                counter = 0;
+                gameP.envM.lighting.currentDayState = gameP.envM.lighting.dayState;
+                gameP.envM.lighting.dayCounter = 0;
+                gameP.gameState = gameP.playState;
+                gameP.player.getPlayerImage();
             }
         }
     }
@@ -939,5 +987,7 @@ public class UI {
         if (gameP.gameState == gameP.transitionState) drawTransition();
 
         if (gameP.gameState == gameP.tradeState) drawTradeScreen();
+
+        if (gameP.gameState == gameP.sleepState) drawSleepScreen();
     }
 }

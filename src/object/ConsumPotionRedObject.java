@@ -11,6 +11,7 @@ public class ConsumPotionRedObject extends Entity {
         this.gameP = gameP;
 
         type = consumType;
+        stackable = true;
         name = "Red Potion";
         down1 = uTool.setUp("/objects/potion_red");
         healingValue = 5;

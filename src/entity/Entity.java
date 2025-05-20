@@ -54,7 +54,7 @@ public class Entity {
     public int ammo;
     public int speed, defaultSpeed, level, exp, nextLevelExp, coin;
     public int strength, dexterity, attackPower, defensePower;
-    public Entity currentWeapon, currentShield;
+    public Entity currentWeapon, currentShield, currentLight;
     public Projectile projectile;
 
     /* Item Status */
@@ -66,6 +66,9 @@ public class Entity {
     public int useCost;
     public int price;
     public String itemDescription = "";
+    public boolean stackable;
+    public int amount = 1;
+    public int lightRadius;
 
     /* Type */
     public int type;
@@ -78,6 +81,7 @@ public class Entity {
     public final int consumType = 6;
     public final int pickupOnlyType = 7;
     public final int obstacleType = 8;
+    public final int lightType = 9;
 
     public Entity(GamePanel gameP) {
         this.gameP = gameP;
@@ -191,16 +195,16 @@ public class Entity {
 
         switch (user.direction){
             case "up":
-                nextWorldY = user.getTopY()-1;
+                nextWorldY = user.getTopY()-user.speed;
                 break;
             case "down":
-                nextWorldY = user.getBottomY()+1;
+                nextWorldY = user.getBottomY()+user.speed;
                 break;
             case "left":
-                nextWorldX = user.getLeftX()-1;
+                nextWorldX = user.getLeftX()-user.speed;
                 break;
             case "right":
-                nextWorldX = user.getRightX()+1;
+                nextWorldX = user.getRightX()+user.speed;
                 break;
         }
 

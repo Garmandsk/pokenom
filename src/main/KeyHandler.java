@@ -161,6 +161,8 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_F) shotKeyPressed = true;
         if (code == KeyEvent.VK_P) gameP.gameState = gameP.pauseState;
         if (code == KeyEvent.VK_C) gameP.gameState = gameP.characterState;
+        if (code == KeyEvent.VK_M) gameP.gameState = gameP.mapState;
+        if (code == KeyEvent.VK_X) gameP.map.miniMapOn = !gameP.map.miniMapOn;
         if (code == KeyEvent.VK_ESCAPE) gameP.gameState = gameP.optionState;
         if (code == KeyEvent.VK_B) debug = !debug;
         if (code == KeyEvent.VK_R) {
@@ -349,6 +351,10 @@ public class KeyHandler implements KeyListener {
         gameP.playSE(7);
     }
 
+    public void mapState(int code){
+        if (code == KeyEvent.VK_M) gameP.gameState = gameP.playState;
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -365,6 +371,7 @@ public class KeyHandler implements KeyListener {
         else if (gameP.gameState == gameP.optionState) optionState(code);
         else if (gameP.gameState == gameP.gameOverState) gameOverState(code);
         else if (gameP.gameState == gameP.tradeState) tradeState(code);
+        else if (gameP.gameState == gameP.mapState) mapState(code);
 
     }
 

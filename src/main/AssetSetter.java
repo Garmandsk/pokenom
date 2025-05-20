@@ -33,6 +33,16 @@ public class AssetSetter {
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 21;
         i++;
 
+        gameP.obj[mapNum][i] = new LanternObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 18;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 20;
+        i++;
+
+        gameP.obj[mapNum][i] = new TentObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 19;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 20;
+        i++;
+
         gameP.obj[mapNum][i] = new ConsumPotionRedObject(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 23;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 25;
@@ -67,7 +77,7 @@ public class AssetSetter {
         i++;
 
         gameP.obj[mapNum][i] = new ChestObject(gameP, new AxeObject(gameP));
-        gameP.obj[mapNum][i].worldX = gameP.tileSize * 12;
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 14;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
         i++;
     }

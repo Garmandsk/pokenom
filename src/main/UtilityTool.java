@@ -34,7 +34,7 @@ public class UtilityTool {
 
         try {
             tile[index] = new Tile();
-            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imagePath + ".png"));
+            tile[index].image = ImageIO.read(getClass().getResourceAsStream("/tiles/" + imagePath));
             tile[index].image = scaleImage(tile[index].image, gameP.tileSize, gameP.tileSize);
             tile[index].collision = collision;
         } catch (IOException e){

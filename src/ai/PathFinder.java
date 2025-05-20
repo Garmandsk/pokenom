@@ -37,6 +37,7 @@ public class PathFinder {
     public void resetNodes() {
         int col = 0, row = 0;
 
+
         while (col < gameP.maxWorldCol && row < gameP.maxWorldRow) {
             node[col][row].open = false;
             node[col][row].checked = false;

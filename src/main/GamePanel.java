@@ -3,6 +3,8 @@ package main;
 import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
+import environment.EnvironmentManager;
+import tile.Map;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
 import ui.UI;
@@ -31,22 +33,13 @@ public class GamePanel extends JPanel implements Runnable{
     Graphics2D g2d;
     public boolean fullScreenOn;
 
-    public UI ui = new  UI(this);
-    /* ===== */
-
-    /* Config Setting */
-    public Config config = new Config(this);
-    public PathFinder pathF = new PathFinder(this);
-    /* ===== */
-
-    public KeyHandler keyH = new KeyHandler(this);
-    public Thread gameThread;
-    public double FPS = 60;
-
     /* World Settings */
-    public final int maxWorldCol = 50, maxWorldRow = 50;
+    public int maxWorldCol, maxWorldRow;
     public final int maxWorldWidth = maxWorldCol * tileSize;
     public final int maxWorldHeight = maxWorldRow * tileSize;
+    /* ===== */
+
+    public UI ui = new  UI(this);
     /* ===== */
 
     /* Map Setting */
@@ -54,18 +47,29 @@ public class GamePanel extends JPanel implements Runnable{
     public int currentMap = 0;
     /* ===== */
 
+    /* Tile Settings */
+    public TileManager tileM = new TileManager(this);
+    public InteractiveTile[][] iTile = new InteractiveTile[maxMap][50];
+    public CollisionChecker cChecker = new CollisionChecker(this);
+    /* ===== */
+
+    /* Config Setting */
+    public Config config = new Config(this);
+    public PathFinder pathF = new PathFinder(this);
+    public EnvironmentManager envM = new EnvironmentManager(this);
+    public Map map = new Map(this);
+    /* ===== */
+
+    public KeyHandler keyH = new KeyHandler(this);
+    public Thread gameThread;
+    public double FPS = 60;
+
     /* Player Settings */
 //    int playerX = 100;
 //    int playerY = 100;
 //    int playerSpeed = 5;
 
     public Player player = new Player(this, keyH);
-    /* ===== */
-
-    /* Tile Settings */
-    public TileManager tileM = new TileManager(this);
-    public InteractiveTile[][] iTile = new InteractiveTile[maxMap][50];
-    public CollisionChecker cChecker = new CollisionChecker(this);
     /* ===== */
 
     /* Sound Setting */
@@ -102,6 +106,8 @@ public class GamePanel extends JPanel implements Runnable{
     public final int gameOverState = 5;
     public final int transitionState = 6;
     public final int tradeState = 7;
+    public final int sleepState = 8;
+    public final int mapState = 9;
     /* ===== */
 
     /* Event */
@@ -122,6 +128,7 @@ public class GamePanel extends JPanel implements Runnable{
         aSetter.setNPC();
         aSetter.setMonster();
         aSetter.setInteractiveTile();
+        envM.setup();
         gameState = playState;
 
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
@@ -293,6 +300,8 @@ public class GamePanel extends JPanel implements Runnable{
                     }
                 }
             }
+
+            envM.update();
         }
         if (gameState == pauseState) ;
     }
@@ -311,7 +320,9 @@ public class GamePanel extends JPanel implements Runnable{
 
         if (gameState == titleState){
             ui.draw(g2d);
-        }else {
+        } else if (gameState == mapState) {
+            map.drawFullMapScreen(g2d);
+        } else {
             tileM.draw(g2d); // Tile
 
             for (int i = 0; i < iTile[1].length; i++){
@@ -375,6 +386,8 @@ public class GamePanel extends JPanel implements Runnable{
             // Clear Entities
             entityList.clear();
 
+            envM.draw(g2d);
+            map.drawMiniMap(g2d);
             ui.draw(g2d); // UI
 
         }

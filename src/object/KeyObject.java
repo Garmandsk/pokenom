@@ -12,6 +12,7 @@ public class KeyObject extends Entity {
         super(gameP);
 
         type = consumType;
+        stackable = true;
         name = "Key";
         down1 = uTool.setUp("/objects/key");
         itemDescription = "[ " + name + " ]\nOpen Something.";
@@ -22,7 +23,7 @@ public class KeyObject extends Entity {
         gameP.gameState = gameP.dialogueState;
 
         int objIndex = getDetected(entity, gameP.obj, "Door");
-//        System.out.println("Object Index: " + objIndex);
+//        System.out. ("Object Index: " + objIndex);
 
         if (objIndex != 999){
             gameP.ui.currentDialogue = "You use the " + name + "\nand open the door";

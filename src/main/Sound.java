@@ -25,6 +25,7 @@ public class Sound {
         uTool.setUp(soundURL, 9, "cuttree");
         uTool.setUp(soundURL, 10, "gameover");
         uTool.setUp(soundURL, 11, "stairs");
+        uTool.setUp(soundURL, 12, "sleep");
 
 
     }

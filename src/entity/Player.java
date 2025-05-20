@@ -17,6 +17,7 @@ public class Player extends Entity {
     //    int doorOpened = 0;
     //    private int hasKey = 0;
     public boolean attackCanceled;
+    public boolean lightUpdated;
 
     public Player(GamePanel gameP, KeyHandler keyH){
         super(gameP);
@@ -132,6 +133,17 @@ public class Player extends Entity {
         }
     }
 
+    public void getSleepingImage(BufferedImage image){
+        up1 = image;
+        up2 = image;
+        down1 = image;
+        down2 = image;
+        left1 = image;
+        left2 = image;
+        right1 = image;
+        right2 = image;
+    }
+
     public int getAttack(){
         attackArea = currentWeapon.attackArea;
         return strength * currentWeapon.attackValue;
@@ -162,33 +174,22 @@ public class Player extends Entity {
             else {
                 String text;
 
-//                System.out.println("Slot Inventory Terpakai: " + inventory.size());
-//                System.out.println("Max Inventory: " + maxInventorySize);
-
-                if (inventory.size() != maxInventorySize){
-                    inventory.add(gameP.obj[gameP.currentMap][i]);
-                    System.out.println(i);
+                if (canObtainItem(gameP.obj[gameP.currentMap][i]) == true){
                     gameP.playSE(1);
-
                     text = "Got A " + gameP.obj[gameP.currentMap][i].name + "!";
-                    gameP.obj[gameP.currentMap][i] = null;
-                } else {
-                    text = "Your Inventory Is Full!";
-                }
+                } else text = "Your Inventory Is Full!";
 
                 gameP.ui.addMessage(text);
+                gameP.obj[gameP.currentMap][i] = null;
             }
         }
     }
 
-    public void selectItem(){
+    public void selectItem() {
         int itemIndex = gameP.ui.getItemIndexOnSlot(gameP.ui.playerSlotCol, gameP.ui.playerSlotRow);
 
         if (itemIndex < inventory.size()){
             Entity selectedItem = inventory.get(itemIndex);
-//            System.out.println("Item Index: " + itemIndex);
-//            System.out.println("Entity Type: " + selectedItem.type);
-//            System.out.println("Entity Name: " + selectedItem.name);
 
             if (selectedItem.type == swordType || selectedItem.type == axeType){
                 currentWeapon = selectedItem;
@@ -201,9 +202,18 @@ public class Player extends Entity {
                 defensePower = getDefense();
             }
 
+            if (selectedItem.type == lightType){
+                if (currentLight == selectedItem) currentLight = null;
+                else currentLight = selectedItem;
+
+                lightUpdated = true;
+            }
+
             if (selectedItem.type == consumType){
-//                System.out.println("tes");
-                if (selectedItem.use(this)) inventory.remove(itemIndex);
+                if (selectedItem.use(this)) {
+                    if (selectedItem.amount > 1) selectedItem.amount--;
+                    else inventory.remove(itemIndex);
+                }
             }
         }
     }
@@ -342,7 +352,7 @@ public class Player extends Entity {
         entity.knockback = true;
     }
 
-    void checkLevelUp(){
+    public void checkLevelUp(){
 
         if (this.exp >= this.nextLevelExp){
             gameP.playSE(6);
@@ -358,6 +368,44 @@ public class Player extends Entity {
             gameP.gameState = gameP.dialogueState;
             gameP.ui.currentDialogue = "You Are Level " + level + "\n Well Played!";
         }
+    }
+
+    public int searchItemInInventory(String itemName){
+        int itemIndex = 999;
+
+        for (int i = 0; i < inventory.size(); i++){
+            if (inventory.get(i).name.equals((itemName))){
+                itemIndex = i;
+                break;
+            }
+        }
+
+        return itemIndex;
+    }
+
+    public boolean canObtainItem(Entity item){
+        boolean canObtain = false;
+
+        if (item.stackable){
+            int index = searchItemInInventory(item.name);
+
+            if (index != 999) {
+                inventory.get(index).amount++;
+                canObtain = true;
+            } else {
+                if (inventory.size() != maxInventorySize){
+                    inventory.add(item);
+                    canObtain = true;
+                }
+            }
+        } else {
+            if (inventory.size() != maxInventorySize){
+                inventory.add(item);
+                canObtain = true;
+            }
+        }
+
+        return canObtain;
     }
 
     public void update(){

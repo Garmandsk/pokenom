@@ -37,12 +37,13 @@ public class ChestObject extends Entity {
             StringBuilder sb = new StringBuilder();
             sb.append("You open the chest and find \na " + loot.name + "!");
 
-            if (gameP.player.inventory.size() == gameP.player.maxInventorySize) sb.append("\n...but your Inventory is full");
-            else{
+            if (gameP.player.canObtainItem(loot)){
                 sb.append("\nYou obtain the " + loot.name + "!");
-                gameP.player.inventory.add(loot);
                 down1 = image2;
                 opened = true;
+            }
+            else{
+                sb.append("\n...but your Inventory is full");
             }
             gameP.ui.currentDialogue = sb.toString();
         }else {
