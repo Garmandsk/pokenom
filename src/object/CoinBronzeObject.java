@@ -4,6 +4,8 @@ import entity.Entity;
 import main.GamePanel;
 
 public class CoinBronzeObject extends Entity {
+    public static final String objName = "Bronze Coin";
+
     GamePanel gameP;
 
     public CoinBronzeObject(GamePanel gameP) {
@@ -11,7 +13,7 @@ public class CoinBronzeObject extends Entity {
         this.gameP = gameP;
 
         this.type = pickupOnlyType;
-        name = "Bronze Coin";
+        name = objName;
         value = 1;
         down1 = uTool.setUp("/objects/coin_bronze");
     }

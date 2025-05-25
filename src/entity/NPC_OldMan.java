@@ -18,6 +18,9 @@ public class NPC_OldMan extends Entity {
 
         direction = "down";
         speed = 3;
+
+        dialogueSet = -1;
+
         getOldManImage();
         setDialogue();
     }
@@ -88,13 +91,26 @@ public class NPC_OldMan extends Entity {
     }
 
     public void setDialogue(){
-        dialogue[0] = "Halo Anak Muda..";
-        dialogue[1] = "Hari Yang Indah \nUntuk Berpetualang";
-        dialogue[2] = "Semoga Beruntung!";
+        dialogues[0][0] = "Halo Anak Muda..";
+        dialogues[0][1] = "Hari Yang Indah \nUntuk Berpetualang";
+        dialogues[0][2] = "Semoga Beruntung!";
+
+        dialogues[1][0] = "Jalan - jalan ke jepang";
+        dialogues[1][1] = "Gatau mau nulis apa";
+        dialogues[1][2] = "Perjalanan masih panjang";
+        dialogues[1][3] = "Untuk kita lewati bersama";
+
+        dialogues[2][0] = "Langit yang indah";
+
     }
 
     public void speak(){
-        super.speak();
-        onPath = true;
+        facePlayerDirection();
+        startDialogue(this, dialogueSet);
+        dialogueSet++;
+
+        if (gameP.player.life < gameP.player.maxLife/3) dialogueSet = 1;
+        else if (dialogues[dialogueSet][0] == null) dialogueSet = 0;
+//        onPath = true;
     }
 }

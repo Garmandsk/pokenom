@@ -5,13 +5,15 @@ import entity.Projectile;
 import main.GamePanel;
 
 public class FireballObject extends Projectile {
+    public static final String objName = "Fireball";
+
     GamePanel gameP;
 
     public FireballObject(GamePanel gameP) {
         super(gameP);
         this.gameP =  gameP;
 
-        name = "Fireball";
+        name = objName;
         speed = 5;
         maxLife = 80;
         life =  maxLife;

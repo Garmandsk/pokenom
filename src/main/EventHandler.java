@@ -6,8 +6,9 @@ import java.awt.*;
 
 public class EventHandler {
     GamePanel gameP;
-
     EventRect[][][] eventRect;
+    Entity eventMaster;
+
     public int previousEventX;
     public int previousEventY;
     boolean canTouchEvent;
@@ -15,6 +16,7 @@ public class EventHandler {
 
     EventHandler(GamePanel gameP){
         this.gameP = gameP;
+        eventMaster = new Entity(gameP);
 
         eventRect = new EventRect[gameP.maxMap][gameP.maxWorldCol][gameP.maxWorldRow];
 
@@ -38,6 +40,14 @@ public class EventHandler {
                 }
             }
         }
+
+        setDialogue();
+    }
+
+    public void setDialogue(){
+        eventMaster.dialogues[0][0] = "Jatuh Kedalam Jurang!";
+        eventMaster.dialogues[1][0] = "Kolam Ajaib! \n\nMenyimpan Permainan";
+
     }
 
     public void checkEvent(){
@@ -78,10 +88,10 @@ public class EventHandler {
 //            if (hit(20, 9, "right")) healingPool(gameP.dialogueState);
 //            if (hit(20, 10, "right")) healingPool(gameP.dialogueState);
 
-            else if (hit(0, 21, 20, "any")) teleport(1, gameP.dialogueState, 12, 13);
+            else if (hit(0, 21, 20, "any")) teleport(1, 12, 13);
 
-            else if (hit(0, 10, 39, "any")) teleport(1, gameP.dialogueState, 12, 13);
-            else if (hit(1, 12, 13, "any")) teleport(0, gameP.dialogueState, 10, 39);
+            else if (hit(0, 10, 39, "any")) teleport(1, 12, 13);
+            else if (hit(1, 12, 13, "any")) teleport(0, 10, 39);
             else if (hit(1, 12, 9, "up")) speak(gameP.npc[1][0]);
 
         }
@@ -116,7 +126,7 @@ public class EventHandler {
 
     public void damagePit(int gameState){
         gameP.gameState = gameState;
-        gameP.ui.currentDialogue = "Jatuh Kedalam Jurang!";
+        eventMaster.startDialogue(eventMaster, 0);
         gameP.player.life -= 1;
 //        eventRect[eventCol][eventRow].eventDone = true;
         canTouchEvent = false;
@@ -126,21 +136,21 @@ public class EventHandler {
         if (gameP.keyH.enterPressed){
             gameP.gameState = gameState;
             gameP.player.attackCanceled = true;
-            gameP.ui.currentDialogue = "Kolam Ajaib!";
+            eventMaster.startDialogue(eventMaster, 1);
             gameP.player.life = gameP.player.maxLife;
             gameP.player.mana = gameP.player.maxMana;
             gameP.aSetter.setMonster();
+            gameP.saveLoad.save();
         }
     }
 
-    public void teleport(int map, int gameState, int col, int row){
+    public void teleport(int map, int col, int row){
         gameP.playSE(11);
 
         gameP.gameState = gameP.transitionState;
         tempMap = map;
         tempCol = col;
         tempRow = row;
-        gameP.ui.currentDialogue = "Teleport!";
         canTouchEvent = false;
     }
 

@@ -4,8 +4,6 @@ import main.GamePanel;
 import main.UtilityTool;
 import object.*;
 
-import java.util.Random;
-
 public class NPC_Merchant extends Entity {
     public NPC_Merchant(GamePanel gameP){
         super(gameP);
@@ -37,8 +35,13 @@ public class NPC_Merchant extends Entity {
     }
 
     public void setDialogue(){
-        dialogue[0] = "Maling atau Pembeli\n" +
+        dialogues[0][0] = "Maling atau Pembeli\n" +
                 "Kau yang mana ?";
+        dialogues[1][0] = "Sampai Jumpa!";
+        dialogues[2][0] = "Coin tidak cukup";
+        dialogues[3][0] = "Inventory Penuh";
+        dialogues[4][0] = "You can't sell an \nequipped item!";
+
     }
 
     public void setItems(){
@@ -51,8 +54,6 @@ public class NPC_Merchant extends Entity {
     }
 
     public void speak(){
-        super.speak();
-
         gameP.gameState = gameP.tradeState;
         gameP.ui.npc = this;
     }

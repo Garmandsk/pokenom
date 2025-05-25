@@ -4,6 +4,8 @@ import entity.Entity;
 import main.GamePanel;
 
 public class HeartObject extends Entity {
+    public static final String objName = "Heart";
+
     GamePanel gameP;
 
     public HeartObject(GamePanel gameP){
@@ -11,7 +13,7 @@ public class HeartObject extends Entity {
         this.gameP = gameP;
 
         type = pickupOnlyType;
-        name = "Heart";
+        name = objName;
         healingValue = 2;
 
         down1 = uTool.setUp("/objects/heart_full");

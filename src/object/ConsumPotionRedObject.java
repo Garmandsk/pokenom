@@ -4,6 +4,8 @@ import entity.Entity;
 import main.GamePanel;
 
 public class ConsumPotionRedObject extends Entity {
+    public static final String objName = "Red Potion";
+
     GamePanel gameP;
 
     public ConsumPotionRedObject(GamePanel gameP){
@@ -12,19 +14,25 @@ public class ConsumPotionRedObject extends Entity {
 
         type = consumType;
         stackable = true;
-        name = "Red Potion";
+        name = objName;
         down1 = uTool.setUp("/objects/potion_red");
         healingValue = 5;
         itemDescription = "[ " + name + " ]\nHeals +" + healingValue + "!";
+
+        setDialogue();
+    }
+
+    public void setDialogue(){
+        dialogues[0][0] = "Drinked The " + name + "!\nYour Life has been recovered \nby " + healingValue + ".";
+
     }
 
     public boolean use(Entity entity){
         gameP.playSE(2);
         entity.life += healingValue;
 
-        String text = "Drinked The " + name + "!\nYour Life has been recovered \nby " + healingValue + ".";
         gameP.gameState = gameP.dialogueState;
-        gameP.ui.currentDialogue = text;
+        startDialogue(this, 0);
 
         return true;
     }

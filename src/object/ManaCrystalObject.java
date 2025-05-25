@@ -4,6 +4,8 @@ import entity.Entity;
 import main.GamePanel;
 
 public class ManaCrystalObject extends Entity {
+    public static final String objName = "Mana Crystal";
+
     GamePanel gameP;
 
     public ManaCrystalObject(GamePanel gameP) {
@@ -11,7 +13,7 @@ public class ManaCrystalObject extends Entity {
         this.gameP = gameP;
 
         type = pickupOnlyType;
-        name = "Mana Crytsal";
+        name = objName;
         healingValue = 1;
 
         down1 = uTool.setUp("/objects/manacrystal_full");

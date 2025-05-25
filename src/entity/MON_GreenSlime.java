@@ -54,57 +54,27 @@ public class MON_GreenSlime extends Entity {
     }
 
     public void setAction(){
-        /*
-        if (actionLockCounter >= 120){
-            Random random = new Random();
-            int i = random.nextInt(4)+1;
+        int xDistance = Math.abs(worldX - gameP.player.worldX);
+        int yDistance = Math.abs(worldY - gameP.player.worldY);
+        int tileDistance = (xDistance + yDistance)/gameP.tileSize;
 
-            if (i == 1){
-                direction = "up";
-            } else if (i == 2) {
-                direction = "down";
-            } else if (i == 3) {
-                direction = "left";
-            } else if (i == 4) {
-                direction = "right";
-            }
+        if (onPath == true){
 
-            actionLockCounter = 0;
-        }
-         */
+            // Check if it stop chasing
+            checkStopChasingOrNot(gameP.player, 20, 100);
 
-        if (onPath){
-//            int goalCol = 12, goalRow = 9;
-            int goalCol = (gameP.player.worldX + gameP.player.solidArea.x)/gameP.tileSize;
-            int goalRow = (gameP.player.worldY + gameP.player.solidArea.y)/gameP.tileSize;
+            // It's destination
+            searchPath(getGoalCol(gameP.player), getGoalRow(gameP.player));
 
-            searchPath(goalCol, goalRow);
+            // Check if it shoots projectile
+            checkShotOrNot(200, 30);
 
-            int i = new Random().nextInt(200)+1;
-            if (i > 197 && projectile.alive == false && shotAvailableCounter == 30){
-                projectile.set(worldX, worldY, direction, true, this);
-//                gameP.projectileList.add(projectile);
+        } else {
+            // Check if it start chasing
+            checkStartChasingOrNot(gameP.player, 5, 100);
 
-                for (int ii = 0; ii < gameP.projectile[1].length; ii++){
-                    if (gameP.projectile[gameP.currentMap][ii] == null) gameP.projectile[gameP.currentMap][ii] = projectile; break;
-                }
-                shotAvailableCounter = 0;
-            }
-        }else {
-            actionLockCounter++;
-
-            Random RAND = new Random();
-            if (actionLockCounter >= 120) {
-                int i = RAND.nextInt(4) + 1;
-                direction = switch (i) {
-                    case 1 -> "up";
-                    case 2 -> "down";
-                    case 3 -> "left";
-                    case 4 -> "right";
-                    default -> throw new IllegalStateException("Unexpected value: " + i);
-                };
-                actionLockCounter = 0;
-            }
+            // Get Random direction
+            getRandomDirection();
         }
     }
 
@@ -124,16 +94,5 @@ public class MON_GreenSlime extends Entity {
 
     public void update(){
         super.update();
-
-        int xDistance = Math.abs(worldX - gameP.player.worldX);
-        int yDistance = Math.abs(worldY - gameP.player.worldY);
-        int tileDistance = (xDistance + yDistance)/gameP.tileSize;
-
-        if (onPath == false && tileDistance < 5){
-            int i = new Random().nextInt(100)+1;
-            if (i > 50) onPath = true;
-        }
-
-//        if (onPath == true && tileDistance > 20) onPath = false;
     }
 }

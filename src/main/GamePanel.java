@@ -1,6 +1,8 @@
 package main;
 
 import ai.PathFinder;
+import data.DataStorage;
+import data.SaveLoad;
 import entity.Entity;
 import entity.Player;
 import environment.EnvironmentManager;
@@ -12,6 +14,7 @@ import ui.UI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.*;
 
 public class GamePanel extends JPanel implements Runnable{
@@ -39,9 +42,6 @@ public class GamePanel extends JPanel implements Runnable{
     public final int maxWorldHeight = maxWorldRow * tileSize;
     /* ===== */
 
-    public UI ui = new  UI(this);
-    /* ===== */
-
     /* Map Setting */
     public final int maxMap = 10;
     public int currentMap = 0;
@@ -53,24 +53,26 @@ public class GamePanel extends JPanel implements Runnable{
     public CollisionChecker cChecker = new CollisionChecker(this);
     /* ===== */
 
+    /* Object Settings */
+    public Entity[][] obj = new Entity[maxMap][20];
+    public AssetSetter aSetter = new AssetSetter(this);
+    public EntityGenerator entGen = new EntityGenerator(this);
+    /* ===== */
+
     /* Config Setting */
     public Config config = new Config(this);
     public PathFinder pathF = new PathFinder(this);
     public EnvironmentManager envM = new EnvironmentManager(this);
     public Map map = new Map(this);
-    /* ===== */
-
-    public KeyHandler keyH = new KeyHandler(this);
     public Thread gameThread;
     public double FPS = 60;
-
-    /* Player Settings */
-//    int playerX = 100;
-//    int playerY = 100;
-//    int playerSpeed = 5;
-
-    public Player player = new Player(this, keyH);
+    public KeyHandler keyH = new KeyHandler(this);
+    public SaveLoad saveLoad = new SaveLoad(this);
+    File dataFile = new File("save.dat");
     /* ===== */
+
+    public UI ui = new  UI(this);
+    public Player player = new Player(this, keyH);
 
     /* Sound Setting */
     public Sound music = new Sound();
@@ -83,11 +85,6 @@ public class GamePanel extends JPanel implements Runnable{
 
     /* Monster */
     public Entity[][] monster = new Entity[maxMap][10];
-    /* ===== */
-
-    /* Object Settings */
-    public Entity[][] obj = new Entity[maxMap][20];
-    public AssetSetter aSetter = new AssetSetter(this);
     /* ===== */
 
     ArrayList<Entity> entityList = new ArrayList<Entity>();
@@ -129,7 +126,8 @@ public class GamePanel extends JPanel implements Runnable{
         aSetter.setMonster();
         aSetter.setInteractiveTile();
         envM.setup();
-        gameState = playState;
+        saveLoad.load();
+        gameState = titleState;
 
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2d = (Graphics2D)tempScreen.getGraphics();
@@ -137,22 +135,20 @@ public class GamePanel extends JPanel implements Runnable{
         if (fullScreenOn) setFullScreen();
     }
 
-    public void retry(){
+    public void resetGame(boolean restart){
         player.setDefaultPositions();
-        player.restoreLifeAndMana();
+        player.restoreStatus();
+        player.resetCounter();
         aSetter.setNPC();
         aSetter.setMonster();
-    }
 
-    public void restart(){
-        player.setDefaultValue();
-        player.setDefaultPositions();
-        player.restoreLifeAndMana();
-        player.setItems();
-        aSetter.setObject();
-        aSetter.setNPC();
-        aSetter.setMonster();
-        aSetter.setInteractiveTile();
+        if (restart){
+            player.setDefaultValue();
+            aSetter.setObject();
+            aSetter.setInteractiveTile();
+            envM.lighting.resetDay();
+        }
+
     }
 
     public void setFullScreen() {

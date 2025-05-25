@@ -40,6 +40,8 @@ public class Map extends TileManager{
                     col = 0;
                 }
             }
+
+            g2d.dispose();
         }
     }
 

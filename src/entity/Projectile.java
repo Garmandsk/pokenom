@@ -8,11 +8,6 @@ import particle.WaterParticle;
 
 public class Projectile extends Entity {
     Entity user;
-    public int elementType;
-    public int waterElement = 1;
-    public int fireElement = 2;
-    public int earthElement = 3;
-    public int thunderElement = 4;
 
     public Projectile(GamePanel gameP) {
         super(gameP);
@@ -37,7 +32,7 @@ public class Projectile extends Entity {
         if (user.type == playerType){
             int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
             if (monsterIndex != 999){
-                gameP.player.damageMonster(monsterIndex, this.attackPower, this.knockbackPower);
+                gameP.player.damageMonster(monsterIndex, this, this.attackPower, this.knockbackPower);
                 if (elementType == waterElement) generateParticle(new WaterParticle(), gameP.monster[gameP.currentMap][monsterIndex]);
                 else if (elementType == fireElement) generateParticle(new FireParticle(), gameP.monster[gameP.currentMap][monsterIndex]);
                 else if (elementType == earthElement) generateParticle(new EarthParticle(), gameP.monster[gameP.currentMap][monsterIndex]);

@@ -26,6 +26,9 @@ public class Sound {
         uTool.setUp(soundURL, 10, "gameover");
         uTool.setUp(soundURL, 11, "stairs");
         uTool.setUp(soundURL, 12, "sleep");
+        uTool.setUp(soundURL, 13, "blocked");
+        uTool.setUp(soundURL, 14, "parry");
+        uTool.setUp(soundURL, 15, "speak");
 
 
     }

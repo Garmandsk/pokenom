@@ -4,12 +4,13 @@ import entity.Entity;
 import main.GamePanel;
 
 public class AxeObject extends Entity {
+    public static final String objName = "Woodcutter's Axe";
 
     public AxeObject(GamePanel gameP){
         super(gameP);
 
         type = axeType;
-        name = "Woodcutter's Axe";
+        name = objName;
         down1 = uTool.setUp("/objects/axe");
         attackValue = 2;
         knockbackPower = 5;
@@ -17,5 +18,8 @@ public class AxeObject extends Entity {
         attackArea.height = gameP.tileSize/2 + 16;
         itemDescription = "[ " + name + " ]\nChopp Chopp!";
         price = 10;
+
+        motion1Duration = 20;
+        motion2Duration = 40;
     }
 }

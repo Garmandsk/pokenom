@@ -4,17 +4,16 @@ import entity.Entity;
 import main.GamePanel;
 
 public class ChestObject extends Entity {
-    GamePanel gameP;
-    Entity loot;
-    boolean opened;
+    public static final String objName = "Chest";
 
-    public ChestObject(GamePanel gameP, Entity loot){
+    GamePanel gameP;
+
+    public ChestObject(GamePanel gameP){
         super(gameP);
         this.gameP = gameP;
-        this.loot = loot;
 
         type = obstacleType;
-        name = "Chest";
+        name = objName;
         image = uTool.setUp("/objects/chest");
         image2 = uTool.setUp("/objects/chest_opened");
         down1 = image;
@@ -28,26 +27,35 @@ public class ChestObject extends Entity {
         defaultSolidAreaY = solidArea.y;
     }
 
+    public void setLoot(Entity loot){
+        this.loot = loot;
+
+        setDialogue();
+    }
+
+    public void setDialogue(){
+        dialogues[0][0] = "You open the chest and find \na " + loot.name + "!" + "\nYou obtain the " + loot.name + "!";
+        dialogues[1][0] = "You open the chest and find \na " + loot.name + "!" + "\n...but your Inventory is full";
+        dialogues[2][0] = "it's a empty chest";
+
+    }
+
     public void interact(){
         gameP.gameState = gameP.dialogueState;
 
         if (opened == false){
             gameP.playSE(7);
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("You open the chest and find \na " + loot.name + "!");
-
             if (gameP.player.canObtainItem(loot)){
-                sb.append("\nYou obtain the " + loot.name + "!");
                 down1 = image2;
                 opened = true;
+                startDialogue(this, 0);
             }
             else{
-                sb.append("\n...but your Inventory is full");
+                startDialogue(this, 1);
             }
-            gameP.ui.currentDialogue = sb.toString();
-        }else {
-            gameP.ui.currentDialogue = "it's a empty chest";
+        } else {
+            startDialogue(this, 2);
         }
     }
 }

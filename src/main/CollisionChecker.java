@@ -22,7 +22,10 @@ public class CollisionChecker {
 
         int tileNum1, tileNum2;
 
-        switch (entity.direction){
+        String direction = entity.direction;
+        if (entity.knockback) direction = entity.knockbackDirection;
+
+        switch (direction){
             case "up":
                 entityTopRow = (entityTopWorldY - entity.speed)/gameP.tileSize;
                 tileNum1 = gameP.tileM.mapTileNum[gameP.currentMap][entityLeftCol][entityTopRow];
@@ -109,6 +112,9 @@ public class CollisionChecker {
     public int checkEntity(Entity entity, Entity[][] target){
         int index = 999;
 
+        String direction = entity.direction;
+        if (entity.knockback) direction = entity.knockbackDirection;
+
         for(int i = 0; i < target[1].length; i++){
             if(target[gameP.currentMap][i] != null){
                 /* Yang Nabrak */
@@ -119,7 +125,7 @@ public class CollisionChecker {
                 target[gameP.currentMap][i].solidArea.x += target[gameP.currentMap][i].worldX;
                 target[gameP.currentMap][i].solidArea.y += target[gameP.currentMap][i].worldY;
 
-                switch (entity.direction){
+                switch (direction){
                     case "up":
                         entity.solidArea.y -= entity.speed;
                         break;

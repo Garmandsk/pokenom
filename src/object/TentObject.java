@@ -4,6 +4,8 @@ import entity.Entity;
 import main.GamePanel;
 
 public class TentObject extends Entity {
+    public static final String objName = "Tent";
+
     GamePanel gamep;
 
     public TentObject(GamePanel gameP) {
@@ -11,7 +13,7 @@ public class TentObject extends Entity {
         this.gamep = gameP;
 
         type = consumType;
-        name = "Tent";
+        name = objName;
         down1 = uTool.setUp("/objects/tent");
         itemDescription = "[ " + name + " ] \nYou can sleep until \nnext morning.";
         price = 300;

@@ -5,13 +5,15 @@ import entity.Projectile;
 import main.GamePanel;
 
 public class RockObject extends Projectile {
+    public static final String objName = "Rock";
+
     GamePanel gameP;
 
     public RockObject(GamePanel gameP) {
         super(gameP);
         this.gameP =  gameP;
 
-        name = "Rock";
+        name = objName;
         speed = 8;
         maxLife = 80;
         life =  maxLife;

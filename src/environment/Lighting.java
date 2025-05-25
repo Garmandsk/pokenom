@@ -78,6 +78,11 @@ public class Lighting {
         g2d.dispose();
     }
 
+    public void resetDay(){
+        currentDayState = dayState;
+        filterAlpha = 0f;
+    }
+
     public void update(){
         if (gameP.player.lightUpdated) {
             setLightSource();

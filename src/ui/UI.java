@@ -35,7 +35,8 @@ public class UI {
 //    DecimalFormat dFormat = new DecimalFormat("#0.00");
 
     /* Dialogue */
-    public String currentDialogue = "";
+    public String currentDialogue = "", combinedText = "";
+    public int charIndex = 0;
 
     /* State */
     public int titleScreenState = 0;
@@ -227,6 +228,34 @@ public class UI {
 
         x += gameP.tileSize/2;
         y += gameP.tileSize;
+
+        if (npc.dialogues[npc.dialogueSet][npc.dialogueIndex] != null){
+//            currentDialogue = npc.dialogues[npc.dialogueSet][npc.dialogueIndex];
+
+            char[] characters = npc.dialogues[npc.dialogueSet][npc.dialogueIndex].toCharArray();
+            if (charIndex < characters.length){
+                gameP.playSE(15);
+                String str = String.valueOf(characters[charIndex]);
+                combinedText += str;
+                currentDialogue = combinedText;
+                charIndex++;
+            }
+
+            if (gameP.keyH.enterPressed){
+                charIndex = 0;
+                combinedText = "";
+
+                if (gameP.gameState == gameP.dialogueState){
+                    npc.dialogueIndex++;
+                    gameP.keyH.enterPressed = false;
+                }
+            }
+
+        } else {
+            npc.dialogueIndex = 0;
+            if (gameP.gameState == gameP.dialogueState) gameP.gameState = gameP.playState;
+        }
+
         for (String line : currentDialogue.split("\n")){
             g2d.drawString(line, x, y);
             y += gameP.tileSize;
@@ -274,23 +303,46 @@ public class UI {
         /* Menu */
         g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 40f));
 
-        text = "NEW GAME";
-        x = getXForCenteredText(text);
-        y += gameP.tileSize*4;
-        g2d.drawString(text, x, y);
-        if (commandNum ==  0) g2d.drawString(">", x - gameP.tileSize, y);
 
-        text = "CONTINUE";
-        x = getXForCenteredText(text);
-        y += gameP.tileSize*1 ;
-        g2d.drawString(text, x, y);
-        if (commandNum ==  1) g2d.drawString(">", x - gameP.tileSize, y);
+        if (gameP.saveLoad.haveData()) {
+            text = "NEW GAME";
+            x = getXForCenteredText(text);
+            y += gameP.tileSize*4;
+            g2d.drawString(text, x, y);
+            if (commandNum ==  0) g2d.drawString(">", x - gameP.tileSize, y);
 
-        text = "EXIT";
-        x = getXForCenteredText(text);
-        y += gameP.tileSize*1;
-        g2d.drawString(text, x, y);
-        if (commandNum ==  2) g2d.drawString(">", x - gameP.tileSize, y);
+            text = "CONTINUE";
+            x = getXForCenteredText(text);
+            y += gameP.tileSize*1 ;
+            g2d.drawString(text, x, y);
+            if (commandNum ==  1) g2d.drawString(">", x - gameP.tileSize, y);
+
+            text = "EXIT";
+            x = getXForCenteredText(text);
+            y += gameP.tileSize*1;
+            g2d.drawString(text, x, y);
+            if (commandNum ==  2) g2d.drawString(">", x - gameP.tileSize, y);
+
+        } else {
+            text = "NEW GAME";
+            x = getXForCenteredText(text);
+            y += gameP.tileSize*4;
+            g2d.drawString(text, x, y);
+            if (commandNum ==  0) g2d.drawString(">", x - gameP.tileSize, y);
+
+            g2d.setColor(Color.black);
+            text = "CONTINUE";
+            x = getXForCenteredText(text);
+            y += gameP.tileSize*1 ;
+            g2d.drawString(text, x, y);
+
+            g2d.setColor(new Color(255, 203, 5));
+            text = "EXIT";
+            x = getXForCenteredText(text);
+            y += gameP.tileSize*1;
+            g2d.drawString(text, x, y);
+            if (commandNum ==  1) g2d.drawString(">", x - gameP.tileSize, y);        }
+
     }
 
     public void title_selectElement(){
@@ -799,6 +851,7 @@ public class UI {
     }
 
     public void trade_select(){
+        npc.dialogueSet = 0;
         drawDialogueScreen();
 
         int x = gameP.tileSize * 13;
@@ -819,7 +872,6 @@ public class UI {
         y += gameP.tileSize;
         g2d.drawString("Leave", x, y);
         if (commandNum == 2) g2d.drawString(">", x-25, y);
-
 
     }
 
@@ -862,16 +914,13 @@ public class UI {
             if (gameP.keyH.enterPressed){
                 if (npc.inventory.get(itemIndex).price > gameP.player.coin){
                     tradeScreenState = 0;
-                    gameP.gameState = gameP.dialogueState;
-                    currentDialogue = "Coin tidak cukup";
-                    drawDialogueScreen();
+                    npc.startDialogue(npc, 2);
                 } else {
                     if (gameP.player.canObtainItem(npc.inventory.get(itemIndex))) {
                         gameP.player.coin -= npc.inventory.get(itemIndex).price;
                     } else {
                         tradeScreenState = 0;
-                        gameP.gameState = gameP.dialogueState;
-                        currentDialogue = "Inventory Penuh";
+                        npc.startDialogue(npc, 3);
                     }
                 }
             }
@@ -916,8 +965,7 @@ public class UI {
             if (gameP.keyH.enterPressed){
                 if (gameP.player.inventory.get(itemIndex) == gameP.player.currentWeapon || gameP.player.inventory.get(itemIndex) == gameP.player.currentShield){
                     tradeScreenState = 0;
-                    gameP.gameState = gameP.dialogueState;
-                    currentDialogue = "You can't sell an \nequipped item!";
+                    npc.startDialogue(npc, 4);
                 }else {
                     if (gameP.player.inventory.get(itemIndex).amount > 1) gameP.player.inventory.get(itemIndex).amount--;
                     else gameP.player.inventory.remove(itemIndex);
@@ -947,7 +995,7 @@ public class UI {
                 gameP.envM.lighting.currentDayState = gameP.envM.lighting.dayState;
                 gameP.envM.lighting.dayCounter = 0;
                 gameP.gameState = gameP.playState;
-                gameP.player.getPlayerImage();
+                gameP.player.getImage();
             }
         }
     }

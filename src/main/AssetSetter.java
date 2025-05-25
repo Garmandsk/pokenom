@@ -1,6 +1,7 @@
 package main;
 
 import entity.MON_GreenSlime;
+import entity.MON_Orc;
 import entity.NPC_Merchant;
 import entity.NPC_OldMan;
 import object.*;
@@ -43,6 +44,11 @@ public class AssetSetter {
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 20;
         i++;
 
+        gameP.obj[mapNum][i] = new DoorObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 25;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 21;
+        i++;
+
         gameP.obj[mapNum][i] = new ConsumPotionRedObject(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 23;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 25;
@@ -71,12 +77,14 @@ public class AssetSetter {
         mapNum = 1;
         i = 0;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP, new KeyObject(gameP));
+        gameP.obj[mapNum][i] = new ChestObject(gameP);
+        gameP.obj[mapNum][i].setLoot(new KeyObject(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 10;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
         i++;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP, new AxeObject(gameP));
+        gameP.obj[mapNum][i] = new ChestObject(gameP);
+        gameP.obj[mapNum][i].setLoot(new AxeObject(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 14;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
         i++;
@@ -111,6 +119,11 @@ public class AssetSetter {
         gameP.monster[mapNum][i] = new MON_GreenSlime(gameP);
         gameP.monster[mapNum][i].worldX = 24 * gameP.tileSize;
         gameP.monster[mapNum][i].worldY = 38 * gameP.tileSize;
+        i++;
+
+        gameP.monster[mapNum][i] = new MON_Orc(gameP);
+        gameP.monster[mapNum][i].worldX = 12 * gameP.tileSize;
+        gameP.monster[mapNum][i].worldY = 33 * gameP.tileSize;
         i++;
     }
 
