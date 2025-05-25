@@ -402,7 +402,7 @@ public class Player extends Entity {
     }
 
     public void update(){
-        int moveX = 0, moveY = 0;
+        double moveX = 0, moveY = 0;
 
         if (knockback){
 
@@ -470,6 +470,12 @@ public class Player extends Entity {
 //            System.out.println("kanan");
                 direction = "right";
                 moveX += speed;
+            }
+
+            if (moveX != 0 && moveY != 0) {
+                double length = Math.sqrt(moveX * moveX + moveY * moveY);
+                moveX = moveX / length * speed;
+                moveY = moveY / length * speed;
             }
 
             /* Check Tile Collision */
