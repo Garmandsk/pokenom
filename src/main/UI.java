@@ -333,6 +333,7 @@ public class UI {
         g2d.setColor(Color.GRAY);
         g2d.fillRect(0, 0, gameP.screenWidth, gameP.screenHeight);
 
+        System.out.println("Title SUb State: " + subState);
         switch (subState) {
             case 0:
                 title_mainMenu();
@@ -698,6 +699,7 @@ public class UI {
                 break;
         }
 
+        gameP.keyH.escPressed = false;
         gameP.keyH.enterPressed = false;
     }
 

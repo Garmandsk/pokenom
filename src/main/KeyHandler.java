@@ -160,26 +160,35 @@ public class KeyHandler implements KeyListener {
                 if (gameP.ui.commandNum == 0) {
                     gameP.player.elementType = gameP.player.waterElement;
                     gameP.gameState = gameP.playState;
+                    gameP.stopMusic();
+                    gameP.playMusic(0);
+                    gameP.resetGame(true);
                 }
                 else if (gameP.ui.commandNum == 1) {
                     gameP.player.elementType = gameP.player.fireElement;
                     gameP.gameState = gameP.playState;
+                    gameP.stopMusic();
+                    gameP.playMusic(0);
+                    gameP.resetGame(true);
                 }
                 else if (gameP.ui.commandNum == 2) {
                     gameP.player.elementType = gameP.player.earthElement;
                     gameP.gameState = gameP.playState;
+                    gameP.stopMusic();
+                    gameP.playMusic(0);
+                    gameP.resetGame(true);
                 }
                 else if (gameP.ui.commandNum == 3) {
                     gameP.player.elementType = gameP.player.thunderElement;
                     gameP.gameState = gameP.playState;
+                    gameP.stopMusic();
+                    gameP.playMusic(0);
+                    gameP.resetGame(true);
                 }
                 else if (gameP.ui.commandNum == 4) {
                     gameP.ui.subState = 0;
                     gameP.ui.commandNum = 0;
                 }
-                gameP.stopMusic();
-                gameP.playMusic(0);
-                gameP.resetGame(true);
             }
         }
 
@@ -225,9 +234,10 @@ public class KeyHandler implements KeyListener {
     }
 
     public void optionState(int code){
-
         if (code == KeyEvent.VK_ESCAPE) gameP.gameState = gameP.playState;
         if (code == KeyEvent.VK_ENTER) enterPressed = true;
+
+        System.out.println("Options State: " + gameP.ui.subState);
 
         if (gameP.ui.subState == 0){
             if (code == KeyEvent.VK_W || code == KeyEvent.VK_UP){
@@ -271,6 +281,8 @@ public class KeyHandler implements KeyListener {
                     gameP.ui.subState = 3;
                 }
                 else if (gameP.ui.commandNum == 5) gameP.gameState = gameP.playState;
+
+                gameP.player.attackCanceled = true;
             }
         }
 
@@ -302,6 +314,8 @@ public class KeyHandler implements KeyListener {
             if (gameP.keyH.enterPressed) {
                 if (gameP.ui.commandNum == 0) {
                     gameP.gameState = gameP.titleState;
+                    gameP.resetGame(false);
+                    gameP.ui.subState = 0;
                 }
 
                 // No
@@ -331,12 +345,15 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ENTER){
             if (gameP.ui.commandNum == 0) {
                 gameP.gameState = gameP.playState;
+                gameP.player.attackCanceled = true;
                 gameP.resetGame(false);
                 gameP.playMusic(0);
             }
             else if (gameP.ui.commandNum == 1) {
                 gameP.gameState = gameP.titleState;
                 gameP.resetGame(true);
+                gameP.ui.subState = 0;
+                gameP.keyH.enterPressed = false;
             }
         }
 

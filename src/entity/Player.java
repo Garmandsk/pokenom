@@ -602,6 +602,8 @@ public class Player extends Entity {
                 gameP.ui.commandNum = -1;
             }
         }
+
+        if (gameP.keyH.escPressed) gameP.ui.subState = 0;
     }
 
     public void draw(Graphics2D g2d){
