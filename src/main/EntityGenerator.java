@@ -32,7 +32,7 @@ public class EntityGenerator {
             case CONSUM_OBJ_PotionRed.objName -> new CONSUM_OBJ_PotionRed(gameP);
             case OBS_OBJ_DoorIron.objName -> new OBS_OBJ_DoorIron(gameP);
             case OBS_OBJ_Door.objName -> new OBS_OBJ_Door(gameP);
-            case PRO_Fireball.projectileName -> new PRO_Fireball(gameP);
+            case PRO_Fireball.proName -> new PRO_Fireball(gameP);
             case PU_OBJ_Heart.objName -> new PU_OBJ_Heart(gameP);
             case CONSUM_OBJ_Key.objName -> new CONSUM_OBJ_Key(gameP);
             case OBJ_Lantern.objName -> new OBJ_Lantern(gameP);
