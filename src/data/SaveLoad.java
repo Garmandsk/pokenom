@@ -2,7 +2,6 @@ package data;
 
 import entity.Entity;
 import main.GamePanel;
-import object.*;
 
 import java.io.*;
 
@@ -38,6 +37,9 @@ public class SaveLoad {
             dataStorage.exp = gameP.player.exp;
             dataStorage.nextLevelExp = gameP.player.nextLevelExp;
             dataStorage.coin = gameP.player.coin;
+            dataStorage.playerWorldX = gameP.player.worldX;
+            dataStorage.playerWorldY = gameP.player.worldY;
+            dataStorage.currentMap = gameP.currentMap;
 
             /* Player Inventory */
             for (int i = 0; i < gameP.player.inventory.size(); i++){
@@ -99,6 +101,9 @@ public class SaveLoad {
             gameP.player.exp = dataStorage.exp;
             gameP.player.nextLevelExp = dataStorage.nextLevelExp;
             gameP.player.coin = dataStorage.coin;
+            gameP.player.worldX = dataStorage.playerWorldX;
+            gameP.player.worldY = dataStorage.playerWorldY;
+            gameP.currentMap = dataStorage.currentMap;
 
 //            System.out.println("Load: " + dataStorage.itemNames.size());
 
@@ -116,30 +121,28 @@ public class SaveLoad {
             gameP.player.getDefense();
             gameP.player.getAttackImage();
 
-            /* Object on map */
-            for (int mapNum = 0; mapNum < gameP.maxMap; mapNum++){
-                for (int i = 0; i < gameP.obj[1].length; i++){
-//                    System.out.println(dataStorage.mapObjectNames[mapNum][i]);
-//                    System.out.println(dataStorage.mapObjectWorldX[mapNum][i]/gameP.tileSize);
-//                    System.out.println(dataStorage.mapObjectWorldY[mapNum][i]/gameP.tileSize);
-
-                    if (dataStorage.mapObjectNames[mapNum][i].equals("NA")) gameP.obj[mapNum][i] = null;
-                    else {
-//                        System.out.println(getObject(dataStorage.mapObjectNames[mapNum][i]));
+            for (int mapNum = 0; mapNum < gameP.maxMap; mapNum++) {
+                for (int i = 0; i < gameP.obj[mapNum].length; i++) { // Lebih aman menggunakan gameP.obj[mapNum].length
+                    if (dataStorage.mapObjectNames[mapNum][i].equals("NA")) {
+                        gameP.obj[mapNum][i] = null;
+                    } else {
+//                        System.out.println("Nama Object: " + dataStorage.mapObjectNames[mapNum][i]);
                         gameP.obj[mapNum][i] = gameP.entGen.getObject(dataStorage.mapObjectNames[mapNum][i]);
                         gameP.obj[mapNum][i].worldX = dataStorage.mapObjectWorldX[mapNum][i];
                         gameP.obj[mapNum][i].worldY = dataStorage.mapObjectWorldY[mapNum][i];
-                        if (dataStorage.mapObjectLootNames[mapNum][i] != null) gameP.obj[mapNum][i].loot = gameP.entGen.getObject(dataStorage.mapObjectLootNames[mapNum][i]);
+                        if (dataStorage.mapObjectLootNames[mapNum][i] != null) gameP.obj[mapNum][i].setLoot(gameP.entGen.getObject(dataStorage.mapObjectLootNames[mapNum][i]));
                         gameP.obj[mapNum][i].opened = dataStorage.mapObjectOpened[mapNum][i];
                         if (gameP.obj[mapNum][i].opened) gameP.obj[mapNum][i].down1 = gameP.obj[mapNum][i].image2;
                     }
                 }
             }
-
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
-
-
     }
 }
+
+/**
+ * CATATAN:
+ * 1. Saat meletakkan objek/tile baru maka tidak akan langsung terlihat jika menggunakan fitur continue/load
+ */

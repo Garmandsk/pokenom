@@ -4,11 +4,13 @@ import main.GamePanel;
 
 public class IT_Trunk extends InteractiveTile {
     GamePanel gameP;
+    public static final String iTileName = "Trunk";
 
     public IT_Trunk(GamePanel gameP, int worldX, int worldY) {
         super(gameP, worldX, worldY);
         this.gameP = gameP;
 
+        name = iTileName;
         this.worldX = gameP.tileSize * worldX;
         this.worldY = gameP.tileSize * worldY;
         down1 = uTool.setUp("/tiles_interactive/trunk");

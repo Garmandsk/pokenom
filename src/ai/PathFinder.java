@@ -39,9 +39,10 @@ public class PathFinder {
 
 
         while (col < gameP.maxWorldCol && row < gameP.maxWorldRow) {
-            node[col][row].open = false;
-            node[col][row].checked = false;
-            node[col][row].solid = false;
+            Node targetNode = node[col][row];
+            targetNode.open = false;
+            targetNode.checked = false;
+            targetNode.solid = false;
 
             col++;
             if (col == gameP.maxWorldCol) {

@@ -29,6 +29,11 @@ public class Sound {
         uTool.setUp(soundURL, 13, "blocked");
         uTool.setUp(soundURL, 14, "parry");
         uTool.setUp(soundURL, 15, "speak");
+        uTool.setUp(soundURL, 16, "merchant");
+        uTool.setUp(soundURL, 17, "dungeon");
+        uTool.setUp(soundURL, 18, "chipwall");
+        uTool.setUp(soundURL, 19, "dooropen");
+        uTool.setUp(soundURL, 20, "finalbattle");
 
 
     }
@@ -55,12 +60,12 @@ public class Sound {
     public void checkVolume() {
         if (fc == null) return;   // guard: jangan panggil setValue kalau tidak ada kontrol
         switch (volumeScale) {
-            case 0: volume = -80f; break;
-            case 1: volume = -20f; break;
-            case 2: volume = -12f; break;
-            case 3: volume = -5f;  break;
-            case 4: volume = 1f;   break;
-            case 5: volume = 6f;   break;
+            case 0 -> volume = -80f;
+            case 1 -> volume = -20f;
+            case 2 -> volume = -12f;
+            case 3 -> volume = -5f;
+            case 4 -> volume = 1f;
+            case 5 -> volume = 6f;
         }
         fc.setValue(volume);
     }

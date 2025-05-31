@@ -1,5 +1,6 @@
 package main;
 
+import entity.monster.MON_SkeletonLord;
 import font.Fonts;
 import tile.Tile;
 
@@ -42,7 +43,29 @@ public class UtilityTool {
         }
     }
 
-    public BufferedImage setUp(String imagePath){
+    public BufferedImage setUp(String imagePath, boolean giant) {
+        BufferedImage scaledImage = null;
+
+        if (giant) {
+            try {
+                scaledImage = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+                scaledImage = scaleImage(scaledImage, gameP.tileSize * MON_SkeletonLord.entityScaleSize, gameP.tileSize * MON_SkeletonLord.entityScaleSize);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                scaledImage = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+                scaledImage = scaleImage(scaledImage, gameP.tileSize, gameP.tileSize);
+            } catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        return scaledImage;
+    }
+
+    public BufferedImage setUp(String imagePath) {
         BufferedImage scaledImage = null;
 
         try {

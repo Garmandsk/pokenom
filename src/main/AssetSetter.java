@@ -1,11 +1,27 @@
 package main;
 
-import entity.MON_GreenSlime;
-import entity.MON_Orc;
-import entity.NPC_Merchant;
-import entity.NPC_OldMan;
-import object.*;
+import data.Progress;
+import entity.monster.*;
+import entity.npc.NPC_BigRock;
+import entity.npc.NPC_Merchant;
+import entity.npc.NPC_OldMan;
+import object.consum.ConsumPotionRedObject;
+import object.consum.KeyObject;
+import object.consum.TentObject;
+import object.equipment.AxeObject;
+import object.equipment.LanternObject;
+import object.equipment.PickaxeObject;
+import object.equipment.ShieldBlueObject;
+import object.obstacle.ChestObject;
+import object.obstacle.DoorIronObject;
+import object.obstacle.DoorObject;
+import object.pickupOnly.BlueHeartObject;
+import object.pickupOnly.CoinBronzeObject;
+import object.pickupOnly.HeartObject;
+import object.pickupOnly.ManaCrystalObject;
+import tile_interactive.IT_DestructibleWall;
 import tile_interactive.IT_DryTree;
+import tile_interactive.IT_MetalPlate;
 
 public class AssetSetter {
     GamePanel gameP;
@@ -88,6 +104,51 @@ public class AssetSetter {
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 14;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
         i++;
+
+        mapNum = 2;
+        i = 0;
+
+        gameP.obj[mapNum][i] = new ChestObject(gameP);
+        gameP.obj[mapNum][i].setLoot(new PickaxeObject(gameP));
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 40;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 41;
+        i++;
+
+        gameP.obj[mapNum][i] = new ChestObject(gameP);
+        gameP.obj[mapNum][i].setLoot(new ConsumPotionRedObject(gameP));
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 13;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 16;
+        i++;
+
+        gameP.obj[mapNum][i] = new ChestObject(gameP);
+        gameP.obj[mapNum][i].setLoot(new ConsumPotionRedObject(gameP));
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 26;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 34;
+        i++;
+
+        gameP.obj[mapNum][i] = new ChestObject(gameP);
+        gameP.obj[mapNum][i].setLoot(new ConsumPotionRedObject(gameP));
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 27;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 15;
+        i++;
+
+        gameP.obj[mapNum][i] = new DoorIronObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 18;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 23;
+        i++;
+
+        mapNum = 3;
+        i = 0;
+
+        gameP.obj[mapNum][i] = new DoorIronObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 25;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 15;
+        i++;
+
+        gameP.obj[mapNum][i] = new BlueHeartObject(gameP);
+        gameP.obj[mapNum][i].worldX = gameP.tileSize * 25;
+        gameP.obj[mapNum][i].worldY = gameP.tileSize * 8;
+        i++;
     }
 
     public void setNPC(){
@@ -105,6 +166,25 @@ public class AssetSetter {
         gameP.npc[mapNum][i] = new NPC_Merchant(gameP);
         gameP.npc[mapNum][i].worldX = 12 * gameP.tileSize;
         gameP.npc[mapNum][i].worldY = 7 * gameP.tileSize;
+        i++;
+
+        mapNum = 2;
+        i = 0;
+
+        gameP.npc[mapNum][i] = new NPC_BigRock(gameP);
+        gameP.npc[mapNum][i].worldX = 20 * gameP.tileSize;
+        gameP.npc[mapNum][i].worldY = 25 * gameP.tileSize;
+        i++;
+
+        gameP.npc[mapNum][i] = new NPC_BigRock(gameP);
+        gameP.npc[mapNum][i].worldX = 11 * gameP.tileSize;
+        gameP.npc[mapNum][i].worldY = 18 * gameP.tileSize;
+        i++;
+
+        gameP.npc[mapNum][i] = new NPC_BigRock(gameP);
+        gameP.npc[mapNum][i].worldX = 23 * gameP.tileSize;
+        gameP.npc[mapNum][i].worldY = 14 * gameP.tileSize;
+        i++;
     }
 
     public void setMonster(){
@@ -121,22 +201,80 @@ public class AssetSetter {
         gameP.monster[mapNum][i].worldY = 38 * gameP.tileSize;
         i++;
 
+        gameP.monster[mapNum][i] = new MON_RedSlime(gameP);
+        gameP.monster[mapNum][i].worldX = 37 * gameP.tileSize;
+        gameP.monster[mapNum][i].worldY = 10 * gameP.tileSize;
+        i++;
+
+        gameP.monster[mapNum][i] = new MON_RedSlime(gameP);
+        gameP.monster[mapNum][i].worldX = 37 * gameP.tileSize;
+        gameP.monster[mapNum][i].worldY = 9 * gameP.tileSize;
+        i++;
+
         gameP.monster[mapNum][i] = new MON_Orc(gameP);
         gameP.monster[mapNum][i].worldX = 12 * gameP.tileSize;
         gameP.monster[mapNum][i].worldY = 33 * gameP.tileSize;
         i++;
+
+        mapNum = 2;
+        i = 0;
+
+        gameP.monster[mapNum][i] = new MON_Bat(gameP);
+        gameP.monster[mapNum][i].worldX = 34 * gameP.tileSize;
+        gameP.monster[mapNum][i].worldY = 39 * gameP.tileSize;
+        i++;
+
+        gameP.monster[mapNum][i] = new MON_Bat(gameP);
+        gameP.monster[mapNum][i].worldX = 36 * gameP.tileSize;
+        gameP.monster[mapNum][i].worldY = 25 * gameP.tileSize;
+        i++;
+
+        gameP.monster[mapNum][i] = new MON_Bat(gameP);
+        gameP.monster[mapNum][i].worldX = 39 * gameP.tileSize;
+        gameP.monster[mapNum][i].worldY = 26 * gameP.tileSize;
+        i++;
+
+        mapNum = 3;
+        i = 0;
+
+        if (Progress.skeletonLordDefeated == false){
+            gameP.monster[mapNum][i] = new MON_SkeletonLord(gameP);
+            gameP.monster[mapNum][i].worldX = 23 * gameP.tileSize;
+            gameP.monster[mapNum][i].worldY = 16 * gameP.tileSize;
+            i++;
+        }
     }
 
     public void setInteractiveTile(){
         int mapNum = 0;
         int i = 0;
 
-        gameP.iTile[mapNum][i] = new IT_DryTree(gameP, 16, 23); i++;
-        gameP.iTile[mapNum][i] = new IT_DryTree(gameP, 17, 23); i++;
-        gameP.iTile[mapNum][i] = new IT_DryTree(gameP, 18, 23); i++;
-        gameP.iTile[mapNum][i] = new IT_DryTree(gameP, 19, 23); i++;
-        gameP.iTile[mapNum][i] = new IT_DryTree(gameP, 20, 23); i++;
         gameP.iTile[mapNum][i] = new IT_DryTree(gameP, 21, 23); i++;
+
+        mapNum = 2;
+        i = 0;
+
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 18, 30); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 17, 31); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 17, 32); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 17, 34); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 18, 34); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 18, 33); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 10, 22); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 10, 24); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 38, 18); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 38, 19); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 38, 20); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 38, 21); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 18, 13); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 18, 14); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 22, 28); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 30, 28); i++;
+        gameP.iTile[mapNum][i] = new IT_DestructibleWall(gameP, 22, 28); i++;
+
+        gameP.iTile[mapNum][i] = new IT_MetalPlate(gameP, 20, 22); i++;
+        gameP.iTile[mapNum][i] = new IT_MetalPlate(gameP, 8, 17); i++;
+        gameP.iTile[mapNum][i] = new IT_MetalPlate(gameP, 39, 31); i++;
 
     }
 }

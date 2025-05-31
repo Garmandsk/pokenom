@@ -25,12 +25,11 @@ public class InteractiveTile extends Entity {
     public void playSE(){}
 
     public InteractiveTile getDestroyedForm(){
-        InteractiveTile tile = null;
-        return  tile;
+        return null;
     }
 
     public void update() {
-        if (this.invicible == true){
+        if (this.invicible){
             this.invicibleCounter++;
 
             if (invicibleCounter >= 20){

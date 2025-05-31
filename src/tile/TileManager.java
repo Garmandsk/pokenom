@@ -43,7 +43,7 @@ public class TileManager {
         is = getClass().getResourceAsStream("/maps/worldMap.txt");
         br = new BufferedReader(new InputStreamReader(is));
 
-        /* Pengambilan max world col dan rw */
+        /* Pengambilan max world col dan row */
         try {
             String line = br.readLine();
             String[] maxTile = line.split(" ");
@@ -59,6 +59,8 @@ public class TileManager {
 
         loadMap("/maps/worldMap.txt", 0);
         loadMap("/maps/indoor01.txt", 1);
+        loadMap("/maps/dungeon01.txt", 2);
+        loadMap("/maps/dungeon02.txt", 3);
 
     }
 
@@ -124,14 +126,6 @@ public class TileManager {
                     worldX - gameP.tileSize < gameP.player.worldX + gameP.player.screenX &&
                     worldY + gameP.tileSize > gameP.player.worldY - gameP.player.screenY &&
                     worldY - gameP.tileSize < gameP.player.worldY + gameP.player.screenY    ){
-//                System.out.println("\n\nWorld X: " + worldX);
-//                System.out.println("Player World X: " + gameP.player.worldX);
-//                System.out.println("Player Screen X: " + gameP.player.screenX);
-//
-//                System.out.println("\nWorld Y: " + worldY);
-//                System.out.println("Player World Y: " + gameP.player.worldY);
-//                System.out.println("Player Screen Y: " + gameP.player.screenY);
-
                 g2d.drawImage(tile[tileNum].image, screenX , screenY, null);
             }
             worldCol++;
@@ -142,18 +136,16 @@ public class TileManager {
             }
         }
 
-        if (gameP.keyH.debug){
-            if (drawPath){
-                g2d.setColor(new Color(255, 0, 0, 70));
+        if (gameP.keyH.debug && drawPath){
+            g2d.setColor(new Color(255, 0, 0, 70));
 
-                for (int i = 0; i < gameP.pathF.pathList.size(); i++){
-                    int worldX = gameP.pathF.pathList.get(i).col * gameP.tileSize;
-                    int worldY = gameP.pathF.pathList.get(i).row * gameP.tileSize;
-                    int screenX = worldX - gameP.player.worldX + gameP.player.screenX;
-                    int screenY = worldY - gameP.player.worldY + gameP.player.screenY;
+            for (int i = 0; i < gameP.pathF.pathList.size(); i++){
+                int worldX = gameP.pathF.pathList.get(i).col * gameP.tileSize;
+                int worldY = gameP.pathF.pathList.get(i).row * gameP.tileSize;
+                int screenX = worldX - gameP.player.worldX + gameP.player.screenX;
+                int screenY = worldY - gameP.player.worldY + gameP.player.screenY;
 
-                    g2d.fillRect(screenX, screenY, gameP.tileSize, gameP.tileSize);
-                }
+                g2d.fillRect(screenX, screenY, gameP.tileSize, gameP.tileSize);
             }
         }
     }

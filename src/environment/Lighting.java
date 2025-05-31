@@ -17,7 +17,7 @@ public class Lighting {
     public final int dayState = 1;
     public final int duskState = 2;
     public final int nightState = 3;
-    public int currentDayState = dayState ;
+    public int timeState = dayState ;
 
     public Lighting(GamePanel gameP){
         this.gameP = gameP;
@@ -31,7 +31,7 @@ public class Lighting {
         Graphics2D g2d = (Graphics2D)darknessFilter.getGraphics();
 
         if (gameP.player.currentLight == null){
-            g2d.setColor(new Color(0, 0, 0.1f, 0.98f));
+            g2d.setColor(new Color(0, 0, 0.1f, 0.97f));
         } else {
 
             // Get the center x and y of the light circle
@@ -51,9 +51,9 @@ public class Lighting {
             color[6] = new Color(0, 0, 0.1f, 0.82f);
             color[7] = new Color(0, 0, 0.1f, 0.87f);
             color[8] = new Color(0, 0, 0.1f, 0.91f);
-            color[9] = new Color(0, 0, 0.1f, 0.94f);
-            color[10] = new Color(0, 0, 0.1f, 0.96f);
-            color[11] = new Color(0, 0, 0.1f, 0.99f);
+            color[9] = new Color(0, 0, 0.1f, 0.92f);
+            color[10] = new Color(0, 0, 0.1f, 0.93f);
+            color[11] = new Color(0, 0, 0.1f, 0.94f);
 
             fraction[0] = 0f;
             fraction[1] = 0.4f;
@@ -79,7 +79,7 @@ public class Lighting {
     }
 
     public void resetDay(){
-        currentDayState = dayState;
+        timeState = dayState;
         filterAlpha = 0f;
     }
 
@@ -89,50 +89,51 @@ public class Lighting {
             gameP.player.lightUpdated = false;
         }
 
-        if (currentDayState == dawnState){
+        if (timeState == dawnState){
             filterAlpha -= 0.001f;
 
             if (filterAlpha < 0f) {
                 filterAlpha = 0f;
-                currentDayState = dayState;
+                timeState = dayState;
             }
         }
 
-        if (currentDayState == dayState){
+        if (timeState == dayState){
             dayCounter++;
 
-            if (dayCounter > 600){
-                currentDayState = duskState;
+            if (dayCounter > 6000){
+                timeState = duskState;
                 dayCounter = 0;
             }
         }
 
-        if (currentDayState == duskState){
+        if (timeState == duskState){
             filterAlpha += 0.001f;
 
             if (filterAlpha > 1f) {
                 filterAlpha = 1f;
-                currentDayState = nightState;
+                timeState = nightState;
             }
 
         }
 
-        if (currentDayState == nightState){
+        if (timeState == nightState){
             dayCounter++;
 
-            if (dayCounter > 36000){
-                currentDayState = dawnState;
+            if (dayCounter > 12000){
+                timeState = dawnState;
                 dayCounter = 0;
             }
         }
     }
 
     public void draw(Graphics2D g2d){
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha));
-        g2d.drawImage(darknessFilter, 0, 0, null);
+        if (gameP.currentArea == gameP.outside) g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, filterAlpha));
+        if (gameP.currentArea == gameP.outside || gameP.currentArea == gameP.dungeon) g2d.drawImage(darknessFilter, 0, 0, null);
+
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,1f));
 
-        String situation = switch (currentDayState) {
+        String situation = switch (timeState) {
             case dawnState -> "Dawn";
             case dayState -> "Day";
             case duskState -> "Dusk";

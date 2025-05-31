@@ -1,10 +1,8 @@
 package old.ui;
 
 import main.GamePanel;
-import object.KeyObject;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 
 public class UI {

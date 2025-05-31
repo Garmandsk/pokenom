@@ -24,7 +24,7 @@ public class Map extends TileManager{
 
         for (int i = 0; i < gameP.maxMap; i++){
             worldMap[i] = new BufferedImage(worldMapWidth, worldMapHeight, BufferedImage.TYPE_INT_ARGB);
-            Graphics2D g2d = (Graphics2D)worldMap[i].createGraphics();
+            Graphics2D g2d = worldMap[i].createGraphics();
 
             int col = 0, row = 0;
 
@@ -86,7 +86,7 @@ public class Map extends TileManager{
             double scale = (double)(gameP.tileSize * gameP.maxWorldCol)/width;
             int playerX = (int)(x + gameP.player.worldX/scale);
             int playerY = (int)(y + gameP.player.worldY/scale);
-            int playerSize = (int)(gameP.tileSize/4);
+            int playerSize = gameP.tileSize/4;
             g2d.drawImage(gameP.player.down1, playerX-3, playerY-3, playerSize, playerSize, null);
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 

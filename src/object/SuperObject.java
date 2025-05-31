@@ -15,8 +15,6 @@ public class SuperObject {
     public int defaultSolidAreaX = 0;
     public int defaultSolidAreaY = 0;
 
-    UtilityTool uTool = new UtilityTool();
-
     public void draw(Graphics2D g2d, GamePanel gameP){
         int screenX = worldX - gameP.player.worldX + gameP.player.screenX;
         int screenY = worldY - gameP.player.worldY + gameP.player.screenY;

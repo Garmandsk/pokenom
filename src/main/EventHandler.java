@@ -1,6 +1,8 @@
 package main;
 
+import data.Progress;
 import entity.Entity;
+import entity.npc.NPC_BigRock;
 
 import java.awt.*;
 
@@ -17,7 +19,6 @@ public class EventHandler {
     EventHandler(GamePanel gameP){
         this.gameP = gameP;
         eventMaster = new Entity(gameP);
-
         eventRect = new EventRect[gameP.maxMap][gameP.maxWorldCol][gameP.maxWorldRow];
 
         int map = 0, col = 0, row = 0;
@@ -59,41 +60,20 @@ public class EventHandler {
         if (canTouchEvent){
             if (hit(0, 25, 20, "right")) damagePit(gameP.dialogueState);
 
-//            if (hit(21, 7, "down")) healingPool(gameP.dialogueState);
-//            if (hit(22, 7, "down")) healingPool(gameP.dialogueState);
-//            if (hit(23, 7, "down")) healingPool(gameP.dialogueState);
-//            if (hit(24, 7, "down")) healingPool(gameP.dialogueState);
-//            if (hit(25, 7, "down")) healingPool(gameP.dialogueState);
-//            if (hit(26, 7, "down")) healingPool(gameP.dialogueState);
-
-//            if (hit(21, 12, "up")) healingPool(gameP.dialogueState);
-//            if (hit(22, 12, "up")) healingPool(gameP.dialogueState);
             else if (hit(0, 23, 12, "up")) healingPool(gameP.dialogueState);
-//            if (hit(24, 12, "up")) healingPool(gameP.dialogueState);
-//            if (hit(25, 12, "up")) healingPool(gameP.dialogueState);
-//            if (hit(26, 12, "up")) healingPool(gameP.dialogueState);
 
-//            if (hit(20, 7, "right")) healingPool(gameP.dialogueState);
-//            if (hit(20, 8, "right")) healingPool(gameP.dialogueState);
-//            if (hit(20, 9, "right")) healingPool(gameP.dialogueState);
-//            if (hit(20, 10, "right")) healingPool(gameP.dialogueState);
-
-//            if (hit(21, 7, "right")) healingPool(gameP.dialogueState);
-//            if (hit(21, 8, "right")) healingPool(gameP.dialogueState);
-//            if (hit(21, 9, "right")) healingPool(gameP.dialogueState);
-//            if (hit(21, 10, "right")) healingPool(gameP.dialogueState);
-
-//            if (hit(20, 7, "right")) healingPool(gameP.dialogueState);
-//            if (hit(20, 8, "right")) healingPool(gameP.dialogueState);
-//            if (hit(20, 9, "right")) healingPool(gameP.dialogueState);
-//            if (hit(20, 10, "right")) healingPool(gameP.dialogueState);
-
-            else if (hit(0, 21, 20, "any")) teleport(1, 12, 13);
-
-            else if (hit(0, 10, 39, "any")) teleport(1, 12, 13);
-            else if (hit(1, 12, 13, "any")) teleport(0, 10, 39);
+            else if (hit(0, 21, 20, "any")) teleport(1, 12, 13, gameP.indoor); // to merchant's house
+            else if (hit(0, 10, 39, "any")) teleport(1, 12, 13, gameP.indoor); // to merchant's house
+            else if (hit(1, 12, 13, "any")) teleport(0, 10, 39, gameP.outside); // to outside
             else if (hit(1, 12, 9, "up")) speak(gameP.npc[1][0]);
 
+            else if (hit(0, 12, 9, "any")) teleport(2, 9, 41, gameP.dungeon); // to dungeon
+            else if (hit(2, 9, 41, "any")) teleport(0, 12, 9, gameP.outside); // to outside
+            else if (hit(2, 8, 7, "any")) teleport(3, 26, 41, gameP.dungeon); // to B2
+            else if (hit(3, 26, 41, "any")) teleport(2, 8, 7, gameP.dungeon); // to B1
+            else if (hit(3, 25, 27, "any")) skeletonLord(); // Trigger cutscene skeleton lord
+
+            else if (hit(2, 18, 24, "any")) resetBigRock(); // Reset big rock
         }
     }
 
@@ -144,10 +124,11 @@ public class EventHandler {
         }
     }
 
-    public void teleport(int map, int col, int row){
+    public void teleport(int map, int col, int row, int area){
         gameP.playSE(11);
 
         gameP.gameState = gameP.transitionState;
+        gameP.nextArea = area;
         tempMap = map;
         tempCol = col;
         tempRow = row;
@@ -157,8 +138,37 @@ public class EventHandler {
     public void speak(Entity entity){
         if (gameP.keyH.enterPressed) {
             gameP.gameState = gameP.dialogueState;
+//            entity.startDialogue(entity, 1);
             gameP.player.attackCanceled = true;
             entity.speak();
+        }
+    }
+
+    public void skeletonLord(){
+        if (gameP.bossBattleOn == false && Progress.skeletonLordDefeated == false){
+            gameP.gameState = gameP.cutsceneState;
+            gameP.csM.sceneNum = gameP.csM.skeletonLord;
+        }
+    }
+
+    public void resetBigRock(){
+        int br = 0;
+
+        for (int i = 0; i < gameP.npc[1].length; i++){
+            if (gameP.npc[gameP.currentMap][i] != null && gameP.npc[gameP.currentMap][i].name != null && gameP.npc[gameP.currentMap][i].name.equals(NPC_BigRock.npcName)){
+                if (br == 0) {
+                    gameP.npc[gameP.currentMap][i].worldX = 20 * gameP.tileSize;
+                    gameP.npc[gameP.currentMap][i].worldY = 25 * gameP.tileSize;
+                    br++;
+                } else if (br == 1) {
+                    gameP.npc[gameP.currentMap][i].worldX = 11 * gameP.tileSize;
+                    gameP.npc[gameP.currentMap][i].worldY = 18 * gameP.tileSize;
+                    br++;
+                } else if (br == 2) {
+                    gameP.npc[gameP.currentMap][i].worldX = 23 * gameP.tileSize;
+                    gameP.npc[gameP.currentMap][i].worldY = 14 * gameP.tileSize;
+                }
+            }
         }
     }
 
@@ -181,8 +191,7 @@ public class EventHandler {
                 int screenY = worldY + camY;
 
                 // gambar rect
-                g2.setColor(new Color(255, 0, 0, 150));      // semi-transparan merah
-                g2.setStroke(new BasicStroke(2));
+                g2.setColor(Color.red);      // semi-transparan merah
                 g2.drawRect(screenX, screenY, er.width, er.height);
             }
         }
