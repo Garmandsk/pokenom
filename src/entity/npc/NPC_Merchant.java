@@ -2,13 +2,13 @@ package entity.npc;
 
 import entity.Entity;
 import main.GamePanel;
-import object.consum.ConsumPotionRedObject;
-import object.consum.KeyObject;
-import object.consum.TentObject;
-import object.equipment.AxeObject;
-import object.equipment.ShieldBlueObject;
-import object.equipment.ShieldWoodObject;
-import object.equipment.SwordNormalObject;
+import object.consum.CONSUM_OBJ_PotionRed;
+import object.consum.CONSUM_OBJ_Key;
+import object.consum.CONSUM_OBJ_Tent;
+import object.equipment.OBJ_Axe;
+import object.equipment.OBJ_ShieldBlue;
+import object.equipment.OBJ_ShieldWood;
+import object.equipment.OBJ_SwordNormal;
 
 public class NPC_Merchant extends Entity {
     public static final String npcName = "Merchant";
@@ -53,13 +53,13 @@ public class NPC_Merchant extends Entity {
     }
 
     public void setItems(){
-        inventory.add(new ConsumPotionRedObject(gameP));
-        inventory.add(new AxeObject(gameP));
-        inventory.add(new SwordNormalObject(gameP));
-        inventory.add(new KeyObject(gameP));
-        inventory.add(new ShieldBlueObject(gameP));
-        inventory.add(new ShieldWoodObject(gameP));
-        inventory.add(new TentObject(gameP));
+        inventory.add(new CONSUM_OBJ_PotionRed(gameP));
+        inventory.add(new OBJ_Axe(gameP));
+        inventory.add(new OBJ_SwordNormal(gameP));
+        inventory.add(new CONSUM_OBJ_Key(gameP));
+        inventory.add(new OBJ_ShieldBlue(gameP));
+        inventory.add(new OBJ_ShieldWood(gameP));
+        inventory.add(new CONSUM_OBJ_Tent(gameP));
 
     }
 

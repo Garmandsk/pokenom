@@ -3,11 +3,11 @@ package object.obstacle;
 import entity.Entity;
 import main.GamePanel;
 
-public class ChestObject extends Entity {
+public class OBS_OBJ_Chest extends Entity {
     GamePanel gameP;
     public static final String objName = "Chest";
 
-    public ChestObject(GamePanel gameP){
+    public OBS_OBJ_Chest(GamePanel gameP){
         super(gameP);
         this.gameP = gameP;
 

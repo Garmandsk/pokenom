@@ -3,10 +3,10 @@ package entity.monster;
 import data.Progress;
 import entity.Entity;
 import main.GamePanel;
-import object.pickupOnly.CoinBronzeObject;
-import object.obstacle.DoorIronObject;
-import object.pickupOnly.HeartObject;
-import object.pickupOnly.ManaCrystalObject;
+import object.pickupOnly.PU_OBJ_CoinBronze;
+import object.obstacle.OBS_OBJ_DoorIron;
+import object.pickupOnly.PU_OBJ_Heart;
+import object.pickupOnly.PU_OBJ_ManaCrystal;
 
 import java.util.Random;
 
@@ -132,7 +132,7 @@ public class MON_SkeletonLord extends Entity {
 
         // Remove Iron Door
         for (int i = 0; i < gameP.obj[1].length; i++){
-            if (gameP.obj[gameP.currentMap][i] != null && gameP.obj[gameP.currentMap][i].name.equals(DoorIronObject.objName)){
+            if (gameP.obj[gameP.currentMap][i] != null && gameP.obj[gameP.currentMap][i].name.equals(OBS_OBJ_DoorIron.objName)){
                 gameP.playSE(19);
                 gameP.obj[gameP.currentMap][i] = null;
             }
@@ -140,9 +140,9 @@ public class MON_SkeletonLord extends Entity {
 
         int i = new Random().nextInt(100)+1;
 
-        if (i < 50) dropItem(new CoinBronzeObject(gameP));
-        if (i >= 50 && i < 75) dropItem(new HeartObject(gameP));
-        if (i >= 75 && i < 100) dropItem(new ManaCrystalObject(gameP));
+        if (i < 50) dropItem(new PU_OBJ_CoinBronze(gameP));
+        if (i >= 50 && i < 75) dropItem(new PU_OBJ_Heart(gameP));
+        if (i >= 75 && i < 100) dropItem(new PU_OBJ_ManaCrystal(gameP));
     }
 
     public void update(){

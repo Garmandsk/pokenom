@@ -3,11 +3,11 @@ package object.consum;
 import entity.Entity;
 import main.GamePanel;
 
-public class KeyObject extends Entity {
+public class CONSUM_OBJ_Key extends Entity {
     public static final String objName = "Key";
 
 
-    public KeyObject(GamePanel gameP){
+    public CONSUM_OBJ_Key(GamePanel gameP){
         super(gameP);
 
         type = consumType;

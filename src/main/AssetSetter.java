@@ -5,20 +5,20 @@ import entity.monster.*;
 import entity.npc.NPC_BigRock;
 import entity.npc.NPC_Merchant;
 import entity.npc.NPC_OldMan;
-import object.consum.ConsumPotionRedObject;
-import object.consum.KeyObject;
-import object.consum.TentObject;
-import object.equipment.AxeObject;
-import object.equipment.LanternObject;
-import object.equipment.PickaxeObject;
-import object.equipment.ShieldBlueObject;
-import object.obstacle.ChestObject;
-import object.obstacle.DoorIronObject;
-import object.obstacle.DoorObject;
-import object.pickupOnly.BlueHeartObject;
-import object.pickupOnly.CoinBronzeObject;
-import object.pickupOnly.HeartObject;
-import object.pickupOnly.ManaCrystalObject;
+import object.consum.CONSUM_OBJ_PotionRed;
+import object.consum.CONSUM_OBJ_Key;
+import object.consum.CONSUM_OBJ_Tent;
+import object.equipment.OBJ_Axe;
+import object.equipment.OBJ_Lantern;
+import object.equipment.OBJ_Pickaxe;
+import object.equipment.OBJ_ShieldBlue;
+import object.obstacle.OBS_OBJ_Chest;
+import object.obstacle.OBS_OBJ_DoorIron;
+import object.obstacle.OBS_OBJ_Door;
+import object.pickupOnly.PU_OBJ_BlueHeart;
+import object.pickupOnly.PU_OBJ_CoinBronze;
+import object.pickupOnly.PU_OBJ_Heart;
+import object.pickupOnly.PU_OBJ_ManaCrystal;
 import tile_interactive.IT_DestructibleWall;
 import tile_interactive.IT_DryTree;
 import tile_interactive.IT_MetalPlate;
@@ -35,57 +35,57 @@ public class AssetSetter {
         int mapNum = 0;
         int i = 0;
 
-        gameP.obj[mapNum][i] = new CoinBronzeObject(gameP);
+        gameP.obj[mapNum][i] = new PU_OBJ_CoinBronze(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 26;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 21;
         i++;
 
-        gameP.obj[mapNum][i] = new AxeObject(gameP);
+        gameP.obj[mapNum][i] = new OBJ_Axe(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 33;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 21;
         i++;
 
-        gameP.obj[mapNum][i] = new ShieldBlueObject(gameP);
+        gameP.obj[mapNum][i] = new OBJ_ShieldBlue(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 34;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 21;
         i++;
 
-        gameP.obj[mapNum][i] = new LanternObject(gameP);
+        gameP.obj[mapNum][i] = new OBJ_Lantern(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 18;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 20;
         i++;
 
-        gameP.obj[mapNum][i] = new TentObject(gameP);
+        gameP.obj[mapNum][i] = new CONSUM_OBJ_Tent(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 19;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 20;
         i++;
 
-        gameP.obj[mapNum][i] = new DoorObject(gameP);
+        gameP.obj[mapNum][i] = new OBS_OBJ_Door(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 25;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 21;
         i++;
 
-        gameP.obj[mapNum][i] = new ConsumPotionRedObject(gameP);
+        gameP.obj[mapNum][i] = new CONSUM_OBJ_PotionRed(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 23;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 25;
         i++;
 
-        gameP.obj[mapNum][i] = new HeartObject(gameP);
+        gameP.obj[mapNum][i] = new PU_OBJ_Heart(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 24;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 26;
         i++;
 
-        gameP.obj[mapNum][i] = new ManaCrystalObject(gameP);
+        gameP.obj[mapNum][i] = new PU_OBJ_ManaCrystal(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 24;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 27;
         i++;
 
-        gameP.obj[mapNum][i] = new DoorObject(gameP);
+        gameP.obj[mapNum][i] = new OBS_OBJ_Door(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 14;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 28;
         i++;
 
-        gameP.obj[mapNum][i] = new DoorObject(gameP);
+        gameP.obj[mapNum][i] = new OBS_OBJ_Door(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 12;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 12;
         i++;
@@ -93,14 +93,14 @@ public class AssetSetter {
         mapNum = 1;
         i = 0;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP);
-        gameP.obj[mapNum][i].setLoot(new KeyObject(gameP));
+        gameP.obj[mapNum][i] = new OBS_OBJ_Chest(gameP);
+        gameP.obj[mapNum][i].setLoot(new CONSUM_OBJ_Key(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 10;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
         i++;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP);
-        gameP.obj[mapNum][i].setLoot(new AxeObject(gameP));
+        gameP.obj[mapNum][i] = new OBS_OBJ_Chest(gameP);
+        gameP.obj[mapNum][i].setLoot(new OBJ_Axe(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 14;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 7;
         i++;
@@ -108,31 +108,31 @@ public class AssetSetter {
         mapNum = 2;
         i = 0;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP);
-        gameP.obj[mapNum][i].setLoot(new PickaxeObject(gameP));
+        gameP.obj[mapNum][i] = new OBS_OBJ_Chest(gameP);
+        gameP.obj[mapNum][i].setLoot(new OBJ_Pickaxe(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 40;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 41;
         i++;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP);
-        gameP.obj[mapNum][i].setLoot(new ConsumPotionRedObject(gameP));
+        gameP.obj[mapNum][i] = new OBS_OBJ_Chest(gameP);
+        gameP.obj[mapNum][i].setLoot(new CONSUM_OBJ_PotionRed(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 13;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 16;
         i++;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP);
-        gameP.obj[mapNum][i].setLoot(new ConsumPotionRedObject(gameP));
+        gameP.obj[mapNum][i] = new OBS_OBJ_Chest(gameP);
+        gameP.obj[mapNum][i].setLoot(new CONSUM_OBJ_PotionRed(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 26;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 34;
         i++;
 
-        gameP.obj[mapNum][i] = new ChestObject(gameP);
-        gameP.obj[mapNum][i].setLoot(new ConsumPotionRedObject(gameP));
+        gameP.obj[mapNum][i] = new OBS_OBJ_Chest(gameP);
+        gameP.obj[mapNum][i].setLoot(new CONSUM_OBJ_PotionRed(gameP));
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 27;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 15;
         i++;
 
-        gameP.obj[mapNum][i] = new DoorIronObject(gameP);
+        gameP.obj[mapNum][i] = new OBS_OBJ_DoorIron(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 18;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 23;
         i++;
@@ -140,12 +140,12 @@ public class AssetSetter {
         mapNum = 3;
         i = 0;
 
-        gameP.obj[mapNum][i] = new DoorIronObject(gameP);
+        gameP.obj[mapNum][i] = new OBS_OBJ_DoorIron(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 25;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 15;
         i++;
 
-        gameP.obj[mapNum][i] = new BlueHeartObject(gameP);
+        gameP.obj[mapNum][i] = new PU_OBJ_BlueHeart(gameP);
         gameP.obj[mapNum][i].worldX = gameP.tileSize * 25;
         gameP.obj[mapNum][i].worldY = gameP.tileSize * 8;
         i++;

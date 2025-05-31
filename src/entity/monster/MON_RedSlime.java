@@ -1,11 +1,11 @@
 package entity.monster;
 
 import entity.Entity;
-import entity.projectile.FireballObject;
+import entity.projectile.PRO_Fireball;
 import main.GamePanel;
-import object.pickupOnly.CoinBronzeObject;
-import object.pickupOnly.HeartObject;
-import object.pickupOnly.ManaCrystalObject;
+import object.pickupOnly.PU_OBJ_CoinBronze;
+import object.pickupOnly.PU_OBJ_Heart;
+import object.pickupOnly.PU_OBJ_ManaCrystal;
 
 import java.util.Random;
 
@@ -24,7 +24,7 @@ public class MON_RedSlime extends Entity {
         attackPower = 8;
         defensePower = 0;
         exp = 8;
-        projectile = new FireballObject(gameP);
+        projectile = new PRO_Fireball(gameP);
 
         this.solidArea.x = 3;
         this.solidArea.y = 18;
@@ -87,9 +87,9 @@ public class MON_RedSlime extends Entity {
     public void checkDrop(){
         int i = new Random().nextInt(100)+1;
 
-        if (i < 50) dropItem(new CoinBronzeObject(gameP));
-        if (i >= 50 && i < 75) dropItem(new HeartObject(gameP));
-        if (i >= 75 && i < 100) dropItem(new ManaCrystalObject(gameP));
+        if (i < 50) dropItem(new PU_OBJ_CoinBronze(gameP));
+        if (i >= 50 && i < 75) dropItem(new PU_OBJ_Heart(gameP));
+        if (i >= 75 && i < 100) dropItem(new PU_OBJ_ManaCrystal(gameP));
     }
 
     public void update(){

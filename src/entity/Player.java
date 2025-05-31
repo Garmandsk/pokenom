@@ -1,18 +1,16 @@
 package entity;
 
 import main.GamePanel;
-import object.equipment.LanternObject;
-import object.equipment.ShieldWoodObject;
-import object.equipment.SwordNormalObject;
-import entity.projectile.FireballObject;
-import particle.EarthParticle;
+import object.equipment.OBJ_Lantern;
+import object.equipment.OBJ_ShieldWood;
+import object.equipment.OBJ_SwordNormal;
+import entity.projectile.PRO_Fireball;
 import tile_interactive.IT_DestructibleWall;
 import tile_interactive.IT_DryTree;
 import tile_interactive.InteractiveTile;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.Field;
 
 public class Player extends Entity {
     public final int screenX, screenY;
@@ -182,14 +180,14 @@ public class Player extends Entity {
     public void setItems(){
         inventory.clear();
 
-        currentWeapon = new SwordNormalObject(gameP);
-        currentShield = new ShieldWoodObject(gameP);
+        currentWeapon = new OBJ_SwordNormal(gameP);
+        currentShield = new OBJ_ShieldWood(gameP);
         currentLight = null;
-        projectile = new FireballObject(gameP);
+        projectile = new PRO_Fireball(gameP);
         inventory.add(currentWeapon);
         inventory.add(currentShield);
 //        inventory.add(new KeyObject(gameP));
-        inventory.add(new LanternObject(gameP));
+        inventory.add(new OBJ_Lantern(gameP));
 
         attackPower = getAttack(); // Terakumulasi dari playerStrength dan weaponAttackPower
         defensePower = getDefense(); // terakumulasi dari playerDexterity dan shiekdDefensePower

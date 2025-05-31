@@ -3,9 +3,9 @@ package main;
 import entity.Entity;
 import font.FontManager;
 import font.Fonts;
-import object.pickupOnly.CoinBronzeObject;
-import object.pickupOnly.HeartObject;
-import object.pickupOnly.ManaCrystalObject;
+import object.pickupOnly.PU_OBJ_CoinBronze;
+import object.pickupOnly.PU_OBJ_Heart;
+import object.pickupOnly.PU_OBJ_ManaCrystal;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -64,16 +64,16 @@ public class UI {
 
 //        KeyObject key = new KeyObject(gameP);
 //        keyImage = key.image;
-        Entity heart = new HeartObject(gameP);
+        Entity heart = new PU_OBJ_Heart(gameP);
         heartBlank = heart.image;
         heartFull = heart.image2;
         heartHalf = heart.image3;
 
-        Entity manaCrystal = new ManaCrystalObject(gameP);
+        Entity manaCrystal = new PU_OBJ_ManaCrystal(gameP);
         manaCrystalBlank = manaCrystal.image;
         manaCrystalFull = manaCrystal.image2;
 
-        Entity bronzeCoin = new CoinBronzeObject(gameP);
+        Entity bronzeCoin = new PU_OBJ_CoinBronze(gameP);
         coin = bronzeCoin.down1;
     }
 

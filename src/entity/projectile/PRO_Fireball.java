@@ -3,15 +3,15 @@ package entity.projectile;
 import entity.Entity;
 import main.GamePanel;
 
-public class FireballObject extends Projectile {
+public class PRO_Fireball extends Projectile {
     GamePanel gameP;
-    public static final String projectileName = "Fireball";
+    public static final String proName = "Fireball";
 
-    public FireballObject(GamePanel gameP) {
+    public PRO_Fireball(GamePanel gameP) {
         super(gameP);
         this.gameP =  gameP;
 
-        name = projectileName;
+        name = proName;
         elementType = fireElement;
         speed = 5;
         maxLife = 80;

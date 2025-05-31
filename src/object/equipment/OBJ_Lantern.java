@@ -3,11 +3,11 @@ package object.equipment;
 import entity.Entity;
 import main.GamePanel;
 
-public class LanternObject extends Entity {
+public class OBJ_Lantern extends Entity {
     public static final String objName = "Lantern";
 
 
-    public LanternObject(GamePanel gameP) {
+    public OBJ_Lantern(GamePanel gameP) {
         super(gameP);
 
         type = lightType;

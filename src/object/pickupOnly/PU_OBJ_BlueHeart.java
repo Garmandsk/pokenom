@@ -3,11 +3,11 @@ package object.pickupOnly;
 import entity.Entity;
 import main.GamePanel;
 
-public class BlueHeartObject extends Entity {
+public class PU_OBJ_BlueHeart extends Entity {
     GamePanel gameP;
     public static final String objName = "Blue Heart";
 
-    public BlueHeartObject(GamePanel gameP) {
+    public PU_OBJ_BlueHeart(GamePanel gameP) {
         super(gameP);
         this.gameP = gameP;
 

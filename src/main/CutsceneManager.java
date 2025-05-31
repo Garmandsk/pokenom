@@ -2,8 +2,8 @@ package main;
 
 import entity.PlayerDummy;
 import entity.monster.MON_SkeletonLord;
-import object.pickupOnly.BlueHeartObject;
-import object.obstacle.DoorIronObject;
+import object.pickupOnly.PU_OBJ_BlueHeart;
+import object.obstacle.OBS_OBJ_DoorIron;
 
 import java.awt.*;
 
@@ -107,7 +107,7 @@ public class CutsceneManager {
             // Shut the iron door
             for (int i = 0; i < gameP.obj[1].length; i++){
                 if (gameP.obj[gameP.currentMap][i] == null){
-                    gameP.obj[gameP.currentMap][i] = new DoorIronObject(gameP);
+                    gameP.obj[gameP.currentMap][i] = new OBS_OBJ_DoorIron(gameP);
                     gameP.obj[gameP.currentMap][i].worldX = gameP.tileSize * 25;
                     gameP.obj[gameP.currentMap][i].worldY = gameP.tileSize * 28;
                     gameP.obj[gameP.currentMap][i].temp = true;
@@ -171,7 +171,7 @@ public class CutsceneManager {
     public void csEnding(){
         if (scenePhase == 0){
             gameP.stopMusic();
-            gameP.ui.npc = new BlueHeartObject(gameP);
+            gameP.ui.npc = new PU_OBJ_BlueHeart(gameP);
             scenePhase++;
         } else if (scenePhase == 1) {
             gameP.ui.drawDialogueScreen();

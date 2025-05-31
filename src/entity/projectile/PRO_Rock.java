@@ -3,15 +3,15 @@ package entity.projectile;
 import entity.Entity;
 import main.GamePanel;
 
-public class RockObject extends Projectile {
+public class PRO_Rock extends Projectile {
     GamePanel gameP;
-    public static final String projectileName = "Rock";
+    public static final String proName = "Rock";
 
-    public RockObject(GamePanel gameP) {
+    public PRO_Rock(GamePanel gameP) {
         super(gameP);
         this.gameP =  gameP;
 
-        name = projectileName;
+        name = proName;
         elementType = earthElement;
         speed = 8;
         maxLife = 80;

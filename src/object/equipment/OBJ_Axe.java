@@ -3,10 +3,10 @@ package object.equipment;
 import entity.Entity;
 import main.GamePanel;
 
-public class AxeObject extends Entity {
+public class OBJ_Axe extends Entity {
     public static final String objName = "Woodcutter's Axe";
 
-    public AxeObject(GamePanel gameP){
+    public OBJ_Axe(GamePanel gameP){
         super(gameP);
 
         type = axeType;

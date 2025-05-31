@@ -1,19 +1,19 @@
 package main;
 
 import entity.Entity;
-import entity.projectile.FireballObject;
-import entity.projectile.RockObject;
-import object.consum.ConsumPotionRedObject;
-import object.consum.KeyObject;
-import object.consum.TentObject;
+import entity.projectile.PRO_Fireball;
+import entity.projectile.PRO_Rock;
+import object.consum.CONSUM_OBJ_PotionRed;
+import object.consum.CONSUM_OBJ_Key;
+import object.consum.CONSUM_OBJ_Tent;
 import object.equipment.*;
-import object.obstacle.ChestObject;
-import object.obstacle.DoorIronObject;
-import object.obstacle.DoorObject;
-import object.pickupOnly.BlueHeartObject;
-import object.pickupOnly.CoinBronzeObject;
-import object.pickupOnly.HeartObject;
-import object.pickupOnly.ManaCrystalObject;
+import object.obstacle.OBS_OBJ_Chest;
+import object.obstacle.OBS_OBJ_DoorIron;
+import object.obstacle.OBS_OBJ_Door;
+import object.pickupOnly.PU_OBJ_BlueHeart;
+import object.pickupOnly.PU_OBJ_CoinBronze;
+import object.pickupOnly.PU_OBJ_Heart;
+import object.pickupOnly.PU_OBJ_ManaCrystal;
 
 public class EntityGenerator {
     GamePanel gameP;
@@ -24,25 +24,25 @@ public class EntityGenerator {
 
     public Entity getObject(String itemName){
         Entity obj = switch (itemName) {
-            case AxeObject.objName -> new AxeObject(gameP);
-            case BlueHeartObject.objName -> new BlueHeartObject(gameP);
-            case BootsObject.objName -> new BootsObject(gameP);
-            case ChestObject.objName -> new ChestObject(gameP);
-            case CoinBronzeObject.objName -> new CoinBronzeObject(gameP);
-            case ConsumPotionRedObject.objName -> new ConsumPotionRedObject(gameP);
-            case DoorIronObject.objName -> new DoorIronObject(gameP);
-            case DoorObject.objName -> new DoorObject(gameP);
-            case FireballObject.projectileName -> new FireballObject(gameP);
-            case HeartObject.objName -> new HeartObject(gameP);
-            case KeyObject.objName -> new KeyObject(gameP);
-            case LanternObject.objName -> new LanternObject(gameP);
-            case ManaCrystalObject.objName -> new ManaCrystalObject(gameP);
-            case PickaxeObject.objName -> new PickaxeObject(gameP);
-            case RockObject.projectileName -> new RockObject(gameP);
-            case ShieldBlueObject.objName -> new ShieldBlueObject(gameP);
-            case ShieldWoodObject.objName -> new ShieldWoodObject(gameP);
-            case SwordNormalObject.objName -> new SwordNormalObject(gameP);
-            case TentObject.objName -> new TentObject(gameP);
+            case OBJ_Axe.objName -> new OBJ_Axe(gameP);
+            case PU_OBJ_BlueHeart.objName -> new PU_OBJ_BlueHeart(gameP);
+            case OBJ_Boots.objName -> new OBJ_Boots(gameP);
+            case OBS_OBJ_Chest.objName -> new OBS_OBJ_Chest(gameP);
+            case PU_OBJ_CoinBronze.objName -> new PU_OBJ_CoinBronze(gameP);
+            case CONSUM_OBJ_PotionRed.objName -> new CONSUM_OBJ_PotionRed(gameP);
+            case OBS_OBJ_DoorIron.objName -> new OBS_OBJ_DoorIron(gameP);
+            case OBS_OBJ_Door.objName -> new OBS_OBJ_Door(gameP);
+            case PRO_Fireball.projectileName -> new PRO_Fireball(gameP);
+            case PU_OBJ_Heart.objName -> new PU_OBJ_Heart(gameP);
+            case CONSUM_OBJ_Key.objName -> new CONSUM_OBJ_Key(gameP);
+            case OBJ_Lantern.objName -> new OBJ_Lantern(gameP);
+            case PU_OBJ_ManaCrystal.objName -> new PU_OBJ_ManaCrystal(gameP);
+            case OBJ_Pickaxe.objName -> new OBJ_Pickaxe(gameP);
+            case PRO_Rock.proName -> new PRO_Rock(gameP);
+            case OBJ_ShieldBlue.objName -> new OBJ_ShieldBlue(gameP);
+            case OBJ_ShieldWood.objName -> new OBJ_ShieldWood(gameP);
+            case OBJ_SwordNormal.objName -> new OBJ_SwordNormal(gameP);
+            case CONSUM_OBJ_Tent.objName -> new CONSUM_OBJ_Tent(gameP);
             default -> null;
         };
 

@@ -3,11 +3,11 @@ package object.equipment;
 import entity.Entity;
 import main.GamePanel;
 
-public class ShieldWoodObject extends Entity {
+public class OBJ_ShieldWood extends Entity {
     public static final String objName = "Wooden Shield";
 
 
-    public ShieldWoodObject(GamePanel gameP){
+    public OBJ_ShieldWood(GamePanel gameP){
         super(gameP);
 
         type = shieldType;

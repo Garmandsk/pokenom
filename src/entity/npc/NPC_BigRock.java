@@ -2,7 +2,7 @@ package entity.npc;
 
 import entity.Entity;
 import main.GamePanel;
-import object.obstacle.DoorIronObject;
+import object.obstacle.OBS_OBJ_DoorIron;
 import tile_interactive.IT_MetalPlate;
 import tile_interactive.InteractiveTile;
 
@@ -102,7 +102,7 @@ public class NPC_BigRock extends Entity {
         System.out.println("Jumlah Batu Diatas Metal Plate: " + count);
         if (count == rockList.size()){
             for (int i = 0; i < gameP.obj.length; i++){
-                if (gameP.obj[gameP.currentMap][i] != null && gameP.obj[gameP.currentMap][i].name.equals(DoorIronObject.objName)){
+                if (gameP.obj[gameP.currentMap][i] != null && gameP.obj[gameP.currentMap][i].name.equals(OBS_OBJ_DoorIron.objName)){
                     gameP.obj[gameP.currentMap][i] = null;
                     gameP.playSE(19);
                 }

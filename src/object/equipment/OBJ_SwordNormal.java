@@ -3,11 +3,11 @@ package object.equipment;
 import entity.Entity;
 import main.GamePanel;
 
-public class SwordNormalObject extends Entity {
+public class OBJ_SwordNormal extends Entity {
     public static final String objName = "Normal Sword";
 
 
-    public SwordNormalObject(GamePanel gameP){
+    public OBJ_SwordNormal(GamePanel gameP){
         super(gameP);
 
         type = swordType;

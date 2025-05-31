@@ -3,17 +3,17 @@ package object.obstacle;
 import entity.Entity;
 import main.GamePanel;
 
-public class DoorObject extends Entity {
+public class OBS_OBJ_DoorIron extends Entity {
     GamePanel gameP;
-    public static final String objName = "Door";
+    public static final String objName = "Iron Door";
 
-    public DoorObject(GamePanel gameP){
+    public OBS_OBJ_DoorIron(GamePanel gameP){
         super(gameP);
         this.gameP = gameP;
 
         type = obstacleType;
         name = objName;
-        down1 = uTool.setUp("/objects/door");
+        down1 = uTool.setUp("/objects/door_iron");
         collision = true;
 
         solidArea.x = 0;
@@ -27,7 +27,7 @@ public class DoorObject extends Entity {
     }
 
     public void setDialogue(){
-        dialogues[0][0] = "You need a key to \nopen this";
+        dialogues[0][0] = "It won't budge.";
 
     }
 

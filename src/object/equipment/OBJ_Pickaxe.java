@@ -5,10 +5,10 @@ import main.GamePanel;
 
 public class
 
-PickaxeObject extends Entity {
+OBJ_Pickaxe extends Entity {
     public static final String objName = "Pickaxe";
 
-    public PickaxeObject(GamePanel gameP) {
+    public OBJ_Pickaxe(GamePanel gameP) {
         super(gameP);
 
         type = pickaxeType;

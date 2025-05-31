@@ -3,12 +3,12 @@ package object.consum;
 import entity.Entity;
 import main.GamePanel;
 
-public class TentObject extends Entity {
+public class CONSUM_OBJ_Tent extends Entity {
     GamePanel gamep;
     public static final String objName = "Tent";
 
 
-    public TentObject(GamePanel gameP) {
+    public CONSUM_OBJ_Tent(GamePanel gameP) {
         super(gameP);
         this.gamep = gameP;
 
