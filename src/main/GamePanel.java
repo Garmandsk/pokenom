@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     /* Map Setting */
     public final int maxMap = 10;
-    public int currentMap = 3;
+    public int currentMap = 0;
     /* ===== */
 
     /* Tile Settings */

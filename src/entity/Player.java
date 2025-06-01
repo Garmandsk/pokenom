@@ -162,16 +162,16 @@ public class Player extends Entity {
 
         } else {
             // Map Outside
-//            this.worldX = gameP.tileSize * 23;
-//            this.worldY = gameP.tileSize * 21;
+            this.worldX = gameP.tileSize * 23;
+            this.worldY = gameP.tileSize * 21;
 
             // Map Dungeon 1
 //        this.worldX = gameP.tileSize * 9;
 //        this.worldY = gameP.tileSize * 40;
 
             // Map Dungeon 2
-            this.worldX = gameP.tileSize * 25;
-            this.worldY = gameP.tileSize * 10;
+//            this.worldX = gameP.tileSize * 25;
+//            this.worldY = gameP.tileSize * 10;
         }
 
         this.direction = "down";

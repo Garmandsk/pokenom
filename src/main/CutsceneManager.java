@@ -27,10 +27,14 @@ public class CutsceneManager {
         endCredit = "Program/Music/Art \n" +
                 "RyiSnow" +
                 "\n\n\n" +
-                "Thanks To \n" +
-                "Someone \n" +
-                "Someone \n" +
-                "Someone \n\n" +
+                "Tugas \n" +
+                "Pemrograman Berorientasi Objek \n\n" +
+                "Tim \n" +
+                "Priadi Cuanda \n" +
+                "Wayne Fabel Charles Sirait \n" +
+                "Nyssa Obelia \n" +
+                "Susena Yudha Wijaya \n" +
+                "Gerti Armanda Sembiring \n\n" +
                 "Thank You For Playing!";
     }
 
@@ -230,7 +234,7 @@ public class CutsceneManager {
             y--;
             drawString(1f, 38f, y, endCredit, (gameP.tileSize*2)-(gameP.tileSize/4));
 
-            if (counterReached(1200)) scenePhase++;
+            if (counterReached(1680)) scenePhase++;
         } else if (scenePhase == 9) {
             drawTransition();
         } else if (scenePhase == 10) {

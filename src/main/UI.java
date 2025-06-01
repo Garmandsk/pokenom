@@ -156,7 +156,7 @@ public class UI {
         }
 
         x = gameP.tileSize/2;
-        y += gameP.tileSize*1;
+        y += gameP.tileSize*2;
         i = 0;
 
 //        gameP.player.mana = 25;
