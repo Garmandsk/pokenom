@@ -40,7 +40,7 @@ public class GamePanel extends JPanel implements Runnable{
 
     /* Map Setting */
     public final int maxMap = 10;
-    public int currentMap = 0;
+    public int currentMap = 3;
     /* ===== */
 
     /* Tile Settings */
@@ -147,9 +147,9 @@ public class GamePanel extends JPanel implements Runnable{
         if (fullScreenOn) setFullScreen();
     }
 
-    public void resetGame(boolean restart){
+    public void resetGame(boolean restart, boolean stopMusic){
+        if (stopMusic) stopMusic();
 
-        stopMusic();
         removeTempEntity();
         bossBattleOn = false;
         player.setDefaultPositions();
@@ -237,6 +237,11 @@ public class GamePanel extends JPanel implements Runnable{
         se.setSound(i);
         se.play();
 
+    }
+
+    public void changeMusic(int i){
+        stopMusic();
+        playMusic(i);
     }
 
     public void changeArea(){

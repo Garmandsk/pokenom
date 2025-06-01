@@ -43,13 +43,14 @@ public class CutsceneManager {
         sceneNum = NA;
         scenePhase = 0;
         gameP.gameState = gameP.playState;
+//        gameP.resetGame(false, false);
     }
 
     public boolean counterReached(int target){
         boolean counterReached = false;
 
         counter++;
-        System.out.println("counter cs: " + counter);
+//        System.out.println("counter cs: " + counter);
         if (counter >= target) {
             counterReached = true;
             counter = 0;
@@ -91,13 +92,22 @@ public class CutsceneManager {
         if (counterReached(85)) scenePhase++;
     }
 
-    public void changePosition(int targetMap, int targetCol, int targetRow, String targetDirection, int targetArea){
+    public void changePositionandBackToNormal(int targetMap, int targetCol, int targetRow, String targetDirection, int targetArea){
+        // Change Position
         gameP.currentMap = targetMap;
         gameP.player.worldX = targetCol * gameP.tileSize;
         gameP.player.worldY = targetRow * gameP.tileSize;
         gameP.player.direction = targetDirection;
         gameP.nextArea = targetArea;
         gameP.changeArea();
+
+        // Reset
+        sceneNum = NA;
+        scenePhase = 0;
+        gameP.gameState = gameP.playState;
+
+        // Start drawing player
+        gameP.player.drawing = true;
     }
 
     public void csSkeletonLord(){
@@ -135,7 +145,7 @@ public class CutsceneManager {
 
             // Search the boss
             for (int i = 0; i < gameP.monster[1].length; i++){
-                if (gameP.monster[gameP.currentMap][i] != null && gameP.monster[gameP.currentMap][i].name == MON_SkeletonLord.monName){
+                if (gameP.monster[gameP.currentMap][i] != null && gameP.monster[gameP.currentMap][i].name.equals(MON_SkeletonLord.monName)){
                     gameP.monster[gameP.currentMap][i].sleep = false;
                     gameP.ui.npc = gameP.monster[gameP.currentMap][i];
                     scenePhase++;
@@ -147,9 +157,7 @@ public class CutsceneManager {
             gameP.ui.drawDialogueScreen();
 //            scenePhase++; Sudah diatur di game.ui.drawDialogueScreen()
         } else if (scenePhase == 4) {
-            // Return to the player
-
-            // Search the dummy
+            // Return to the player and Search the dummy
             for (int i = 0; i < gameP.npc[1].length; i++){
                 if (gameP.npc[gameP.currentMap][i] != null && gameP.npc[gameP.currentMap][i].name.equals(PlayerDummy.npcName)){
                     gameP.player.worldX = gameP.npc[gameP.currentMap][i].worldX;
@@ -161,9 +169,8 @@ public class CutsceneManager {
                 }
             }
 
-            gameP.stopMusic();
-            gameP.playMusic(20);
-
+            // Ganti Musik saat battle dimulai
+            gameP.changeMusic(20);
             backToNormal();
         }
     }
@@ -223,15 +230,12 @@ public class CutsceneManager {
             y--;
             drawString(1f, 38f, y, endCredit, (gameP.tileSize*2)-(gameP.tileSize/4));
 
-            if (counterReached(1680)) scenePhase++;
+            if (counterReached(1200)) scenePhase++;
         } else if (scenePhase == 9) {
             drawTransition();
         } else if (scenePhase == 10) {
-            gameP.resetGame(false);
             gameP.envM.lighting.resetDay();
-            changePosition(0, 39, 39, "right", gameP.outside);
-            gameP.playMusic(0);
-            backToNormal();
+            changePositionandBackToNormal(0, 39, 39, "right", gameP.outside);
         }
     }
 

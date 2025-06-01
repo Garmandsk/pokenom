@@ -127,8 +127,8 @@ public class MON_SkeletonLord extends Entity {
         gameP.bossBattleOn = false;
         Progress.skeletonLordDefeated = true;
 
-        gameP.stopMusic();
-        gameP.playMusic(17);
+        // Ganti musik menjadi musik dungeon saat Boss Skeleton lord sudah kalah
+        gameP.changeMusic(17);
 
         // Remove Iron Door
         for (int i = 0; i < gameP.obj[1].length; i++){
