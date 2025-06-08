@@ -17,6 +17,8 @@ public class MON_GreenSlime extends Entity {
 
         type = monsterType;
         name = monName;
+        elementType = earthElement;
+        level = 2;
         defaultSpeed = 1;
         speed = defaultSpeed;
         maxLife = 4;

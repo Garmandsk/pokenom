@@ -16,7 +16,9 @@ public class MON_Orc extends Entity {
         super(gameP);
 
         type = monsterType;
+        level = 10;
         name = monName;
+        elementType = thunderElement;
         defaultSpeed = 1;
         speed = defaultSpeed;
         maxLife = 10;

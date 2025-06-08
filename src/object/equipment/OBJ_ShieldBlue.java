@@ -12,6 +12,7 @@ public class OBJ_ShieldBlue extends Entity {
 
         type = shieldType;
         name = objName;
+        elementType = waterElement;
         down1 = uTool.setUp("/objects/shield_blue");
         defenseValue = 2;
         itemDescription = "[ " + name + " ]\nBlue as the glacier’s \nancient heart";

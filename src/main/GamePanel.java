@@ -103,6 +103,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int sleepState = 8;
     public final int mapState = 9;
     public final int cutsceneState = 10;
+    public final int battleState = 11;
     /* ===== */
 
     /* Others */
@@ -120,6 +121,7 @@ public class GamePanel extends JPanel implements Runnable{
     public final int dungeon = 52;
 
     private float fullScreenOffsetFactor;
+    int enemyActionCounter = 0;
 
     GamePanel(){
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -139,6 +141,7 @@ public class GamePanel extends JPanel implements Runnable{
         if (saveLoad.dataStorage.level >= 1) ui.commandNum = 1;
 
         gameState = titleState;
+//        player.inBattleState = true;
         currentArea = outside;
 
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
@@ -159,6 +162,7 @@ public class GamePanel extends JPanel implements Runnable{
         aSetter.setMonster();
 
         if (restart){
+            currentMap = 0;
             player.setDefaultValue();
             aSetter.setObject();
             aSetter.setInteractiveTile();
@@ -258,6 +262,12 @@ public class GamePanel extends JPanel implements Runnable{
         aSetter.setMonster();
     }
 
+    public void changeGameState(int state){
+        ui.commandNum = 0;
+        ui.subState = 0;
+        gameState = state;
+    }
+
     public void removeTempEntity(){
         for (int mapNum = 0; mapNum < maxMap; mapNum++){
             for (int i =0; i < obj[1].length; i++){
@@ -309,8 +319,75 @@ public class GamePanel extends JPanel implements Runnable{
             }
 
             envM.update();
-        }
-        if (gameState == pauseState) ;
+        } else if (gameState == battleState) {
+            if (gameState == battleState) {
+
+                if (ui.turn == ui.playerTurn) {
+                    if (ui.subState == 6 && ui.guardQTE_Active) {
+
+                        // Kurangi timer
+                        ui.qteTimer--;
+
+                        // Gerakkan indikator
+                        ui.qteIndicator_x += ui.qteIndicator_speed * ui.qteIndicator_direction;
+
+                        // Cek batas kiri dan kanan bar
+                        if (ui.qteIndicator_x <= ui.qteBar_x) {
+                            ui.qteIndicator_x = ui.qteBar_x;
+                            ui.qteIndicator_direction = 1; // Balik arah ke kanan
+                        }
+                        if (ui.qteIndicator_x >= ui.qteBar_x + ui.qteBar_width) {
+                            ui.qteIndicator_x = ui.qteBar_x + ui.qteBar_width;
+                            ui.qteIndicator_direction = -1; // Balik arah ke kiri
+                        }
+
+                        // Jika waktu habis, QTE gagal
+                        if (ui.qteTimer <= 0) {
+                            ui.guardQTE_Active = false;
+                            ui.battleDialogueText = "Guard failed!";
+
+                            // Ganti giliran ke musuh
+                            ui.turn = ui.enemyTurn;
+                            ui.subState = 0;
+                        }
+                    }
+                }
+
+                // Saat giliran musuh, logikanya berjalan OTOMATIS di sini.
+//                if (ui.turn == ui.enemyTurn) {
+//
+//                    // Tambah counter setiap frame untuk menciptakan jeda.
+//                    enemyActionCounter++;
+//                    if (enemyActionCounter > 60) {
+//                        if (ui.subState == 0) {
+//                            playSE(4); // Mainkan suara serangan musuh
+//
+//                            // Pilih aksi musuh secara acak (opsional, untuk AI yang lebih baik)
+//                            // int action = new Random().nextInt(100);
+//                            // if (action < 75) { // 75% kemungkinan menyerang
+//
+//                            // Kalkulasi damage
+//                            int damage = (int) ((ui.enemy.attackPower - player.defensePower) * player.multipleDamageByElement(ui.enemy.elementType, player.currentShield.elementType));
+//                            if (damage < 0) damage = 0;
+//
+//                            // Kurangi nyawa pemain
+//                            player.life -= damage;
+//
+//                            // Siapkan teks dialog untuk ditampilkan
+//                            ui.battleDialogueText = ui.enemy.name + " menyerang dan memberikan " + damage + " kerusakan!";
+//                            ui.subState = 2;
+//
+//                            // } else { // 25% kemungkinan musuh melakukan hal lain, misal: guard atau heal
+//                            //     ui.battleDialogueText = ui.enemy.name + " is preparing...";
+//                            //     ui.subState = 2;
+//                            // }
+//                        }
+//
+//                        enemyActionCounter = 0;
+//                    }
+//                }
+            }
+        } else if (gameState == pauseState) ;
     }
 
     public void drawToScreen(){

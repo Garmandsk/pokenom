@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import entity.monster.MON_GreenSlime;
 import font.FontManager;
 import font.Fonts;
 import object.pickupOnly.PU_OBJ_CoinBronze;
@@ -27,6 +28,8 @@ public class UI {
 //    public String message = "";
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
+    public String[][] battleDialogues = new String[20][20];
+    public int battleDialogueSet = 0, battleDialogueIndex = 0;
 
     public boolean gameFinished;
     public int counter = 0;
@@ -34,11 +37,11 @@ public class UI {
 //    DecimalFormat dFormat = new DecimalFormat("#0.00");
 
     /* Dialogue */
-    public String currentDialogue = "", combinedText = "";
+    public String currentDialogue = "", combinedText = "", battleDialogueText = "";
     public int charIndex = 0;
 
     /* State */
-    public int subState = 0;
+    public int subState = 0, targetSubState;
     public int commandNum;
 
     /* Player Stats */
@@ -52,10 +55,25 @@ public class UI {
     public int playerSlotCol = 0, playerSlotRow = 0;
     public int npcSlotCol = 0, npcSlotRow = 0;
 
-    public Entity npc;
+    public Entity npc, enemy;
+    public int monsterBattleID;
+    UtilityTool uTool;
+
+    /* Turn */
+    public final int playerTurn = 1;
+    public final int enemyTurn = 2;
+    public int turn = playerTurn;
+
+    /* QTE */
+    public boolean guardQTE_Active = false;
+    public int qteBar_x, qteBar_y, qteBar_width, qteBar_height;
+    public int qteZone_x, qteZone_width;
+    public int qteIndicator_x, qteIndicator_speed, qteIndicator_direction;
+    public int qteTimer;
 
     public UI(GamePanel gameP){
         this.gameP = gameP;
+        uTool = new UtilityTool();
         fontM.setFont(fonts);
 
         Cinzel = fonts[0].font; // Untuk Title
@@ -75,6 +93,9 @@ public class UI {
 
         Entity bronzeCoin = new PU_OBJ_CoinBronze(gameP);
         coin = bronzeCoin.down1;
+        enemy = new MON_GreenSlime(gameP);
+
+        setBattleDialogues();
     }
 
     public void addMessage(String text){
@@ -90,6 +111,15 @@ public class UI {
         return gameP.screenWidth/2 - length/2;
     }
 
+    public int getXForCenteredTextByWindow(String text, int windowWidth){
+        int length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+        return windowWidth/2 - length/2;
+    }
+
+    public int getYForCenteredTextByWindow(int windowHeight){
+        return windowHeight/2;
+    }
+
     public int getXForAlignToRightText(String text, int tailX){
         int length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
         return tailX - length;
@@ -100,6 +130,39 @@ public class UI {
 //        System.out.println("Slot Row: " + slotRow);
 
         return slotCol + (slotRow * inventoryMaxCol);
+    }
+
+    public String getElementTypeNameByID(int idElementType){
+        String elementTypeName = "";
+
+        switch (idElementType){
+            case 1 -> elementTypeName = "Water";
+            case 2 -> elementTypeName = "Fire";
+            case 3 -> elementTypeName = "Earth";
+            case 4 -> elementTypeName = "Thunder";
+        }
+
+        return elementTypeName;
+    }
+
+    public void setBattleDialogues(){
+        battleDialogues[0][0] = "It's Effective";
+        battleDialogues[1][0] = "It's Super Effective";
+        battleDialogues[2][0] = "It's Less Effective";
+        battleDialogues[3][0] = "It's Not Effective";
+        battleDialogues[4][0] = "Killed The " + enemy.name + "! \n" +
+                "Gained " + enemy.exp + " Exp! ";
+        battleDialogues[5][0] = enemy.name + " Hit You!";
+    }
+
+    public void startDialogue(int setNum){
+        battleDialogueSet = setNum;
+    }
+
+    public void resetDialogue(){
+        battleDialogueText = "";
+        charIndex = 0;
+        combinedText = "";
     }
 
     public void drawSubWindow(int x, int y, int width, int height){
@@ -114,81 +177,71 @@ public class UI {
         g2d.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
     }
 
+    public void drawSubWindow2(int x, int y, int width, int height){
+//        System.out.println("Width: " + x);
+        Color c = new Color(255, 255, 255);
+        g2d.setColor(c);
+        g2d.fillRoundRect(x, y, width, height, 35, 35);
+
+        c = new Color(0, 0, 0, 220);
+        g2d.setColor(c);
+        g2d.setStroke(new BasicStroke(5));
+        g2d.drawRoundRect(x+5, y+5, width-10, height-10, 25, 25);
+    }
+
     public void drawPlayerLife(){
 //        gameP.player.maxLife = 14;
 //        gameP.player.life = 14;
+        final int TILE_SIZE = gameP.tileSize;
+        int x = TILE_SIZE / 2;
+        int y = TILE_SIZE / 2;
 
-        int x = gameP.tileSize/2;
-        int y = gameP.tileSize/2;
-        int i = 0;
+        /* Heart */
+        int maxHeartContainers = gameP.player.maxLife / 2;
+        final int HEARTS_PER_ROW = 6; // Jumlah hati per baris
 
-        // Draw Max Lifes
-        while (i < gameP.player.maxLife/2){
-            g2d.drawImage(heartBlank, x, y, null);
-            i++;
-            x += gameP.tileSize;
+        for (int i = 0; i < maxHeartContainers; i++) {
+            int row = i / HEARTS_PER_ROW;
+            int col = i % HEARTS_PER_ROW;
+            int currentX = x + (col * TILE_SIZE);
+            int currentY = y + (row * TILE_SIZE);
 
-//            System.out.println("i sebe=");
-            if (i % (12/2) == 0){
-                x = gameP.tileSize/2;
-                y += gameP.tileSize;
-            }
-
-        }
-
-        // Reset
-        x = gameP.tileSize/2;
-        y = gameP.tileSize/2;
-        i = 0;
-
-        // Draw Life
-        while (i < gameP.player.life){
-            g2d.drawImage(heartHalf, x, y, null);
-            i++;
-            if (i < gameP.player.life) g2d.drawImage(heartFull, x, y, null);
-            i++;
-            x += gameP.tileSize;
-
-            if (i % 12 == 0){
-                x = gameP.tileSize/2;
-                y += gameP.tileSize;
+            // Menentukan gambar hati mana yang akan digunakan
+            if (gameP.player.life >= (i + 1) * 2) {
+                // Jika life player cukup untuk mengisi penuh hati ini (2 poin)
+                g2d.drawImage(heartFull, currentX, currentY, null);
+            } else if (gameP.player.life % 2 == 1 && gameP.player.life / 2 == i) {
+                // Jika life player hanya cukup untuk mengisi setengah hati ini (1 poin sisa)
+                g2d.drawImage(heartHalf, currentX, currentY, null);
+            } else {
+                // Jika life player tidak cukup, gambar hati kosong
+                g2d.drawImage(heartBlank, currentX, currentY, null);
             }
         }
 
-        x = gameP.tileSize/2;
-        y += gameP.tileSize*2;
-        i = 0;
+        /* Mana Crystal */
+        int lifeRows = (int) Math.ceil((double) maxHeartContainers / HEARTS_PER_ROW);
+        x = TILE_SIZE / 2;
+        y = (TILE_SIZE / 2) + (lifeRows * TILE_SIZE) + (TILE_SIZE / 2); // Tambah sedikit spasi
 
-//        gameP.player.mana = 25;
+        final int MANA_PER_ROW = 8;
+        final int MANA_SPACING = TILE_SIZE * 3 / 4;
 
-        // Draw Max Mana
-        while (i < gameP.player.maxMana){
-            g2d.drawImage(manaCrystalBlank, x, y, null);
-            i++;
-            x += gameP.tileSize - gameP.tileSize/4;
+        for (int i = 0; i < gameP.player.maxMana; i++) {
+            int row = i / MANA_PER_ROW;
+            int col = i % MANA_PER_ROW;
+            int currentX = x + (col * MANA_SPACING);
+            int currentY = y + (row * TILE_SIZE);
 
-            if (i % 8 == 0){
-                x = gameP.tileSize/2;
-                y += gameP.tileSize;
+            // Logikanya lebih sederhana untuk mana
+            if (i < gameP.player.mana) {
+                // Jika 'i' masih di bawah jumlah mana player, gambar kristal penuh
+                g2d.drawImage(manaCrystalFull, currentX, currentY, null);
+            } else {
+                // Jika tidak, gambar kristal kosong
+                g2d.drawImage(manaCrystalBlank, currentX, currentY, null);
             }
         }
-
-        // Reset
-        x = gameP.tileSize/2;
-        i = 0;
-
-        // Draw Mana
-        while (i < gameP.player.mana){
-            g2d.drawImage(manaCrystalFull, x, y, null);
-            i++;
-            x += gameP.tileSize - gameP.tileSize/4;
-
-            if (i % 8 == 0){
-                x = gameP.tileSize/2;
-                y += gameP.tileSize;
-            }
-        }
-
     }
 
     public void drawMonsterLife(){
@@ -328,6 +381,133 @@ public class UI {
         }
     }
 
+    public void drawBattleDialogueScreen(){
+        /* Dialog */
+        g2d.setFont(Oswald.deriveFont(40f));
+        g2d.setColor(Color.white);
+        int x = 0;
+        int y = 9 * gameP.tileSize;
+        int width = 20 * gameP.tileSize;
+        int height = 3 * gameP.tileSize;
+        drawSubWindow(x, y, width, height);
+
+        x += (int)(0.5 * gameP.tileSize);
+        y += (int)(1.5 * gameP.tileSize);
+
+        if (battleDialogues[battleDialogueSet][battleDialogueIndex] != null){
+
+            char[] characters = battleDialogues[battleDialogueSet][battleDialogueIndex].toCharArray();
+            if (charIndex < characters.length){
+                gameP.playSE(15);
+                String str = String.valueOf(characters[charIndex]);
+                combinedText += str;
+                currentDialogue = combinedText;
+                charIndex++;
+            }
+
+            System.out.println("Combined Text: " + combinedText);
+
+            if (gameP.keyH.enterPressed){
+                System.out.println("tes");
+                charIndex = 0;
+                combinedText = "";
+                npc.dialogueIndex++;
+                gameP.keyH.enterPressed = false;
+            }
+
+        } else {
+            battleDialogueIndex = 0;
+        }
+
+        for (String line : currentDialogue.split("\n")){
+            g2d.drawString(line, x, y);
+            y += gameP.tileSize;
+        }
+    }
+
+    public void drawBattleDialogueScreen(int targetSubState){
+        subState = 4;
+        this.targetSubState = targetSubState;
+
+        g2d.setFont(Oswald.deriveFont(40f));
+        g2d.setColor(Color.white);
+        int x = 0;
+        int y = 9 * gameP.tileSize;
+        int width = 20 * gameP.tileSize;
+        int height = 3 * gameP.tileSize;
+        drawSubWindow(x, y, width, height);
+
+        x += (int)(0.5 * gameP.tileSize);
+        y += (int)(1.5 * gameP.tileSize);
+
+        char[] characters = battleDialogueText.toCharArray();
+        if (charIndex < characters.length){
+            gameP.playSE(15);
+            String str = String.valueOf(characters[charIndex]);
+            combinedText += str;
+            currentDialogue = combinedText;
+            charIndex++;
+        }
+
+        for (String line : currentDialogue.split("\n")){
+            g2d.drawString(line, x, y);
+            y += gameP.tileSize;
+        }
+    }
+
+    public void drawBattleDialogueScreenWithoutAnimation(){
+        g2d.setFont(Oswald.deriveFont(40f));
+        g2d.setColor(Color.white);
+        int x = 0;
+        int y = 9 * gameP.tileSize;
+        int width = 20 * gameP.tileSize;
+        int height = 3 * gameP.tileSize;
+        drawSubWindow(x, y, width, height);
+
+        x += (int)(0.5 * gameP.tileSize);
+        y += (int)(1 * gameP.tileSize);
+
+        for (String line : battleDialogueText.split("\n")){
+            g2d.drawString(line, x, y);
+            y += (int)(1 * gameP.tileSize);
+        }
+    }
+
+    public void drawTextAnimation(String text){
+        g2d.setFont(Oswald.deriveFont(40f));
+        g2d.setColor(Color.white);
+        int x = 0;
+        int y = 9 * gameP.tileSize;
+        int width = 20 * gameP.tileSize;
+        int height = 3 * gameP.tileSize;
+        drawSubWindow(x, y, width, height);
+
+        x += (int)(0.5 * gameP.tileSize);
+        y += (int)(1.5 * gameP.tileSize);
+
+        char[] characters = text.toCharArray();
+        if (charIndex < characters.length){
+            gameP.playSE(15);
+            String str = String.valueOf(characters[charIndex]);
+            combinedText += str;
+            currentDialogue = combinedText;
+            charIndex++;
+        }
+
+        if (gameP.keyH.enterPressed){
+            System.out.println("tes");
+            charIndex = 0;
+            combinedText = "";
+            npc.dialogueIndex++;
+            gameP.keyH.enterPressed = false;
+        }
+
+        for (String line : currentDialogue.split("\n")){
+            g2d.drawString(line, x, y);
+            y += gameP.tileSize;
+        }
+    }
+
     public void drawTitleScreen(){
         // Background
         g2d.setColor(Color.GRAY);
@@ -459,7 +639,7 @@ public class UI {
 
     public void drawCharacterScreen(){
         final int windowX = gameP.tileSize*2;
-        final int windowY = gameP.tileSize*1;
+        final int windowY = (int)(gameP.tileSize*0.5);
         final int windowWidth = gameP.tileSize*5;
         final int windowHeight = gameP.tileSize*10 + 36;
         drawSubWindow(windowX, windowY, windowWidth, windowHeight);
@@ -578,14 +758,14 @@ public class UI {
 
         if (entity == gameP.player){
             windowX = gameP.tileSize * (gameP.maxScreenCol*3/5);
-            windowY = gameP.tileSize*1;
+            windowY = (int)(gameP.tileSize*0.5);
             windowWidth = gameP.tileSize * (inventoryMaxCol + 1) + (gameP.tileSize/4);
             windowHeight = gameP.tileSize * (inventoryMaxRow + 1);
             slotCol = playerSlotCol;
             slotRow = playerSlotRow;
         } else {
             windowX = gameP.tileSize * (gameP.maxScreenCol/10);
-            windowY = gameP.tileSize*1;
+            windowY = (int)(gameP.tileSize*0.5);
             windowWidth = gameP.tileSize * (inventoryMaxCol + 1) + (gameP.tileSize/4);
             windowHeight = gameP.tileSize * (inventoryMaxRow + 1);
             slotCol = npcSlotCol;
@@ -670,6 +850,15 @@ public class UI {
                 }
             }
         }
+
+        // Hint
+        int hWindowX = 12 * gameP.tileSize;
+        int hWindowY = (int)(8.5 * gameP.tileSize);
+        int hWindowWidth = gameP.tileSize * (inventoryMaxCol + 1) + (gameP.tileSize/4);
+        int hWindowheight = gameP.tileSize * 2;
+        drawSubWindow(hWindowX, hWindowY, hWindowWidth, hWindowheight);
+        g2d.drawString("[ESC] Back", hWindowX + gameP.tileSize/2, hWindowY + gameP.tileSize + (gameP.tileSize/4));
+
         /* ===== */
     }
 
@@ -1078,11 +1267,529 @@ public class UI {
         }
     }
 
+    public void drawBattleScreen(){
+        BufferedImage battleBG = uTool.setUpJFIF("/bg/battle2", gameP.screenWidth, gameP.screenHeight);
+        g2d.drawImage(battleBG, 0, 0, null);
+        g2d.setColor(new Color(94, 237, 100));
+
+//        g2d.fillRect(0, 0, gameP.screenWidth, gameP.screenHeight);
+//        monster = new MON_GreenSlime(gameP);
+
+        if (turn == playerTurn) {
+            switch (subState) {
+                case 0:
+                    battle_select();
+                    break;
+                case 1:
+                    battle_fight();
+                    break;
+                case 2:
+                    battle_pokenom();
+                    break;
+                case 3:
+                    battle_bag();
+                    break;
+                case 4:
+                    battle_dialogue();
+                    break;
+                case 5:
+                    battle_playerWin();
+                    break;
+                case 6:
+                    drawBattleUI();
+                    drawGuardQTE();
+            }
+        } else if (turn == enemyTurn) {
+
+            switch (subState){
+                case 0:
+                    battle_enemy();
+                    break;
+                case 1:
+                    battle_enemyWin();
+                    break;
+                case 2:
+                    battle_enemyDialogue();
+                    break;
+            }
+        }
+
+        gameP.keyH.enterPressed = false;
+    }
+
+    public void drawBattleUI(){
+        int x = 0, y = 0, width = 0, height = 0;
+        int windowX, windowY, windowWidth, windowHeight;
+        int tailX;
+        int hpBarWidth, hpBarHeight, hpBarValueWidth, length;
+        String text;
+
+        // Monster Image
+        x = 13 * gameP.tileSize;
+        y = 1 * gameP.tileSize;
+        g2d.drawImage(enemy.down1, x, y, 5 * gameP.tileSize, 5 * gameP.tileSize, null);
+
+        // Player Image
+        x = 3 * gameP.tileSize;
+        y = 5 * gameP.tileSize;
+        g2d.drawImage(gameP.player.up1, x, y, 5 * gameP.tileSize, 5 * gameP.tileSize,null);
+
+        g2d.setColor(Color.white);
+        g2d.setFont(Oswald.deriveFont(50f));
+
+        /* Display Monster */
+        windowX = 0;
+        windowY = gameP.tileSize/4;
+        windowWidth = 8 * gameP.tileSize;
+        windowHeight = (int)(2.5 * gameP.tileSize);
+        drawSubWindow(windowX, windowY, windowWidth, windowHeight);
+
+        // Text Monster Name
+        text = enemy.name;
+        x = windowX + gameP.tileSize/4;
+        y = windowY + gameP.tileSize + gameP.tileSize/6;
+        g2d.drawString(text, x, y);
+
+        // Text Monster Level
+        text = "Lv. " + String.valueOf(enemy.level);
+        tailX = (windowX + windowWidth) - (gameP.tileSize);
+        x = getXForAlignToRightText(text, tailX);
+        g2d.drawString(text, x, y);
+
+        // Hp Bar Plain
+        g2d.setFont(Cinzel.deriveFont(35f));
+        text = "HP";
+        x = getXForCenteredTextByWindow(text, windowWidth) - gameP.tileSize;
+        y += gameP.tileSize - gameP.tileSize/5;
+        g2d.drawString(text, x, y);
+
+        x += 4;
+        y -= gameP.tileSize/2;
+        hpBarWidth = gameP.tileSize * 4 - gameP.tileSize/3;
+        hpBarHeight = gameP.tileSize/2;
+        length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+
+        g2d.setColor(Color.lightGray);
+        g2d.drawRoundRect(x+length, y, hpBarWidth, hpBarHeight, 10, 10);
+
+//        monster.life = 1;
+        g2d.setColor(Color.green);
+        if (enemy.maxLife <= 0) {
+            g2d.fillRoundRect(x + length, y, 0, hpBarHeight, 10, 10);
+        } else {
+            double lifeRatio = (double) enemy.life / enemy.maxLife;
+            lifeRatio = Math.max(0.0, Math.min(lifeRatio, 1.0));
+
+            int currentHpBarWidth = (int) (hpBarWidth * lifeRatio);
+            g2d.fillRoundRect(x + length, y, currentHpBarWidth, hpBarHeight, 10, 10);
+        }
+
+        g2d.setColor(Color.white);
+        g2d.setFont(Oswald.deriveFont(50f));
+
+        /* Display Player */
+        windowX = 11 * gameP.tileSize;
+        windowY = 5 * gameP.tileSize;
+        windowWidth = 9 * gameP.tileSize;
+        windowHeight = (int)(3.5 * gameP.tileSize);
+        drawSubWindow(windowX, windowY, windowWidth, windowHeight);
+
+        // Text Player Name
+        text = gameP.player.name;
+        x = windowX + gameP.tileSize/2;
+        y = windowY + gameP.tileSize + gameP.tileSize/6;
+        g2d.drawString(text, x, y);
+
+        // Text Player Level
+        text = "Lv. " + String.valueOf(gameP.player.level);
+        tailX = (windowX + windowWidth) - (gameP.tileSize);
+        x = getXForAlignToRightText(text, tailX);
+        g2d.drawString(text, x, y);
+
+        // Hp Bar Plain
+        g2d.setFont(Cinzel.deriveFont(35f));
+        text = "HP";
+        x = windowX + gameP.tileSize/4 + getXForCenteredTextByWindow(text, windowWidth) - gameP.tileSize/2;
+        y += gameP.tileSize - gameP.tileSize/5;
+        g2d.drawString(text, x, y);
+
+        x += gameP.tileSize/12;
+        y -= gameP.tileSize/2;
+        hpBarWidth = gameP.tileSize * 4 - gameP.tileSize/3;
+        hpBarHeight = gameP.tileSize/2;
+        length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+
+        g2d.setColor(Color.lightGray);
+        g2d.drawRoundRect(x+length, y, hpBarWidth, hpBarHeight, 10, 10);
+
+        g2d.setColor(Color.green);
+        if (gameP.player.maxLife <= 0) {
+            g2d.fillRoundRect(x + length, y, 0, hpBarHeight, 10, 10);
+        } else {
+            double lifeRatio = (double) gameP.player.life / gameP.player.maxLife;
+            lifeRatio = Math.max(0.0, Math.min(lifeRatio, 1.0));
+
+            int currentHpBarWidth = (int) (hpBarWidth * lifeRatio);
+            g2d.fillRoundRect(x + length, y, currentHpBarWidth, hpBarHeight, 10, 10);
+        }
+
+        // Text Player Hp Value
+        g2d.setFont(Cinzel.deriveFont(40f));
+        g2d.setColor(Color.white);
+        text = gameP.player.life + "/" + gameP.player.maxLife;
+        length = (int)g2d.getFontMetrics().getStringBounds(text, g2d).getWidth();
+        x = windowX + windowWidth/4 + (int)(gameP.tileSize*5) - length;
+        y += gameP.tileSize + gameP.tileSize/2;
+        g2d.drawString(text, x, y);
+    }
+
+    public void drawBattleMiniDialogue(String text){
+        int x, y;
+
+        /* Dialogue Text */
+        x = (int)(0.5 * gameP.tileSize);
+        y = (int)(10 * gameP.tileSize);
+        g2d.drawString(text, x, y);
+    }
+
+    public void drawBattleMiniDialogue(String text1, String text2Left, String text2Right, String text3Left, String text3Right, int tailX){
+        int x, y;
+
+        x = (int)(0.5 * gameP.tileSize);
+        y = (int)(9.8 * gameP.tileSize);
+        g2d.drawString(text1, x, y);
+
+        g2d.drawString(text2Left, x, y += (int)(0.85 * gameP.tileSize));
+        x = getXForAlignToRightText(text2Right, tailX);
+        g2d.drawString(text2Right, x, y);
+
+        g2d.drawString(text3Left, (int)(0.5 * gameP.tileSize), y += (int)(0.85 * gameP.tileSize));
+        x = getXForAlignToRightText(text3Right, tailX);
+        g2d.drawString(text3Right, x, y);
+    }
+
+    public void drawGuardQTE() {
+        // Gambar bar latar belakang (misal: abu-abu gelap)
+        g2d.setColor(new Color(93, 173, 226));
+        g2d.fillRect(qteBar_x, qteBar_y, qteBar_width, qteBar_height);
+
+        // Gambar zona "Perfect Guard" (misal: kuning cerah)
+        g2d.setColor(new Color(30, 144, 255));
+        g2d.fillRect(qteZone_x, qteBar_y, qteZone_width, qteBar_height);
+
+        // Gambar indikator yang bergerak (misal: putih)
+        g2d.setColor(Color.WHITE);
+        g2d.fillRect(qteIndicator_x, qteBar_y, 4, qteBar_height);
+
+        // Gambar teks instruksi
+        g2d.setFont(g2d.getFont().deriveFont(Font.BOLD, 32F));
+        String text = "Press ENTER!";
+        int textX = getXForCenteredText(text);
+        int textY = qteBar_y - 20;
+        g2d.drawString(text, textX, textY);
+    }
+
+    public void battle_select(){
+        int x, y, width, height, tailX;
+        String text;
+
+        // BG, Monster & Player Display
+        drawBattleUI();
+
+        // Dialogue
+        g2d.setFont(Oswald.deriveFont(50f));
+        g2d.setColor(Color.white);
+        x = 0;
+        y = 9 * gameP.tileSize;
+        width = 8 * gameP.tileSize;
+        height = 3 * gameP.tileSize;
+        drawSubWindow(x, y, width, height);
+
+        /* Dialogue Text */
+        x = (int)(0.5 * gameP.tileSize);
+        y = (int)(10.5 * gameP.tileSize);
+        g2d.drawString("What Will You Do ?", x, y);
+
+        /* Opsi Serang */
+        g2d.setFont(Cinzel.deriveFont(40f));
+
+        // Fight
+        if (commandNum == 0) {
+            x = (8 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.black);
+            text = "FIGHT";
+            x += getXForCenteredTextByWindow(text, width);
+            y += (int) (1 * gameP.tileSize);
+            g2d.drawString(text, x, y);
+        } else {
+            x = (8 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            g2d.setColor(Color.white);
+            text = "FIGHT";
+            x += getXForCenteredTextByWindow(text, width);
+            y += (int) (1 * gameP.tileSize);
+            g2d.drawString(text, x, y);
+        }
+
+        // Pokenom
+        if (commandNum == 1){
+            x = (8 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.black);
+            text = "POKéNOM";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        } else {
+            x = (8 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            text = "POKéNOM";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        }
+
+        // Bag
+        if (commandNum == 2){
+            x = (14 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.BLACK);
+            text = "BAG";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+
+        } else {
+            x = (14 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            text = "BAG";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+
+        }
+
+        // Run
+        if (commandNum == 3){
+            x = (14 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.BLACK);
+            text = "RUN";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        } else {
+            x = (14 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            text = "RUN";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        }
+    }
+
+    public void battle_fight(){
+        int x, y, width, height, tailX;
+        String text;
+
+        drawBattleUI();
+
+        /* Dialog */
+        g2d.setFont(Cinzel.deriveFont(30f));
+        x = 0;
+        y = 9 * gameP.tileSize;
+        width = 8 * gameP.tileSize;
+        height = 3 * gameP.tileSize;
+        drawSubWindow(x, y, width, height);
+
+        tailX = (x + width) - (gameP.tileSize);
+        if (commandNum == 0) drawBattleMiniDialogue("TYPE/" + getElementTypeNameByID(gameP.player.currentWeapon.elementType));
+        else if (commandNum == 1) drawBattleMiniDialogue("TYPE/" + getElementTypeNameByID(gameP.player.projectile.elementType), "Your Mana: ", String.valueOf(gameP.player.mana), "Cost Mana: ", String.valueOf(gameP.player.projectile.useCost), tailX);
+        else if (commandNum == 2) drawBattleMiniDialogue("TYPE/" + getElementTypeNameByID(gameP.player.currentShield.elementType));
+        else if (commandNum == 3) drawBattleMiniDialogue("TYPE/TYPE");
+
+        /* Opsi Serang */
+        g2d.setFont(Cinzel.deriveFont(40f));
+
+        // Hit
+        if (commandNum == 0) {
+            x = (8 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.black);
+            text = "HIT";
+            x += getXForCenteredTextByWindow(text, width);
+            y += (int) (1 * gameP.tileSize);
+            g2d.drawString(text, x, y);
+        } else {
+            x = (8 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            g2d.setColor(Color.white);
+            text = "HIT";
+            x += getXForCenteredTextByWindow(text, width);
+            y += (int) (1 * gameP.tileSize);
+            g2d.drawString(text, x, y);
+        }
+
+        // Fireball
+        if (commandNum == 1){
+            x = (8 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.black);
+            text = gameP.player.projectile.name;
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        } else {
+            x = (8 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            text = "FIREBALL";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        }
+
+        // Guard
+        if (commandNum == 2){
+            x = (14 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.BLACK);
+            text = "GUARD";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+
+        } else {
+            x = (14 * gameP.tileSize);
+            y = (int)(9 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            text = "GUARD";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+
+        }
+
+        // Tambahan
+        if (commandNum == 3){
+            x = (14 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow2(x, y, width, height);
+
+            g2d.setColor(Color.BLACK);
+            text = "CS";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        } else {
+            x = (14 * gameP.tileSize);
+            y = (int)(10.5 * gameP.tileSize);
+            width = 6 * gameP.tileSize;
+            height = (int)(1.5 * gameP.tileSize);
+            drawSubWindow(x, y, width, height);
+
+            text = "CS";
+            x += getXForCenteredTextByWindow(text, width);
+            y += 1 * gameP.tileSize;
+            g2d.drawString(text, x, y);
+        }
+    }
+
+    public void battle_pokenom(){
+        System.out.println("Ini adalah pokenom substate");
+
+    }
+
+    public void battle_bag(){
+//        System.out.println("Ini adalah bag substate");
+        drawCharacterScreen();
+        drawInventory(gameP.player, true);
+    }
+
+    public void battle_dialogue(){
+        drawBattleUI();
+        drawBattleDialogueScreenWithoutAnimation();
+    }
+
+    public void battle_playerWin(){
+        drawBattleUI();
+        drawBattleDialogueScreenWithoutAnimation();
+
+    }
+
+    public void battle_enemy(){
+        drawBattleUI();
+    }
+
+    public void battle_enemyWin(){
+        drawBattleUI();
+        drawBattleDialogueScreenWithoutAnimation();
+    }
+
+    public void battle_enemyDialogue(){
+        drawBattleUI();
+        drawBattleDialogueScreenWithoutAnimation();
+    }
+
     public void draw(Graphics2D g2d){
         this.g2d = g2d;
-//        System.out.println(fontM.fonts[1].font);
-        g2d.setFont(Cinzel);
-        g2d.setColor(Color.white);
 
         if (gameP.gameState == gameP.playState){
             drawPlayerLife();
@@ -1116,5 +1823,7 @@ public class UI {
         if (gameP.gameState == gameP.tradeState) drawTradeScreen();
 
         if (gameP.gameState == gameP.sleepState) drawSleepScreen();
+
+        if (gameP.gameState == gameP.battleState) drawBattleScreen();
     }
 }

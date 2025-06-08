@@ -26,7 +26,6 @@ public class Main {
         gameP.setUpGame();
         gameP.startGameThread();
     }
-
     public void setIcon(){
         ImageIcon icon = new ImageIcon(Objects.requireNonNull(getClass().getClassLoader().getResource("player/boy_down_1.png")));
         window.setIconImage(icon.getImage());

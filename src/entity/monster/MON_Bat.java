@@ -15,7 +15,9 @@ public class MON_Bat extends Entity {
         super(gameP);
 
         type = monsterType;
+        level = 5;
         name = monName;
+        elementType = fireElement;
         defaultSpeed = 4;
         speed = defaultSpeed;
         maxLife = 7;

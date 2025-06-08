@@ -12,6 +12,7 @@ public class OBJ_SwordNormal extends Entity {
 
         type = swordType;
         name = objName;
+        elementType = thunderElement;
         down1 = uTool.setUp("/objects/sword_normal");
         attackValue = 1;
         knockbackPower = 2;

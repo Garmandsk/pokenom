@@ -14,13 +14,14 @@ public class Projectile extends Entity {
     public void substractResources(Entity user) {}
 
     public void set(int worldX, int worldY, String direction, boolean alive, Entity user){
+        canEnterBattleState = false;
+
         this.user = user;
         this.life = maxLife;
         this.alive = alive;
         this.worldX = worldX;
         this.worldY = worldY;
         this.direction = direction;
-
     }
 
     public void update(){
@@ -29,7 +30,7 @@ public class Projectile extends Entity {
             if (monsterIndex != 999){
 //                System.out.println(this.elementType);
 //                System.out.println(elementType);
-                gameP.player.damageMonster(monsterIndex, this, this.attackPower*(gameP.player.level/2), this.knockbackPower);
+                gameP.player.damageMonsterByProjectile(monsterIndex, this, this.attackPower, this.knockbackPower);
                 if (elementType == waterElement) generateParticle(waterParticle, gameP.monster[gameP.currentMap][monsterIndex]);
                 else if (elementType == fireElement) generateParticle(fireParticle, gameP.monster[gameP.currentMap][monsterIndex]);
                 else if (elementType == earthElement) generateParticle(earthParticle, gameP.monster[gameP.currentMap][monsterIndex]);

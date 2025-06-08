@@ -18,8 +18,10 @@ public class MON_SkeletonLord extends Entity {
         super(gameP);
 
         type = monsterType;
+        level = 30;
         boss = true;
         name = monName;
+        elementType = waterElement;
         defaultSpeed = 1;
         speed = defaultSpeed;
         maxLife = 50;
@@ -46,6 +48,8 @@ public class MON_SkeletonLord extends Entity {
         getImage();
         getMonsterAttackImage();
         setDialogue();
+
+        canEnterBattleState = false;
     }
 
     public void getImage(){

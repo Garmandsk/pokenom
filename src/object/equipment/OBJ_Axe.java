@@ -11,6 +11,7 @@ public class OBJ_Axe extends Entity {
 
         type = axeType;
         name = objName;
+        elementType = fireElement;
         down1 = uTool.setUp("/objects/axe");
         attackValue = 2;
         knockbackPower = 5;

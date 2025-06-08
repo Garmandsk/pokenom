@@ -22,6 +22,7 @@ import object.pickupOnly.PU_OBJ_ManaCrystal;
 import tile_interactive.IT_DestructibleWall;
 import tile_interactive.IT_DryTree;
 import tile_interactive.IT_MetalPlate;
+import tile_interactive.IT_MetalPlateReset;
 
 public class AssetSetter {
     GamePanel gameP;
@@ -275,6 +276,7 @@ public class AssetSetter {
         gameP.iTile[mapNum][i] = new IT_MetalPlate(gameP, 20, 22); i++;
         gameP.iTile[mapNum][i] = new IT_MetalPlate(gameP, 8, 17); i++;
         gameP.iTile[mapNum][i] = new IT_MetalPlate(gameP, 39, 31); i++;
+        gameP.iTile[mapNum][i] = new IT_MetalPlateReset(gameP, 18, 24); i++;
 
     }
 }

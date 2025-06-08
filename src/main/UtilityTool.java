@@ -78,11 +78,37 @@ public class UtilityTool {
         return scaledImage;
     }
 
+    public BufferedImage setUpJFIF(String imagePath) {
+        BufferedImage scaledImage = null;
+
+        try {
+            scaledImage = ImageIO.read(getClass().getResourceAsStream(imagePath + ".jfif"));
+            scaledImage = scaleImage(scaledImage, gameP.tileSize, gameP.tileSize);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return scaledImage;
+    }
+
     public BufferedImage setUp(String imagePath, int width, int height){
         BufferedImage scaledImage = null;
 
         try {
             scaledImage = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
+            scaledImage = scaleImage(scaledImage, width, height);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        return scaledImage;
+    }
+
+    public BufferedImage setUpJFIF(String imagePath, int width, int height){
+        BufferedImage scaledImage = null;
+
+        try {
+            scaledImage = ImageIO.read(getClass().getResourceAsStream(imagePath + ".jfif"));
             scaledImage = scaleImage(scaledImage, width, height);
         } catch (IOException e){
             e.printStackTrace();

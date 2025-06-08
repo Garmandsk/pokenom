@@ -25,15 +25,19 @@ public class CONSUM_OBJ_PotionRed extends Entity {
 
     public void setDialogue(){
         dialogues[0][0] = "Drinked The " + name + "!\nYour Life has been recovered \nby " + healingValue + ".";
+        dialogues[1][0] = "Drinked The " + name + "! Your Life has been recovered by " + healingValue + ".";
 
     }
 
     public boolean use(Entity entity){
         gameP.playSE(2);
         entity.life += healingValue;
+        if (entity.life > entity.maxLife) entity.life = entity.maxLife;
 
-        gameP.gameState = gameP.dialogueState;
-        startDialogue(this, 0);
+        if (gameP.player.inBattleState == false){
+            gameP.gameState = gameP.dialogueState;
+            startDialogue(this, 0);
+        }
 
         return true;
     }

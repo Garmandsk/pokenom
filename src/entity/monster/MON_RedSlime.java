@@ -16,7 +16,9 @@ public class MON_RedSlime extends Entity {
         super(gameP);
 
         type = monsterType;
+        level = 8;
         name = monName;
+        elementType = fireElement;
         defaultSpeed = 2;
         speed = defaultSpeed;
         maxLife = 8;

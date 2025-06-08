@@ -62,7 +62,7 @@ public class EventHandler {
 
             else if (hit(0, 23, 12, "up")) healingPool(gameP.dialogueState);
 
-            else if (hit(0, 21, 20, "any")) teleport(1, 12, 13, gameP.indoor); // to merchant's house
+            else if (hit(0, 21, 19, "any")) teleport(1, 12, 13, gameP.indoor); // to merchant's house
             else if (hit(0, 10, 39, "any")) teleport(1, 12, 13, gameP.indoor); // to merchant's house
             else if (hit(1, 12, 13, "any")) teleport(0, 10, 39, gameP.outside); // to outside
             else if (hit(1, 12, 9, "up")) speak(gameP.npc[1][0]);

@@ -13,6 +13,7 @@ OBJ_Pickaxe extends Entity {
 
         type = pickaxeType;
         name = objName;
+        elementType = earthElement;
         down1 = uTool.setUp("/objects/pickaxe");
         attackValue = 2;
         attackArea.width = 30;

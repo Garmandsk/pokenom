@@ -61,7 +61,7 @@ public class Entity {
     public boolean knockback;
     public int knockbackCounter = 0;
     public String knockbackDirection;
-    public boolean guarding;
+    public boolean guarding, guardingPerfect;
     public int guardCounter = 0;
     public boolean offBalance;
     public int offBalanceCounter = 0;
@@ -71,6 +71,7 @@ public class Entity {
     public boolean inRage;
     public boolean sleep;
     public boolean drawing = true;
+    public boolean canEnterBattleState = true, inBattleState = false;
 
     public int maxLife, life;
     public int maxMana, mana;
@@ -455,13 +456,18 @@ public class Entity {
             solidArea.height = attackArea.height;
 
             if (type == monsterType){
-                if (gameP.cChecker.checkPlayer(this) == true) damagePlayer(attackPower);
+                if (gameP.cChecker.checkPlayer(this) == true) {
+//                    System.out.println("monster Mengenai player 1"); // ketrigger hanya saat di hit orc
+                    damagePlayer(attackPower);
+                }
             } else {
+
                 int monsterIndex = gameP.cChecker.checkEntity(this, gameP.monster);
-                gameP.player.damageMonster(monsterIndex, this, this.attackPower, currentWeapon.knockbackPower);
+
+                if (monsterIndex != 999) gameP.player.damageMonster(monsterIndex, this, this.attackPower, currentWeapon.knockbackPower);
 
                 int iTileIndex = gameP.cChecker.checkEntity(this, gameP.iTile);
-                gameP.player.damageInreractiveTile(iTileIndex);
+                gameP.player.damageInteractiveTile(iTileIndex);
 
                 int projectileIndex = gameP.cChecker.checkEntity(this, gameP.projectile);
                 gameP.player.damageProjectile(projectileIndex);
@@ -484,7 +490,7 @@ public class Entity {
     public void damagePlayer(int attackPower){
         if (gameP.player.invicible == false){
 
-            int damage = attackPower - gameP.player.defensePower;
+            int damage = (int) ((attackPower - gameP.player.defensePower) * multipleDamageByElement(elementType, gameP.player.elementType));
             if (damage < 0) damage = 0;
 
             String canGuardDirection = getOppositeDirection(direction);
@@ -505,12 +511,32 @@ public class Entity {
                     damage /= 3;
                 }
 
+                System.out.println("tes");
+
             } else {
                 gameP.playSE(5);
                 if (damage < 1) damage = 1;
+
+                if (canEnterBattleState){
+                    int monsterID = 999;
+
+                    for (int mapNum = 0; mapNum < gameP.maxMap; mapNum++){
+                        for (int i = 0; i < gameP.monster[1].length; i++){
+                            if (gameP.monster[mapNum][i] == this)  monsterID = i;
+                        }
+                    }
+
+                    damage = 0;
+
+                    gameP.ui.enemy = this;
+                    gameP.ui.monsterBattleID = monsterID;
+                    gameP.changeGameState(gameP.battleState);
+                    gameP.player.inBattleState = true;
+                }
             }
 
             if (damage != 0) {
+                System.out.println("tes");
                 gameP.player.transparent = true;
                 setKnockback(gameP.player, this, this.knockbackPower);
             }
@@ -518,6 +544,28 @@ public class Entity {
             gameP.player.life -= damage;
             gameP.player.invicible = true;
         }
+    }
+
+    public double multipleDamageByElement(int attackerElementType, int defenderElementType){
+        double multiplierDamage = 0;
+
+        if (attackerElementType == waterElement && defenderElementType == fireElement ||
+                attackerElementType == fireElement && defenderElementType == earthElement ||
+                attackerElementType == earthElement && defenderElementType == thunderElement ||
+                attackerElementType == thunderElement && defenderElementType == waterElement
+        ) multiplierDamage = 2;
+        else if (attackerElementType == earthElement && defenderElementType == fireElement ||
+                attackerElementType == thunderElement && defenderElementType == earthElement ||
+                attackerElementType == waterElement && defenderElementType == thunderElement ||
+                attackerElementType == fireElement && defenderElementType == waterElement
+        ) multiplierDamage = 0.5;
+        else multiplierDamage = 1;
+
+        System.out.println("Attacker Element: " + attackerElementType);
+        System.out.println("Defender Element: " + defenderElementType);
+        System.out.println("Multiplier: " + multiplierDamage);
+
+        return multiplierDamage;
     }
 
     public void dyingAnimation(Graphics2D g2d){

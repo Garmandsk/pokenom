@@ -1,6 +1,7 @@
 package entity;
 
 import main.GamePanel;
+import object.consum.CONSUM_OBJ_PotionRed;
 import object.equipment.OBJ_Lantern;
 import object.equipment.OBJ_ShieldWood;
 import object.equipment.OBJ_SwordNormal;
@@ -17,6 +18,8 @@ public class Player extends Entity {
     int standCounter;
     public boolean attackCanceled;
     public boolean lightUpdated;
+
+    public Entity selectedItem = null;
 
     public Player(GamePanel gameP){
         super(gameP);
@@ -126,13 +129,14 @@ public class Player extends Entity {
     }
 
     public void setDefaultValue(){
+        name = "Player";
         defaultSpeed = 4;
         this.speed = defaultSpeed;
         this.direction = "down";
 
         // Stats Player
         this.maxLife = 6;
-        life = maxLife;
+        life = 3;
         maxMana = 4;
         mana = maxMana;
         ammo = 10;
@@ -188,6 +192,7 @@ public class Player extends Entity {
         inventory.add(currentShield);
 //        inventory.add(new KeyObject(gameP));
         inventory.add(new OBJ_Lantern(gameP));
+        inventory.add(new CONSUM_OBJ_PotionRed(gameP));
 
         attackPower = getAttack(); // Terakumulasi dari playerStrength dan weaponAttackPower
         defensePower = getDefense(); // terakumulasi dari playerDexterity dan shiekdDefensePower
@@ -254,18 +259,30 @@ public class Player extends Entity {
                 currentWeapon = selectedItem;
                 attackPower = getAttack();
                 getAttackImage();
+
+                System.out.println("tes");
+                this.selectedItem = selectedItem;
             } else if (selectedItem.type == shieldType){
                 currentShield = selectedItem;
                 defensePower = getDefense();
+
+                System.out.println("tes");
+                this.selectedItem = selectedItem;
             } else if (selectedItem.type == lightType){
                 if (currentLight == selectedItem) currentLight = null;
                 else currentLight = selectedItem;
 
                 lightUpdated = true;
+
+                System.out.println("tes");
+                this.selectedItem = selectedItem;
             } else if (selectedItem.type == consumType){
                 if (selectedItem.use(this)) {
                     if (selectedItem.amount > 1) selectedItem.amount--;
                     else inventory.remove(itemIndex);
+
+                    System.out.println("tes");
+                    this.selectedItem = selectedItem;
                 }
             }
         }
@@ -287,19 +304,25 @@ public class Player extends Entity {
 
     void contactMonster(int i){
         if (i != 999){
-            Entity targetMonster = gameP.monster[gameP.currentMap][i];
+//            System.out.println("player Mengenai monster");
+//            System.out.println("Masuk ke battle state dari player");
+            gameP.ui.enemy = gameP.monster[gameP.currentMap][i];
+            gameP.ui.monsterBattleID = i;
+            gameP.changeGameState(gameP.battleState);
+            inBattleState = true;
 
-            if (this.invicible == false && targetMonster.dying == false){
-                gameP.playSE(5);
-
-                int damage = targetMonster.attackPower - this.defensePower;
-                if (damage < 1) damage = 1;
-
-                this.life -= damage;
-                if (this.life <= 0) this.life = 0;
-                this.invicible = true;
-                this.transparent = true;
-            }
+//            Entity targetMonster = gameP.monster[gameP.currentMap][i];
+//            if (this.invicible == false && targetMonster.dying == false){
+//                gameP.playSE(5);
+//
+//                int damage = targetMonster.attackPower - this.defensePower;
+//                if (damage < 1) damage = 1;
+//
+//                this.life -= damage;
+//                if (this.life <= 0) this.life = 0;
+//                this.invicible = true;
+//                this.transparent = true;
+//            }
         }
     }
 
@@ -307,6 +330,7 @@ public class Player extends Entity {
         if (i != 999){
             Entity targetMonster = gameP.monster[gameP.currentMap][i];
 
+            System.out.println("Attack Power Dari Player: " + attackPower);
             if (targetMonster.invicible == false){
                 gameP.playSE(4);
 
@@ -314,8 +338,10 @@ public class Player extends Entity {
 
                 if (targetMonster.offBalance) attackPower *= 5;
 
-                int damage = attackPower - targetMonster.defensePower;
+                int damage = (int) ((attackPower - targetMonster.defensePower) * multipleDamageByElement(this.currentWeapon.elementType, targetMonster.elementType));
                 if (damage < 0) damage = 0;
+
+                System.out.println("Damage Hit Biasa: " + damage + "\n");
 
                 targetMonster.life -= damage;
                 gameP.ui.addMessage(damage + " Damage!");
@@ -337,7 +363,44 @@ public class Player extends Entity {
         }
     }
 
-    public void damageInreractiveTile(int i){
+    public void damageMonsterByProjectile(int i, Entity attacker, int attackPower, int knockbackPower){
+        if (i != 999){
+            Entity targetMonster = gameP.monster[gameP.currentMap][i];
+
+            System.out.println("Attack Power Dari Projectile Player: " + attackPower);
+            if (targetMonster.invicible == false){
+                gameP.playSE(4);
+
+                if (knockbackPower > 0) setKnockback(targetMonster, attacker, knockbackPower);
+
+                if (targetMonster.offBalance) attackPower *= 5;
+
+                int damage = (int) ((attackPower - targetMonster.defensePower) * multipleDamageByElement(this.projectile.elementType, targetMonster.elementType));
+                if (damage < 0) damage = 0;
+
+                System.out.println("Damage Projectile Biasa: " + damage + "\n");
+
+                targetMonster.life -= damage;
+                gameP.ui.addMessage(damage + " Damage!");
+
+                targetMonster.invicible = true;
+
+                targetMonster.damageReaction();
+
+                if (targetMonster.life <= 0) {
+                    targetMonster.dying = true;
+                    gameP.ui.addMessage("Killed The " + targetMonster.name + "!");
+
+                    this.exp += targetMonster.exp;
+                    gameP.ui.addMessage("Gained " + targetMonster.exp + " Exp!");
+
+                    checkLevelUp();
+                }
+            }
+        }
+    }
+
+    public void damageInteractiveTile(int i){
         if (i != 999){
             InteractiveTile targetITile = gameP.iTile[gameP.currentMap][i];
 
@@ -394,6 +457,9 @@ public class Player extends Entity {
             level++;
             nextLevelExp *= 2;
             maxLife += 2;
+            life = maxLife;
+            maxMana++;
+            mana = maxMana;
             strength++;
             dexterity++;
             attackPower = getAttack();
