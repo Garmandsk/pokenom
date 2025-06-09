@@ -45,19 +45,20 @@ public class IT_DestructibleWall extends InteractiveTile {
 //        if (i >= 75 && i < 100) dropItem(new ManaCrystalObject(gameP));
 //    }
 
-    public void draw(Graphics2D g2d){
-
-        int screenX = worldX - gameP.player.worldX + gameP.player.screenX;
-        int screenY = worldY - gameP.player.worldY + gameP.player.screenY;
-
-        /* Visible Area */
-        if (    worldX + gameP.tileSize > gameP.player.worldX - gameP.player.screenX &&
-                worldX - gameP.tileSize < gameP.player.worldX + gameP.player.screenX &&
-                worldY + gameP.tileSize > gameP.player.worldY - gameP.player.screenY &&
-                worldY - gameP.tileSize < gameP.player.worldY + gameP.player.screenY    ){
-            g2d.drawImage(down1, screenX , screenY,null);
+    @Override
+    public void update() {
+        super.update();
+        for (Entity child : children) {
+            child.update();
         }
+    }
 
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 
 }

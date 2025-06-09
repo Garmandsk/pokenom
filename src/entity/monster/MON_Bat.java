@@ -7,6 +7,7 @@ import object.pickupOnly.PU_OBJ_Heart;
 import object.pickupOnly.PU_OBJ_ManaCrystal;
 
 import java.util.Random;
+import java.awt.Graphics2D;
 
 public class MON_Bat extends Entity {
     public static final String monName = "Bat";
@@ -94,5 +95,17 @@ public class MON_Bat extends Entity {
 
     public void update(){
         super.update();
+        // Panggil update pada children (composite pattern)
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    public void draw(Graphics2D g2d){
+        super.draw(g2d);
+        // Panggil draw pada children (composite pattern)
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }

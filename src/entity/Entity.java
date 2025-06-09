@@ -8,9 +8,24 @@ import particle.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Entity {
+    protected List<Entity> children = new ArrayList<>();
+
+    public void addChild(Entity e) {
+        children.add(e);
+    }
+
+    public void removeChild(Entity e) {
+        children.remove(e);
+    }
+
+    public List<Entity> getChildren() {
+        return children;
+    }
+
     public GamePanel gameP;
     public UtilityTool uTool;
 
@@ -699,6 +714,10 @@ public class Entity {
                 }
             }
         }
+
+        for (Entity child : children) {
+            child.update();
+        }
     }
 
     public void draw(Graphics2D g2d){
@@ -770,5 +789,8 @@ public class Entity {
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
 
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }

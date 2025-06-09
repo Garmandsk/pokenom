@@ -6,6 +6,7 @@ import object.obstacle.OBS_OBJ_DoorIron;
 import tile_interactive.IT_MetalPlate;
 import tile_interactive.InteractiveTile;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 public class NPC_BigRock extends Entity {
@@ -126,5 +127,18 @@ public class NPC_BigRock extends Entity {
         detectPlate();
     }
 
-    public void update() {}
+    public void update(){
+        // Panggil update pada children (composite pattern)
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    public void draw(Graphics2D g2d){
+        super.draw(g2d);
+        // Panggil draw pada children (composite pattern)
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
+    }
 }

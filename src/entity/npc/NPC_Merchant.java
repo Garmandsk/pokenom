@@ -9,6 +9,7 @@ import object.equipment.OBJ_Axe;
 import object.equipment.OBJ_ShieldBlue;
 import object.equipment.OBJ_ShieldWood;
 import object.equipment.OBJ_SwordNormal;
+import java.awt.Graphics2D;
 
 public class NPC_Merchant extends Entity {
     public static final String npcName = "Merchant";
@@ -66,5 +67,21 @@ public class NPC_Merchant extends Entity {
     public void speak(){
         gameP.changeGameState(gameP.tradeState);
         gameP.ui.npc = this;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }

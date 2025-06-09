@@ -2,6 +2,7 @@ package entity.projectile;
 
 import entity.Entity;
 import main.GamePanel;
+import java.awt.Graphics2D;
 
 public class Projectile extends Entity {
     Entity user;
@@ -63,6 +64,19 @@ public class Projectile extends Entity {
             if (spriteNum == 1) spriteNum = 2;
             else if (spriteNum == 2) spriteNum = 1;
             spriteCounter = 0;
+        }
+
+        // Panggil update pada children (composite pattern)
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    public void draw(Graphics2D g2d){
+        super.draw(g2d);
+        // Panggil draw pada children (composite pattern)
+        for (Entity child : children) {
+            child.draw(g2d);
         }
     }
 }

@@ -1,7 +1,8 @@
 package entity;
 
 import main.GamePanel;
-import main.UtilityTool;
+// import main.UtilityTool;
+import java.awt.Graphics2D;
 
 public class PlayerDummy extends Entity{
     public static final String npcName = "Dummy";
@@ -22,5 +23,21 @@ public class PlayerDummy extends Entity{
         left2 = uTool.setUp("/player/boy_left_2");
         right1 = uTool.setUp("/player/boy_right_1");
         right2 = uTool.setUp("/player/boy_right_2");
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }
