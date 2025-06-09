@@ -8,6 +8,7 @@ import object.pickupOnly.PU_OBJ_ManaCrystal;
 import entity.projectile.PRO_Rock;
 
 import java.util.Random;
+import java.awt.Graphics2D;
 
 public class MON_GreenSlime extends Entity {
     public static final String monName = "Green Slime";
@@ -94,7 +95,19 @@ public class MON_GreenSlime extends Entity {
         if (i >= 75 && i < 100) dropItem(new PU_OBJ_ManaCrystal(gameP));
     }
 
-    public void update(){
+    @Override
+    public void update() {
         super.update();
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }

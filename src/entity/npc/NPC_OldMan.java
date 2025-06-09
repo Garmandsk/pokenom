@@ -5,6 +5,7 @@ import main.GamePanel;
 import main.UtilityTool;
 
 import java.util.Random;
+import java.awt.Graphics2D;
 
 public class NPC_OldMan extends Entity {
     public static final String npcName = "Old Man";
@@ -115,5 +116,21 @@ public class NPC_OldMan extends Entity {
         if (gameP.player.life < gameP.player.maxLife/3) dialogueSet = 1;
         else if (dialogues[dialogueSet][0] == null) dialogueSet = 0;
 //        onPath = true;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }

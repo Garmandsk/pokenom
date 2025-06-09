@@ -2,6 +2,7 @@ package entity.projectile;
 
 import entity.Entity;
 import main.GamePanel;
+import java.awt.Graphics2D;
 
 public class PRO_Rock extends Projectile {
     GamePanel gameP;
@@ -39,5 +40,21 @@ public class PRO_Rock extends Projectile {
 
     public void substractResources(Entity user){
         user.ammo -= useCost;
+    }
+
+    @Override
+    public void update() {
+        super.update();
+        for (Entity child : children) {
+            child.update();
+        }
+    }
+
+    @Override
+    public void draw(Graphics2D g2d) {
+        super.draw(g2d);
+        for (Entity child : children) {
+            child.draw(g2d);
+        }
     }
 }

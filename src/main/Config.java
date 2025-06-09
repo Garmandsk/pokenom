@@ -32,8 +32,7 @@ public class Config {
     }
 
     public void loadConfig() {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("config.txt"));
+        try (BufferedReader br = new BufferedReader(new FileReader("config.txt"))) {
             String str = br.readLine();
 
             // Full Screen

@@ -670,6 +670,11 @@ public class Player extends Entity {
         }
 
         if (gameP.keyH.escPressed) gameP.ui.subState = 0;
+
+        // Panggil update pada children (composite pattern)
+        for (Entity child : children) {
+            child.update();
+        }
     }
 
     public void draw(Graphics2D g2d){
@@ -731,6 +736,11 @@ public class Player extends Entity {
             if (drawing) g2d.drawImage(image, tempScreenX, tempScreenY, null);
 
             g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+        }
+
+        // Panggil draw pada children (composite pattern)
+        for (Entity child : children) {
+            child.draw(g2d);
         }
     }
 
