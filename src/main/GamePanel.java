@@ -532,6 +532,8 @@ public class GamePanel extends JPanel implements Runnable{
             }
 
             eventH.render(g2d);
+
+//            System.out.println(player.getChildren());
         }
 
     }

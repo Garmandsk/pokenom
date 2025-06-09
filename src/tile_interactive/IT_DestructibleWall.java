@@ -45,20 +45,4 @@ public class IT_DestructibleWall extends InteractiveTile {
 //        if (i >= 75 && i < 100) dropItem(new ManaCrystalObject(gameP));
 //    }
 
-    @Override
-    public void update() {
-        super.update();
-        for (Entity child : children) {
-            child.update();
-        }
-    }
-
-    @Override
-    public void draw(Graphics2D g2d) {
-        super.draw(g2d);
-        for (Entity child : children) {
-            child.draw(g2d);
-        }
-    }
-
 }

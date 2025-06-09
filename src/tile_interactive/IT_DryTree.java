@@ -32,21 +32,4 @@ public class IT_DryTree extends InteractiveTile {
         InteractiveTile tile = new IT_Trunk(gameP, this.worldX/gameP.tileSize, this.worldY/ gameP.tileSize);
         return  tile;
     }
-
-    @Override
-    public void update() {
-        super.update();
-        for (Entity child : children) {
-            child.update();
-        }
-    }
-
-    @Override
-    public void draw(Graphics2D g2d) {
-        super.draw(g2d);
-        for (Entity child : children) {
-            child.draw(g2d);
-        }
-    }
-
 }

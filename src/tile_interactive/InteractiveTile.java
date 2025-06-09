@@ -11,6 +11,7 @@ public class InteractiveTile extends Entity {
     public InteractiveTile(GamePanel gameP, int worldX, int worldY) {
         super(gameP);
         this.gameP = gameP;
+        type = iTileType;
     }
 
     public boolean isCorrectItem(Entity entity){
@@ -31,10 +32,10 @@ public class InteractiveTile extends Entity {
 
     @Override
     public void update() {
-        super.update();
-        for (Entity child : children) {
-            child.update();
-        }
+//        super.update();
+//        for (Entity child : children) {
+//            child.update();
+//        }
         if (this.invicible){
             this.invicibleCounter++;
 
@@ -42,14 +43,6 @@ public class InteractiveTile extends Entity {
                 this.invicible = false;
                 invicibleCounter = 0;
             }
-        }
-    }
-
-    @Override
-    public void draw(Graphics2D g2d) {
-        super.draw(g2d);
-        for (Entity child : children) {
-            child.draw(g2d);
         }
     }
 }

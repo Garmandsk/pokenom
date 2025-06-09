@@ -24,20 +24,4 @@ public class IT_MetalPlate extends InteractiveTile {
         defaultSolidAreaX = solidArea.x;
         defaultSolidAreaY = solidArea.y;
     }
-
-    @Override
-    public void update() {
-        super.update();
-        for (Entity child : children) {
-            child.update();
-        }
-    }
-
-    @Override
-    public void draw(Graphics2D g2d) {
-        super.draw(g2d);
-        for (Entity child : children) {
-            child.draw(g2d);
-        }
-    }
 }

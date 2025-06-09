@@ -127,6 +127,7 @@ public class Entity {
     public final int obstacleType = 8;
     public final int lightType = 9;
     public final int pickaxeType = 10;
+    public final int iTileType = 11;
 
     /* Element Type */
     public int elementType;
@@ -705,7 +706,7 @@ public class Entity {
                 }
             }
 
-            if (this.invicible == true){
+            if (this.invicible){
                 this.invicibleCounter++;
 
                 if (invicibleCounter >= 40){
@@ -775,7 +776,7 @@ public class Entity {
                     break;
             }
 
-            if (this.invicible == true){
+            if (this.invicible && this.type != iTileType){
                 hpBarOn = true;
                 hpBarCounter = 0;
                 uTool.changeAlpha(g2d, 0.4f);
